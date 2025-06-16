@@ -8,7 +8,9 @@ import java.time.LocalDate;
 
 public class BookDto {
 
-    @Getter @NoArgsConstructor @AllArgsConstructor
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Response {
         private Long bookId;
         private String title;

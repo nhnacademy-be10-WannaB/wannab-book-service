@@ -1,0 +1,56 @@
+
+aladin:
+  api:
+    key: ttbzx01671649001
+
+spring:
+  config:
+    import: optional:classpath:properties/env.properties
+
+  application:
+    name: wannab-book-service
+
+  profiles:
+    active: green
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  sql:
+    init:
+      mode: never
+
+server:
+  port: 10390
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://${EUREKA_USERNAME}:${EUREKA_PASSWORD}@220.67.216.11:10380/eureka
+  instance:
+    hostname: book-service-green
+
+---
+spring:
+  config:
+    activate:
+      on-profile: blue
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+server:
+  port: 10391
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_USERNAME}:${EUREKA_PASSWORD}@220.67.216.11:10380/eureka
+  instance:
+    hostname: book-service-blue

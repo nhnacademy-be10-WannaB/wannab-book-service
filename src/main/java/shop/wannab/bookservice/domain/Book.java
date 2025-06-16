@@ -9,6 +9,7 @@ import java.util.Objects;
 public class Book {
 
     public void setBookId(long l) {
+
     }
 
     public enum BookStatus {
