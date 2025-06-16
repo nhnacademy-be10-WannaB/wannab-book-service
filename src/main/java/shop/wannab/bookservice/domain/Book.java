@@ -1,24 +1,21 @@
 package shop.wannab.bookservice.domain;
 
-import static java.util.Objects.requireNonNull;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.time.LocalDate;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.Objects;
 
 @Entity
 @Table(name = "books")
-@Getter
-@NoArgsConstructor
 public class Book {
+
+    public void setBookId(long l) {
+    }
+
+    public enum BookStatus {
+        AVAILABLE,   // 재고 있음
+        SOLD_OUT,    // 재고 없음
+        DISCONTINUED // 판매 중단
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,8 +37,7 @@ public class Book {
     @Column(name = "book_origin_price", nullable = false)
     private Integer originPrice;
 
-    // ERD에 맞춰 NULL 허용으로 변경
-    @Column(name = "book_sale_price", nullable = true)
+    @Column(name = "book_sale_price")
     private Integer salePrice;
 
     @Column(name = "book_wrappable", nullable = false)
@@ -50,15 +46,12 @@ public class Book {
     @Column(name = "book_amount", nullable = false)
     private Integer amount;
 
-    // ERD TINYINT 매핑을 위해 ORDINAL 사용
-    @Enumerated(EnumType.ORDINAL)
-    @Column(name = "book_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "book_status", nullable = false, length = 20)
     private BookStatus status;
 
-    public enum BookStatus {
-        AVAILABLE,   // 0
-        SOLD_OUT,    // 1
-        DISCONTINUED // 2
+    protected Book() {
+        // JPA용 기본 생성자
     }
 
     public Book(String title,
@@ -69,13 +62,15 @@ public class Book {
                 Integer salePrice,
                 boolean wrappable,
                 Integer amount) {
-        this.title = requireNonNull(title, "title must not be null");
-        this.description = requireNonNull(description, "description must not be null");
-        this.publicationDate = requireNonNull(publicationDate, "publicationDate must not be null");
-        this.isbn = requireNonNull(isbn, "isbn must not be null");
-        if (originPrice < 0 || (salePrice != null && salePrice < 0) || amount < 0) {
-            throw new IllegalArgumentException("가격과 재고는 0 이상이어야 합니다.");
-        }
+        this.title = Objects.requireNonNull(title, "title must not be null");
+        this.description = Objects.requireNonNull(description, "description must not be null");
+        this.publicationDate = Objects.requireNonNull(publicationDate, "publicationDate must not be null");
+        this.isbn = Objects.requireNonNull(isbn, "isbn must not be null");
+
+        if (originPrice < 0)  throw new IllegalArgumentException("originPrice must be >= 0");
+        if (salePrice != null && salePrice < 0)  throw new IllegalArgumentException("salePrice must be >= 0");
+        if (amount < 0)  throw new IllegalArgumentException("amount must be >= 0");
+
         this.originPrice = originPrice;
         this.salePrice = salePrice;
         this.wrappable = wrappable;
@@ -83,9 +78,7 @@ public class Book {
         this.status = (amount == 0 ? BookStatus.SOLD_OUT : BookStatus.AVAILABLE);
     }
 
-    /**
-     * 재고를 qty만큼 차감한다. 부족하면 예외.
-     */
+    //–– 재고 차감 로직 ––
     public void decreaseStock(int qty) {
         if (qty <= 0) {
             throw new IllegalArgumentException("차감 수량은 1 이상이어야 합니다.");
@@ -99,9 +92,7 @@ public class Book {
         }
     }
 
-    /**
-     * 재고를 qty만큼 증가시킨다.
-     */
+    //–– 재고 증가 로직 ––
     public void increaseStock(int qty) {
         if (qty <= 0) {
             throw new IllegalArgumentException("증가 수량은 1 이상이어야 합니다.");
@@ -109,6 +100,51 @@ public class Book {
         this.amount += qty;
         if (this.amount > 0) {
             this.status = BookStatus.AVAILABLE;
+        }
+    }
+
+    //–– Getter들 ––
+    public Long getBookId() {
+        return bookId;
+    }
+    public String getTitle() {
+        return title;
+    }
+    public String getDescription() {
+        return description;
+    }
+    public LocalDate getPublicationDate() {
+        return publicationDate;
+    }
+    public String getIsbn() {
+        return isbn;
+    }
+    public Integer getOriginPrice() {
+        return originPrice;
+    }
+    public Integer getSalePrice() {
+        return salePrice;
+    }
+    public boolean isWrappable() {
+        return wrappable;
+    }
+    public Integer getAmount() {
+        return amount;
+    }
+    public BookStatus getStatus() {
+        return status;
+    }
+
+    //–– 제목·설명 수정 메서드 예시 ––
+    public void updateDetails(String newTitle, String newDescription, LocalDate newDate) {
+        if (newTitle != null && !newTitle.isBlank()) {
+            this.title = newTitle;
+        }
+        if (newDescription != null && !newDescription.isBlank()) {
+            this.description = newDescription;
+        }
+        if (newDate != null) {
+            this.publicationDate = newDate;
         }
     }
 }

@@ -1,4 +1,7 @@
 package shop.wannab.bookservice.service;
 
-public class BookService {
+import shop.wannab.bookservice.dto.BookDto;
+
+public interface BookService {
+    BookDto.Response getBook(Long bookId);
 }
