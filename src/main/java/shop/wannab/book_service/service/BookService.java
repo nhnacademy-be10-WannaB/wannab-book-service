@@ -13,6 +13,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class BookService {
+
     private final BookRepository bookRepository;
 
     public void validateOrderItems(OrderItemListDto orderItemListDto) {
