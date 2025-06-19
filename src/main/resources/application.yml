@@ -3,3 +3,4 @@ spring:
     name: book-service
   config:
     import: "optional:configserver:http://config-server:10394/"
+    
