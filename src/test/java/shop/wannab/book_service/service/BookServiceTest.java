@@ -29,9 +29,9 @@ class BookServiceTest {
 
     @BeforeEach()
     void setup() {
-        Book abcBook = new Book(1L, 3, true); //재고부족
-        Book dinoBook = new Book(2L, 20, true); // 구매 가능
-        Book suspendedBook = new Book(3L, 7, false); // 판매중단
+        Book abcBook = new Book(1L, "abcBook", 10000, 7000, 3, true); //재고부족
+        Book dinoBook = new Book(2L, "dinoBook", 50000, 40000, 20, true); // 구매 가능
+        Book suspendedBook = new Book(3L, "suspendedBook", 3000, 2000, 7, false); // 판매중단
 
         // Book 1L: 재고 부족
         when(bookRepository.getBookStock(abcBook.getBookId())).thenReturn(abcBook.getStock());
@@ -63,4 +63,5 @@ class BookServiceTest {
         assertEquals("재고가 부족합니다.", ex.getErrors().get(0).getMessage());
 
     }
+
 }
