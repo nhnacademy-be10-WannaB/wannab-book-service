@@ -16,6 +16,9 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long bookId;
+    private String title;
+    private int originPrice;
+    private int salesPrice;
     private int stock;
     private boolean isOnSale;
 }
