@@ -1,0 +1,5 @@
+package shop.wannab.book_service.constants;
+
+public abstract class Constants {
+    public static final String BOOK_STOCK_KEY = "book_stock";
+}
