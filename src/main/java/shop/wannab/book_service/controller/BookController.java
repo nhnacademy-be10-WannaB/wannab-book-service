@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import shop.wannab.book_service.entity.dto.OrderBookInfoListDto;
 import shop.wannab.book_service.entity.dto.OrderItemListDto;
 import shop.wannab.book_service.service.BookService;
 
@@ -15,8 +16,12 @@ import shop.wannab.book_service.service.BookService;
 public class BookController {
     protected final BookService bookService;
 
-    @PostMapping("/validate-order-items")
+    @PostMapping("/validation/primary")
     public void validateOrderItems(@RequestBody OrderItemListDto orderItemListDto) {
         bookService.validateOrderItems(orderItemListDto);
+    }
+    @PostMapping("/api/books/for-order")
+    OrderBookInfoListDto getOrderBookInfos(@RequestBody OrderItemListDto orderItemListDto) {
+        return bookService.getOrderBookInfos(orderItemListDto);
     }
 }
