@@ -49,7 +49,7 @@ public class BookService {
         List<CartItem> orderItems = orderItemListDto.getOrderItems();
         List<Long> ids = orderItems.stream().map(CartItem::getBookId).collect(Collectors.toList());
 
-        List<BookInfoForOrderProjection> bookInfoList = bookRepository.findByIdIn(ids);
+        List<BookInfoForOrderProjection> bookInfoList = bookRepository.findByBookIdIn(ids);
 
         Map<Long, BookInfoForOrderProjection> bookInfoMap = new HashMap<>();
 

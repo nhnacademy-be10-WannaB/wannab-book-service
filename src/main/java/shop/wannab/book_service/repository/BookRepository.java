@@ -8,6 +8,6 @@ import java.util.List;
 public interface BookRepository extends JpaRepository<Book, Long>, BookRedisRepository {
     boolean existsByBookIdAndIsOnSaleTrue(long bookId);
 
-    List<BookInfoForOrderProjection> findByIdIn(List<Long> ids);
+    List<BookInfoForOrderProjection> findByBookIdIn(List<Long> ids);
 
 }
