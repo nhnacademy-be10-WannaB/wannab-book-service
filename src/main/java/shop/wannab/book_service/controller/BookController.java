@@ -20,7 +20,7 @@ public class BookController {
     public void validateOrderItems(@RequestBody OrderItemListDto orderItemListDto) {
         bookService.validateOrderItems(orderItemListDto);
     }
-    @PostMapping("/api/books/for-order")
+    @PostMapping(value = "/for-order")
     OrderBookInfoListDto getOrderBookInfos(@RequestBody OrderItemListDto orderItemListDto) {
         return bookService.getOrderBookInfos(orderItemListDto);
     }
