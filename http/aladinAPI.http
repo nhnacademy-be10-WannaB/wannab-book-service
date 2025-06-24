@@ -1,0 +1,6 @@
+POST localhost:8081/api/aladin
+Content-Type: application/json
+
+{
+    "query" : "경제"
+}
