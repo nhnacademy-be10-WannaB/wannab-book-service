@@ -1,0 +1,27 @@
+package shop.wannab.book_service.book.controller;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import shop.wannab.book_service.book.dto.OrderBookInfoListDto;
+import shop.wannab.book_service.book.dto.OrderItemListDto;
+import shop.wannab.book_service.book.service.BookService;
+
+
+@RestController
+@RequestMapping("/api/books")
+@RequiredArgsConstructor
+public class BookController {
+    protected final BookService bookService;
+
+    @PostMapping("/validation/primary")
+    public void validateOrderItems(@RequestBody OrderItemListDto orderItemListDto) {
+        bookService.validateOrderItems(orderItemListDto);
+    }
+    @PostMapping("/api/books/for-order")
+    OrderBookInfoListDto getOrderBookInfos(@RequestBody OrderItemListDto orderItemListDto) {
+        return bookService.getOrderBookInfos(orderItemListDto);
+    }
+}

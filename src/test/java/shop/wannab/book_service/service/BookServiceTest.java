@@ -5,11 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import shop.wannab.book_service.entity.Book;
-import shop.wannab.book_service.entity.dto.CartItem;
-import shop.wannab.book_service.entity.dto.OrderItemListDto;
+import shop.wannab.book_service.book.service.BookService;
+import shop.wannab.book_service.book.entity.Book;
+import shop.wannab.book_service.book.dto.CartItem;
+import shop.wannab.book_service.book.dto.OrderItemListDto;
 import shop.wannab.book_service.exception.UnavailableOrderBooksException;
-import shop.wannab.book_service.repository.BookRepository;
+import shop.wannab.book_service.book.repository.BookRepository;
 
 import java.util.List;
 
@@ -35,15 +36,15 @@ class BookServiceTest {
 
         // Book 1L: 재고 부족
         when(bookRepository.getBookStock(abcBook.getBookId())).thenReturn(abcBook.getStock());
-        when(bookRepository.existsByBookIdAndIsOnSaleTrue(abcBook.getBookId())).thenReturn(abcBook.isOnSale());
+        when(bookRepository.existsByBookIdAndIsOnSaleTrue(abcBook.getBookId())).thenReturn(abcBook.isStatus());
 
         // Book 2L: 구매 가능
         when(bookRepository.getBookStock(dinoBook.getBookId())).thenReturn(dinoBook.getStock());
-        when(bookRepository.existsByBookIdAndIsOnSaleTrue(dinoBook.getBookId())).thenReturn(dinoBook.isOnSale());
+        when(bookRepository.existsByBookIdAndIsOnSaleTrue(dinoBook.getBookId())).thenReturn(dinoBook.isStatus());
 
         // Book 3L: 판매중단
         when(bookRepository.getBookStock(suspendedBook.getBookId())).thenReturn(suspendedBook.getStock());
-        when(bookRepository.existsByBookIdAndIsOnSaleTrue(suspendedBook.getBookId())).thenReturn(suspendedBook.isOnSale());
+        when(bookRepository.existsByBookIdAndIsOnSaleTrue(suspendedBook.getBookId())).thenReturn(suspendedBook.isStatus());
 
         List<CartItem> cartItems = List.of(
                 new CartItem(abcBook.getBookId(), 5),

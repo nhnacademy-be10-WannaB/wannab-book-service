@@ -2,7 +2,7 @@ package shop.wannab.book_service.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import shop.wannab.book_service.entity.dto.OrderItemValidationError;
+import shop.wannab.book_service.book.exception.OrderItemValidationError;
 
 import java.util.List;
 
