@@ -8,7 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import shop.wannab.book_service.entity.Book;
 import shop.wannab.book_service.entity.dto.CartItem;
 import shop.wannab.book_service.entity.dto.OrderItemListDto;
-import shop.wannab.book_service.exception.UnavailableOrderBooksException;
+import shop.wannab.book_service.global.exception.UnavailableOrderBooksException;
 import shop.wannab.book_service.repository.BookRepository;
 
 import java.util.List;

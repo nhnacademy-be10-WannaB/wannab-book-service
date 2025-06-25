@@ -1,4 +1,4 @@
-POST localhost:8081/api/aladin
+POST localhost:8081/api/aladin/books/search
 Content-Type: application/json
 
 {

@@ -1,4 +1,4 @@
-package shop.wannab.book_service.config;
+package shop.wannab.book_service.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

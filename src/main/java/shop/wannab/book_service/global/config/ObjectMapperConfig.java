@@ -1,4 +1,4 @@
-package shop.wannab.book_service.config;
+package shop.wannab.book_service.global.config;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

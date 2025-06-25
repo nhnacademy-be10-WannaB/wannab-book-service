@@ -1,5 +1,10 @@
 package shop.wannab.book_service.aladin.domain;
 
+/**
+ * 관리자가 알라딘 API를 활용해 책 정보를 검색할 시 사용하는 클래스
+ *
+ * @author hunmin
+ */
 public class AladinEnums {
     public enum QueryType {
         Keyword("제목, 저자"), Title("제목"), Author("저자"), Publisher("출판사");

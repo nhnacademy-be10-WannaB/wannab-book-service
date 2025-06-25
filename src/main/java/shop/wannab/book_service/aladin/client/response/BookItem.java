@@ -6,6 +6,11 @@ import java.time.LocalDate;
 import java.util.List;
 import shop.wannab.book_service.global.deserializer.CommaSeparatedToListDeserializer;
 
+/**
+ * 알라딘에서 받는 BookItem 객체
+ *
+ * @author hunmin
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record BookItem(
         String title,

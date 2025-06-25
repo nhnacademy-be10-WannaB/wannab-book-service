@@ -5,7 +5,11 @@ import java.util.Map;
 import lombok.Builder;
 import shop.wannab.book_service.aladin.controller.request.BookInfoRequest;
 
-
+/**
+ * 알라딘에 실제로 요청을 보내기 위한 Request 객체
+ *
+ * @author hunmin
+ */
 @Builder
 public record SearchRequest(
         String query,
