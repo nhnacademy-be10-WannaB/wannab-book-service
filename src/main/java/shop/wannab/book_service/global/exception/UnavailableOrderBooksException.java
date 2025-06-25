@@ -1,4 +1,4 @@
-package shop.wannab.book_service.exception;
+package shop.wannab.book_service.global.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

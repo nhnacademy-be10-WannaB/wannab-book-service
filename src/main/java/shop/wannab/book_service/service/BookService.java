@@ -3,7 +3,7 @@ package shop.wannab.book_service.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shop.wannab.book_service.entity.dto.*;
-import shop.wannab.book_service.exception.UnavailableOrderBooksException;
+import shop.wannab.book_service.global.exception.UnavailableOrderBooksException;
 import shop.wannab.book_service.repository.BookRepository;
 
 import java.util.*;
