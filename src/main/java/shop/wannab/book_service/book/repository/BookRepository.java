@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import shop.wannab.book_service.book.dto.BookIdTitlePriceProjection;
 import shop.wannab.book_service.book.dto.BookInfoForOrderProjection;
 import shop.wannab.book_service.book.entity.Book;
 import shop.wannab.book_service.book.entity.BookLike;
@@ -15,6 +16,8 @@ public interface BookRepository extends JpaRepository<Book, Long>, BookRedisRepo
     boolean existsByBookIdAndStatusTrue(long bookId);
 
     List<BookInfoForOrderProjection> findByBookIdIn(List<Long> ids);
+
+    List<BookIdTitlePriceProjection> queryByBookIdIn(List<Long> ids);
 
     //도서 상세 조회
     @EntityGraph(attributePaths = {
@@ -28,4 +31,9 @@ public interface BookRepository extends JpaRepository<Book, Long>, BookRedisRepo
             "bookAuthors.author"
     })
     Page<Book> findAll(Pageable pageable);
+
+
+
+
+
 }
