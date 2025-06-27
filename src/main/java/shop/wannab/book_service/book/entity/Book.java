@@ -82,4 +82,12 @@ public class Book {
         this.isbn = isbn;
         this.status = status;
     }
+
+    //재고감소
+    public void decreaseStock(int quantity) {
+        if (this.stock < quantity) {
+            throw new IllegalStateException("재고 부족");
+        }
+        this.stock -= quantity;
+    }
 }
