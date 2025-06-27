@@ -7,6 +7,8 @@ import shop.wannab.book_service.book.dto.CartItem;
 import shop.wannab.book_service.book.dto.OrderBookInfo;
 import shop.wannab.book_service.book.dto.OrderBookInfoListDto;
 import shop.wannab.book_service.book.dto.OrderItemListDto;
+import shop.wannab.book_service.book.dto.response.BookDetailResponse;
+import shop.wannab.book_service.book.entity.Book;
 import shop.wannab.book_service.book.exception.OrderItemValidationError;
 import shop.wannab.book_service.exception.UnavailableOrderBooksException;
 import shop.wannab.book_service.book.repository.BookRepository;
@@ -40,7 +42,7 @@ public class BookService {
                 continue;
             }
 
-            if (!bookRepository.existsByBookIdAndIsOnSaleTrue(bookId)) {
+            if (!bookRepository.existsByBookIdAndStatusTrue(bookId)) {
                 errors.add(new OrderItemValidationError(bookId, "판매중인 상품이 아닙니다."));
             }
         }
@@ -69,5 +71,12 @@ public class BookService {
             orderBookInfos.add(new OrderBookInfo(bookInfoForOrderProjection, item.getQuantity()));
         }
         return new OrderBookInfoListDto(orderBookInfos);
+    }
+
+    // 도서 상세 조회
+    public BookDetailResponse getBookDetail(Long bookId){
+        Book book = bookRepository.findBookDetail(bookId);
+
+        return BookDetailResponse.of(book);
     }
 }

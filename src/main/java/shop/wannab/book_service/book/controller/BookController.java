@@ -1,12 +1,11 @@
 package shop.wannab.book_service.book.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import shop.wannab.book_service.book.dto.OrderBookInfoListDto;
 import shop.wannab.book_service.book.dto.OrderItemListDto;
+import shop.wannab.book_service.book.dto.response.BookDetailResponse;
+import shop.wannab.book_service.book.repository.BookLikeRepository;
 import shop.wannab.book_service.book.service.BookService;
 
 
@@ -20,8 +19,28 @@ public class BookController {
     public void validateOrderItems(@RequestBody OrderItemListDto orderItemListDto) {
         bookService.validateOrderItems(orderItemListDto);
     }
-    @PostMapping("/api/books/for-order")
+    @PostMapping("/for-order")
     OrderBookInfoListDto getOrderBookInfos(@RequestBody OrderItemListDto orderItemListDto) {
         return bookService.getOrderBookInfos(orderItemListDto);
     }
+
+    //도서 상세조회
+    @GetMapping("/{book-id}")
+    public BookDetailResponse getBookDetail(@PathVariable("book-id") Long bookId){
+        BookDetailResponse response= bookService.getBookDetail(bookId);
+        return response;
+    }
+
+    // 도서 좋아요 등록
+    // @PostMapping("/{book-id}/likes")
+    // public void addBookLike(@PathVariable("book-id") Long bookId, @RequestParam Long userId){}
+
+    // 도서 좋아요 취소
+    // @DeleteMapping("/{book-id}/likes")
+    // public void removeBookLike(){}
+
+    // 도서 좋아요 여부 조회
+    // @GetMapping("/{book-id}/likes")
+    //  public void isBookLiked(){}
+
 }
