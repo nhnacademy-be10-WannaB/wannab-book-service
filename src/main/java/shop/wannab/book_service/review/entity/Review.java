@@ -39,5 +39,14 @@ public class Review  {
     private Integer reviewScore;
 
     @NotNull
-    private LocalDateTime reviewDate;
+    private LocalDateTime reviewCreatedAt;
+
+    private LocalDateTime reviewUpdatedAt;
+
+
+    public void updateInfo(String reviewContent, Integer reviewScore, LocalDateTime reviewUpdatedAt){
+        this.reviewContent = reviewContent;
+        this.reviewUpdatedAt = reviewUpdatedAt;
+        this.reviewScore = reviewScore;
+    }
 }
