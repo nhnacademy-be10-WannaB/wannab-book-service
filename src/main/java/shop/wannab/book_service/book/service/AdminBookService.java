@@ -112,6 +112,8 @@ public class AdminBookService {
     }
 
     public void deleteBook(Long bookId) {
-        bookRepository.deleteById(bookId);
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(()-> new BookNotFoundException());
+        bookRepository.delete(book);
     }
 }

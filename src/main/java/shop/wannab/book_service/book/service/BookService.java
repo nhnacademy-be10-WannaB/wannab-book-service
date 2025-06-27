@@ -1,5 +1,6 @@
 package shop.wannab.book_service.book.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shop.wannab.book_service.book.dto.BookInfoForOrderProjection;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class BookService {
 
     private final BookRepository bookRepository;
