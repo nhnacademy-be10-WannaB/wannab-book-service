@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.wannab.book_service.book.exception.OrderItemValidationError;
-import shop.wannab.book_service.exception.UnavailableOrderBooksException;
+import shop.wannab.book_service.global.exception.UnavailableOrderBooksException;
 
 import java.util.List;
 

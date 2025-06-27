@@ -15,3 +15,8 @@ server:
 eureka:
   client:
     enabled: false
+
+aladin:
+  api:
+    base-url: "http://www.aladin.co.kr/ttb/api/"
+    ttbkey: "dummy-ttb-key-for-ci"

@@ -10,7 +10,7 @@ import shop.wannab.book_service.book.dto.OrderItemListDto;
 import shop.wannab.book_service.book.dto.response.BookDetailResponse;
 import shop.wannab.book_service.book.entity.Book;
 import shop.wannab.book_service.book.exception.OrderItemValidationError;
-import shop.wannab.book_service.exception.UnavailableOrderBooksException;
+import shop.wannab.book_service.global.exception.UnavailableOrderBooksException;
 import shop.wannab.book_service.book.repository.BookRepository;
 
 import java.util.*;
