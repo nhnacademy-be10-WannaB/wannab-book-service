@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: book-service
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  data:
+    redis:
+      host: 11.11.11.11
+      port: 6666
+      password: secret
+      database: 333
+  cloud:
+    discovery:
+      enabled: false
+    config:
+      enabled: false
+
+server:
+  port: 10390
+  shutdown: graceful
+
+eureka:
+  client:
+    enabled: false
+
+aladin:
+  api:
+    base-url: "http://secret/"
+    ttbkey: "secret"
