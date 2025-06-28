@@ -18,14 +18,14 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
-      - name: Run build (clean package)
+      - name: Run build (clean test)
         run: |
-          if [ -f src/main/resources/application-local.yml ]; then
-            mvn clean package \
-              -Dspring.config.import=optional:classpath:/application-local.yml \
-              -Dspring.profiles.active=local
+          if [ -f src/main/resources/application-ci.yml ]; then
+            mvn clean test \
+              -Dspring.config.import=optional:classpath:/application-ci.yml \
+              -Dspring.profiles.active=ci
           else
-            mvn clean package
+            mvn clean test
           fi
 
   test-success:
