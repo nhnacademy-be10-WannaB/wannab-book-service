@@ -47,6 +47,11 @@ public class BookController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/increase-stock")
+    ResponseEntity<Void> increaseStock(@RequestBody OrderItemListDto orderItemListDto) {
+        bookService.increaseStock(orderItemListDto);
+        return ResponseEntity.ok().build();
+    }
     // 도서 좋아요 등록
     @PostMapping("/{book-id}/likes")
     public ResponseEntity<ApiResponse<Void>> createBookLike(@PathVariable("book-id") Long bookId,
