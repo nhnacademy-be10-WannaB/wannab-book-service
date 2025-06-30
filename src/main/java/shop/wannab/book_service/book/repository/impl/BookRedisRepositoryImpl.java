@@ -17,4 +17,14 @@ public class BookRedisRepositoryImpl implements BookRedisRepository {
         Integer stock = (Integer) redisTemplate.opsForHash().get(BOOK_STOCK_KEY, bookId);
         return stock;
     }
+
+    @Override
+    public void decreaseBookStock(long bookId, int amount) {
+        redisTemplate.opsForHash().increment(BOOK_STOCK_KEY, bookId, amount);
+    }
+
+    @Override
+    public void increaseBookStock(long bookId, int amount) {
+        redisTemplate.opsForHash().increment(BOOK_STOCK_KEY, bookId, -amount);
+    }
 }
