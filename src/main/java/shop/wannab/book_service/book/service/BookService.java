@@ -107,22 +107,17 @@ public class BookService {
         List<CartItem> orderItems = orderItemListDto.getOrderItems();
         List<OrderItemValidationError> errors = new ArrayList<>();
 
-        Map<Long, Integer> quantityMap = new HashMap<>();
-        List<Book> booksToUpdate = new ArrayList<>();
-
         for (CartItem orderItem : orderItems) {
             long bookId = orderItem.getBookId();
             int quantity = orderItem.getQuantity();
-            quantityMap.put(bookId, quantity);
 
-            Book book = bookRepository.findById(bookId).orElse(null);
-
-            if (book == null) {
+            Integer stock = bookRepository.getBookStock(bookId);
+            if (stock == null) {
                 errors.add(new OrderItemValidationError(bookId, "해당 상품을 찾을 수 없습니다."));
                 continue;
             }
 
-            if (quantity > book.getStock()) {
+            if (quantity > stock) {
                 errors.add(new OrderItemValidationError(bookId, "재고가 부족합니다."));
                 continue;
             }
@@ -132,18 +127,13 @@ public class BookService {
                 continue;
             }
 
-            booksToUpdate.add(book);
+            bookRepository.decreaseBookStock(bookId, quantity);
 
         }
         if (!errors.isEmpty()) {
             throw new UnavailableOrderBooksException(errors);
         }
 
-        //모든 검증이 문제가 없으면 재고 감소
-        for (Book book : booksToUpdate) {
-            int quantity = quantityMap.get(book.getBookId());
-            book.decreaseStock(quantity);
-        }
     }
 
     // 도서 상세 조회
@@ -186,5 +176,28 @@ public class BookService {
             throw new BookApiException(BookErrorCode.BOOK_NOT_FOUND);
         }
         return bookLikeRepository.existsByUserIdAndBook_BookId(userId,bookId);
+    }
+
+    @Transactional
+    public void increaseStock(OrderItemListDto orderItemListDto) {
+        List<CartItem> orderItems = orderItemListDto.getOrderItems();
+        List<OrderItemValidationError> errors = new ArrayList<>();
+
+        for (CartItem orderItem : orderItems) {
+            long bookId = orderItem.getBookId();
+            int quantity = orderItem.getQuantity();
+
+            Book book = bookRepository.findById(bookId).orElse(null);
+
+            if (book == null) {
+                errors.add(new OrderItemValidationError(bookId, "해당 상품을 찾을 수 없습니다."));
+                continue;
+            }
+            bookRepository.increaseBookStock(bookId, quantity);
+        }
+        if (!errors.isEmpty()) {
+            throw new UnavailableOrderBooksException(errors);
+        }
+
     }
 }
