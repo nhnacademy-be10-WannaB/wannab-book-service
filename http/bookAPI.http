@@ -1,5 +1,5 @@
 ### 도서 등록 요청
-POST http://localhost:8082/api/admin/books
+POST http://localhost:10390/api/admin/books
 Content-Type: application/json
 
 {
@@ -18,15 +18,15 @@ Content-Type: application/json
 
 
 ### 도서 조회
-GET http://localhost:8082/api/admin/books?page=0&size=10
+GET http://localhost:10390/api/admin/books?page=0&size=10
 Accept: application/json
 
 ### 도서 상세 조회
-GET http://localhost:8082/api/books/1
+GET http://localhost:10390/api/books/1
 Accept: application/json
 
 ### 도서 수정
-PUT http://localhost:8082/api/admin/books/1
+PUT http://localhost:10390/api/admin/books/3
 Content-Type: application/json
 Accept: application/json
 
@@ -45,4 +45,4 @@ Accept: application/json
 }
 
 ### 도서 삭제
-DELETE http://localhost:8082/api/admin/books/2
+DELETE http://localhost:10390/api/admin/books/2

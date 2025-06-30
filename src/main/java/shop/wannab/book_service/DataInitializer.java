@@ -1,4 +1,4 @@
-package shop.wannab.book_service.global;
+package shop.wannab.book_service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -7,7 +7,9 @@ import shop.wannab.book_service.author.entity.Author;
 import shop.wannab.book_service.author.repository.AuthorRepository;
 import shop.wannab.book_service.book.entity.Book;
 import shop.wannab.book_service.book.entity.BookAuthor;
+import shop.wannab.book_service.book.entity.BookLike;
 import shop.wannab.book_service.book.entity.BookPublisher;
+import shop.wannab.book_service.book.repository.BookLikeRepository;
 import shop.wannab.book_service.book.repository.BookRepository;
 import shop.wannab.book_service.publisher.entity.Publisher;
 import shop.wannab.book_service.publisher.repository.PublisherRepository;
@@ -25,6 +27,7 @@ public class DataInitializer implements CommandLineRunner {
     private final PublisherRepository publisherRepository;
     private final BookRepository bookRepository;
     private final ReviewRepository reviewRepository;
+    private final BookLikeRepository bookLikeRepository;
 
     @Override
     public void run(String... args) {
@@ -61,6 +64,12 @@ public class DataInitializer implements CommandLineRunner {
                     .build();
 
             reviewRepository.save(review);
+
+            BookLike bookLike = BookLike.builder()
+                    .book(savedBook)
+                    .userId(1L)
+                    .build();
+            bookLikeRepository.save(bookLike);
         }
     }
 }
