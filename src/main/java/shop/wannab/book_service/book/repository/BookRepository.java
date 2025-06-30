@@ -32,8 +32,6 @@ public interface BookRepository extends JpaRepository<Book, Long>, BookRedisRepo
     })
     Page<Book> findAll(Pageable pageable);
 
-
-
-
-
+    //도서 이름 조회
+    boolean existsByTitle(String title);
 }

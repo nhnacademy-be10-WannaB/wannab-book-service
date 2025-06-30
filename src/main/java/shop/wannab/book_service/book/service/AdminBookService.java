@@ -13,7 +13,8 @@ import shop.wannab.book_service.book.dto.response.BookListResponse;
 import shop.wannab.book_service.book.entity.Book;
 import shop.wannab.book_service.book.entity.BookAuthor;
 import shop.wannab.book_service.book.entity.BookPublisher;
-import shop.wannab.book_service.book.exception.BookNotFoundException;
+import shop.wannab.book_service.book.exception.BookApiException;
+import shop.wannab.book_service.book.exception.BookErrorCode;
 import shop.wannab.book_service.book.repository.BookRepository;
 import shop.wannab.book_service.publisher.entity.Publisher;
 import shop.wannab.book_service.publisher.repository.PublisherRepository;
@@ -30,6 +31,7 @@ public class AdminBookService {
     private final PublisherRepository publisherRepository;
 
     //도서 리스트 조회
+    @Transactional(readOnly = true)
     public Page<BookListResponse> getBookList(Pageable pageable) {
         Page<Book> books = bookRepository.findAll(pageable);
         return books.map(BookListResponse::from);
@@ -37,8 +39,12 @@ public class AdminBookService {
 
     // 도서 생성
     public void createBook(BookCreateRequest request) {
-        Book book = request.toEntity();
 
+        if (bookRepository.existsByTitle(request.getTitle())) {
+            throw new BookApiException(BookErrorCode.DUPLICATE_BOOK);
+        }
+
+        Book book = request.toEntity();
         List<BookAuthor> bookAuthors = request.getAuthors().stream()
                 .map(authorName ->{
                     Author author = authorRepository.findAuthorsByAuthorName(authorName)
@@ -70,7 +76,7 @@ public class AdminBookService {
     //도서 수정
     public void updateBook(Long bookId, BookUpdateRequest request) {
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(()-> new BookNotFoundException());
+                .orElseThrow(()-> new BookApiException(BookErrorCode.BOOK_NOT_FOUND));
 
         book.updateInfo(
                 request.getTitle(),
@@ -111,9 +117,11 @@ public class AdminBookService {
         book.getBookPublishers().addAll(updatedPublishers);
     }
 
+    //도서 삭제
     public void deleteBook(Long bookId) {
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(()-> new BookNotFoundException());
+                .orElseThrow(()->  new BookApiException(BookErrorCode.BOOK_NOT_FOUND));
         bookRepository.delete(book);
     }
+
 }
