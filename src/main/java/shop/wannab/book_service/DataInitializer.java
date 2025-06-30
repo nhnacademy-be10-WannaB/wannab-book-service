@@ -5,19 +5,16 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import shop.wannab.book_service.author.entity.Author;
 import shop.wannab.book_service.author.repository.AuthorRepository;
-import shop.wannab.book_service.book.entity.Book;
-import shop.wannab.book_service.book.entity.BookAuthor;
-import shop.wannab.book_service.book.entity.BookLike;
-import shop.wannab.book_service.book.entity.BookPublisher;
+import shop.wannab.book_service.book.entity.*;
 import shop.wannab.book_service.book.repository.BookLikeRepository;
 import shop.wannab.book_service.book.repository.BookRepository;
 import shop.wannab.book_service.publisher.entity.Publisher;
 import shop.wannab.book_service.publisher.repository.PublisherRepository;
+import shop.wannab.book_service.review.entity.Review;
+import shop.wannab.book_service.review.entity.ReviewImage;
+import shop.wannab.book_service.review.repository.ReviewRepository;
 
 import java.time.LocalDate;
-
-import shop.wannab.book_service.review.entity.Review;
-import shop.wannab.book_service.review.repository.ReviewRepository;
 
 @RequiredArgsConstructor
 @Component
@@ -32,9 +29,13 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         if (authorRepository.count() == 0) {
-            Author author = authorRepository.save(Author.builder().authorName("J.K. Rowling").build());
-            Publisher publisher = publisherRepository.save(Publisher.builder().publisherName("Bloomsbury").build());
+            // 작가, 출판사 저장
+            Author author = authorRepository.save(
+                    Author.builder().authorName("J.K. Rowling").build());
+            Publisher publisher = publisherRepository.save(
+                    Publisher.builder().publisherName("Bloomsbury").build());
 
+            // 도서 생성
             Book book = Book.builder()
                     .title("Harry Potter")
                     .description("Fantasy novel")
@@ -45,15 +46,20 @@ public class DataInitializer implements CommandLineRunner {
                     .status(true)
                     .build();
 
-            BookAuthor bookAuthor = BookAuthor.builder().book(book).author(author).build();
-            BookPublisher bookPublisher = BookPublisher.builder().book(book).publisher(publisher).build();
+            // 도서 - 작가, 출판사 관계 설정
+            book.getBookAuthors().add(BookAuthor.builder().book(book).author(author).build());
+            book.getBookPublishers().add(BookPublisher.builder().book(book).publisher(publisher).build());
 
-            book.getBookAuthors().add(bookAuthor);
-            book.getBookPublishers().add(bookPublisher);
+            // 도서 이미지 추가
+            book.getBookImages().add(BookImage.builder()
+                    .book(book)
+                    .imageUrl("https://shopping-phinf.pstatic.net/main_3249140/32491401626.20231004072435.jpg?type=w300")
+                    .build());
 
+            // 도서 저장
             Book savedBook = bookRepository.save(book);
 
-
+            // 리뷰 생성
             Review review = Review.builder()
                     .userId(1L)
                     .obId(101L)
@@ -63,13 +69,20 @@ public class DataInitializer implements CommandLineRunner {
                     .reviewCreatedAt(LocalDate.now().atStartOfDay())
                     .build();
 
+            // 리뷰 이미지 추가
+            review.getReviewImages().add(ReviewImage.builder()
+                    .review(review)
+                    .reviewImageUrl("https://shopping-phinf.pstatic.net/main_3249140/32491401626.20231004072435.jpg?type=w300")
+                    .build());
+
+            // 리뷰 저장
             reviewRepository.save(review);
 
-            BookLike bookLike = BookLike.builder()
+            // 도서 좋아요
+            bookLikeRepository.save(BookLike.builder()
                     .book(savedBook)
                     .userId(1L)
-                    .build();
-            bookLikeRepository.save(bookLike);
+                    .build());
         }
     }
 }

@@ -12,6 +12,7 @@ import shop.wannab.book_service.book.dto.request.BookUpdateRequest;
 import shop.wannab.book_service.book.dto.response.BookListResponse;
 import shop.wannab.book_service.book.entity.Book;
 import shop.wannab.book_service.book.entity.BookAuthor;
+import shop.wannab.book_service.book.entity.BookImage;
 import shop.wannab.book_service.book.entity.BookPublisher;
 import shop.wannab.book_service.book.exception.BookApiException;
 import shop.wannab.book_service.book.exception.BookErrorCode;
@@ -67,10 +68,20 @@ public class AdminBookService {
                             .build();
                 }).toList();
 
+        List<BookImage> bookImages = request.getBookImages().stream()
+                .map(imageUrl -> BookImage.builder()
+                        .book(book)
+                        .imageUrl(imageUrl)
+                        .build())
+                .toList();
+
+        book.getBookImages().addAll(bookImages);
         book.getBookAuthors().addAll(bookAuthors);
         book.getBookPublishers().addAll(bookPublishers);
 
         bookRepository.save(book);
+        bookRepository.saveOrUpdateBookStock(book.getBookId(),book.getStock());
+
     }
 
     //도서 수정
@@ -113,8 +124,17 @@ public class AdminBookService {
                             .build();
                 }).toList();
 
+        List<BookImage> bookImages = request.getBookImages().stream()
+                .map(imageUrl -> BookImage.builder()
+                        .book(book)
+                        .imageUrl(imageUrl)
+                        .build())
+                .toList();
+
+        book.getBookImages().addAll(bookImages);
         book.getBookAuthors().addAll(updatedAuthors);
         book.getBookPublishers().addAll(updatedPublishers);
+        bookRepository.saveOrUpdateBookStock(book.getBookId(),book.getStock());
     }
 
     //도서 삭제
@@ -122,6 +142,7 @@ public class AdminBookService {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(()->  new BookApiException(BookErrorCode.BOOK_NOT_FOUND));
         bookRepository.delete(book);
+        bookRepository.deleteBookStock(bookId);
     }
 
 }

@@ -1,20 +1,21 @@
 ### 도서 리뷰 등록
 POST http://localhost:10390/api/reviews/books/1
 Content-Type: application/json
-X-USER-ID: 123
+X-USER-ID: 1
 
 {
   "reviewContent": "이 책 정말 재밌어요!",
   "reviewScore": 4,
   "reviewCreatedAt": "2025-06-27T10:00:00",
-  "obId": 1001
+  "obId": 1001,
+  "reviewImages": "aaaaaaaa,aaaaaaaaa"
 }
 
 
 
 ### 로그인한 회원 기준 리뷰 목록 조회
 GET http://localhost:10390/api/reviews/me?page=0&size=10
-X-USER-ID: 123
+X-USER-ID: 1
 
 
 
