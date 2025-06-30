@@ -16,10 +16,13 @@ import shop.wannab.book_service.review.dto.request.ReviewUpdateRequest;
 import shop.wannab.book_service.review.dto.response.BookReviewListResponse;
 import shop.wannab.book_service.review.dto.response.UserReviewListResponse;
 import shop.wannab.book_service.review.entity.Review;
+import shop.wannab.book_service.review.entity.ReviewImage;
 import shop.wannab.book_service.review.exception.ReviewApiException;
 import shop.wannab.book_service.review.exception.ReviewErrorCode;
 import shop.wannab.book_service.review.repository.ReviewRepository;
 import shop.wannab.book_service.review.service.ReviewService;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +37,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional(readOnly = true)
     public Page<BookReviewListResponse> getBookReviewList(Pageable pageable, Long bookId) {
 
-        if (bookRepository.existsById(bookId)){
+        if (!bookRepository.existsById(bookId)){
             throw new BookApiException(BookErrorCode.BOOK_NOT_FOUND);
         }
 
@@ -64,9 +67,15 @@ public class ReviewServiceImpl implements ReviewService {
         return reviews.map(UserReviewListResponse::from);
     }
 
+    //리뷰 생성
     public void createReview(ReviewCreateRequest request, Long bookId, Long userId){
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(()-> new BookApiException(BookErrorCode.BOOK_NOT_FOUND));
+
+        if (reviewRepository.existsByBook_BookIdAndUserId(bookId,userId)){
+            throw new ReviewApiException(ReviewErrorCode.REVIEW_ALREADY_EXISTS);
+        }
+
 
         Review review = Review.builder()
                 .userId(userId)
@@ -76,6 +85,18 @@ public class ReviewServiceImpl implements ReviewService {
                 .reviewCreatedAt(request.getReviewCreatedAt())
                 .reviewContent(request.getReviewContent())
                 .build();
+
+        List<ReviewImage> reviewImages = request.getReviewImages().stream()
+                .map(url -> {
+                    ReviewImage image = ReviewImage.builder()
+                            .reviewImageUrl(url)
+                            .build();
+                    image.setReview(review);
+                    return image;
+                })
+                .toList();
+
+        review.setReviewImages(reviewImages);
         reviewRepository.save(review);
     }
 
