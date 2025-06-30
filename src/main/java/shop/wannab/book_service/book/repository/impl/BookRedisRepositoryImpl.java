@@ -27,7 +27,8 @@ public class BookRedisRepositoryImpl implements BookRedisRepository {
     @Override
     public void deleteBookStock(long bookId) {
         redisTemplate.opsForHash().delete(BOOK_STOCK_KEY, bookId);
-    
+    }
+
     @Override
     public void decreaseBookStock(long bookId, int amount) {
         redisTemplate.opsForHash().increment(BOOK_STOCK_KEY, bookId, amount);
@@ -37,4 +38,5 @@ public class BookRedisRepositoryImpl implements BookRedisRepository {
     public void increaseBookStock(long bookId, int amount) {
         redisTemplate.opsForHash().increment(BOOK_STOCK_KEY, bookId, -amount);
     }
+
 }
