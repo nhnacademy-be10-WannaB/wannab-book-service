@@ -1,4 +1,4 @@
-package shop.wannab.book_service.book.dto.response;
+package shop.wannab.book_service.book.controller.response;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -10,13 +10,14 @@ import java.util.List;
 @Getter
 @Builder
 public class BookDetailResponse {
+    private Long bookId;
     private String title;
     private String description;
     private LocalDate publicationDate;
     private Integer originPrice;
     private Integer salesPrice;
     private Integer stock;
-    private boolean status;
+    private Boolean status;
     private String bookChapter;
     private List<String> authorNames;
     private List<String> publisherNames;
@@ -26,6 +27,7 @@ public class BookDetailResponse {
 
     public static BookDetailResponse of(Book book) {
         return BookDetailResponse.builder()
+                .bookId(book.getBookId())
                 .title(book.getTitle())
                 .description(book.getDescription())
                 .publicationDate(book.getPublicationDate())
