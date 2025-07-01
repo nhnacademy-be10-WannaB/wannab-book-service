@@ -76,7 +76,7 @@ public class AdminBookController {
      * @param request 알라딘 도서 등록 객체
      */
     @PostMapping("/aladin")
-    public ResponseEntity<ApiResponse<Void>> createAladinBook(@RequestBody AladinBookCreateRequest request){
+    public ResponseEntity<ApiResponse<Void>> createAladinBook(@RequestBody @Valid AladinBookCreateRequest request){
         adminBookService.aladinCreateBook(request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
