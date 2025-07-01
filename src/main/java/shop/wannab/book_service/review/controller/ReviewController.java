@@ -7,10 +7,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import shop.wannab.book_service.review.dto.request.ReviewCreateRequest;
-import shop.wannab.book_service.review.dto.request.ReviewUpdateRequest;
-import shop.wannab.book_service.review.dto.response.BookReviewListResponse;
-import shop.wannab.book_service.review.dto.response.UserReviewListResponse;
+import shop.wannab.book_service.review.controller.request.ReviewCreateRequest;
+import shop.wannab.book_service.review.controller.request.ReviewUpdateRequest;
+import shop.wannab.book_service.review.controller.response.BookReviewListResponse;
+import shop.wannab.book_service.review.controller.response.UserReviewListResponse;
 import shop.wannab.book_service.review.service.ReviewService;
 import shop.wannab.book_service.global.response.ApiResponse;
 

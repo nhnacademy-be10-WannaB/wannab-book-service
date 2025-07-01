@@ -12,7 +12,7 @@ import shop.wannab.book_service.book.dto.CartItem;
 import shop.wannab.book_service.book.dto.OrderBookInfo;
 import shop.wannab.book_service.book.dto.OrderBookInfoListDto;
 import shop.wannab.book_service.book.dto.OrderItemListDto;
-import shop.wannab.book_service.book.dto.response.BookDetailResponse;
+import shop.wannab.book_service.book.controller.response.BookDetailResponse;
 import shop.wannab.book_service.book.entity.Book;
 import shop.wannab.book_service.book.entity.BookLike;
 import shop.wannab.book_service.book.exception.BookApiException;

@@ -7,7 +7,7 @@ import shop.wannab.book_service.book.dto.BookIdListDto;
 import shop.wannab.book_service.book.dto.BookIdTitlePriceListDto;
 import shop.wannab.book_service.book.dto.OrderBookInfoListDto;
 import shop.wannab.book_service.book.dto.OrderItemListDto;
-import shop.wannab.book_service.book.dto.response.BookDetailResponse;
+import shop.wannab.book_service.book.controller.response.BookDetailResponse;
 import shop.wannab.book_service.book.service.BookService;
 import shop.wannab.book_service.global.response.ApiResponse;
 

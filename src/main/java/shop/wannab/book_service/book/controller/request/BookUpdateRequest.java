@@ -1,4 +1,4 @@
-package shop.wannab.book_service.book.dto.request;
+package shop.wannab.book_service.book.controller.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.wannab.book_service.book.entity.Book;
 import shop.wannab.book_service.global.deserializer.CommaSeparatedToListDeserializer;
 
 import java.time.LocalDate;
@@ -17,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BookCreateRequest {
+public class BookUpdateRequest {
     private String title;
     private String description;
     private LocalDate publicationDate;
@@ -38,18 +37,4 @@ public class BookCreateRequest {
 
     @JsonDeserialize(using = CommaSeparatedToListDeserializer.class)
     private List<String> bookImages;
-
-
-    public Book toEntity(){
-        return Book.builder()
-                .title(this.title)
-                .description(this.description)
-                .publicationDate(this.publicationDate)
-                .isbn(this.isbn)
-                .originPrice(this.originPrice)
-                .stock(this.stock)
-                .status(this.status)
-                .bookChapter(this.bookChapter)
-                .build();
-    }
 }
