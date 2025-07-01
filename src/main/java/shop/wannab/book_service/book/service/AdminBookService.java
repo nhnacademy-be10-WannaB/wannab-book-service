@@ -7,9 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.wannab.book_service.author.entity.Author;
 import shop.wannab.book_service.author.repository.AuthorRepository;
-import shop.wannab.book_service.book.dto.request.BookCreateRequest;
-import shop.wannab.book_service.book.dto.request.BookUpdateRequest;
-import shop.wannab.book_service.book.dto.response.BookListResponse;
+import shop.wannab.book_service.book.controller.request.AladinBookCreateRequest;
+import shop.wannab.book_service.book.controller.request.BookCreateRequest;
+import shop.wannab.book_service.book.controller.request.BookUpdateRequest;
+import shop.wannab.book_service.book.controller.response.BookListResponse;
 import shop.wannab.book_service.book.entity.Book;
 import shop.wannab.book_service.book.entity.BookAuthor;
 import shop.wannab.book_service.book.entity.BookImage;
@@ -41,7 +42,7 @@ public class AdminBookService {
     // 도서 생성
     public void createBook(BookCreateRequest request) {
 
-        if (bookRepository.existsByTitle(request.getTitle())) {
+        if (bookRepository.existsByIsbn(request.getIsbn())) {
             throw new BookApiException(BookErrorCode.DUPLICATE_BOOK);
         }
 
@@ -145,4 +146,47 @@ public class AdminBookService {
         bookRepository.deleteBookStock(bookId);
     }
 
+    public void aladinCreateBook(AladinBookCreateRequest request) {
+
+        if (bookRepository.existsByIsbn(request.isbn())) {
+            throw new BookApiException(BookErrorCode.DUPLICATE_BOOK);
+        }
+
+        Book book = request.toEntity();
+        List<BookAuthor> bookAuthors = request.authors().stream()
+                .map(authorName ->{
+                    Author author = authorRepository.findAuthorsByAuthorName(authorName)
+                            .orElseGet(()->authorRepository.save(
+                                    Author.builder().authorName(authorName).build()));
+                    return BookAuthor.builder()
+                            .book(book)
+                            .author(author)
+                            .build();
+                }).toList();
+
+        List<BookPublisher> bookPublishers = request.publishers().stream()
+                .map(publisherName -> {
+                    Publisher publisher = publisherRepository.findPublisherByPublisherName(publisherName)
+                            .orElseGet(() -> publisherRepository.save(
+                                    Publisher.builder().publisherName(publisherName).build()));
+                    return BookPublisher.builder()
+                            .book(book)
+                            .publisher(publisher)
+                            .build();
+                }).toList();
+
+        List<BookImage> bookImages = request.thumbnail().stream()
+                .map(imageUrl -> BookImage.builder()
+                        .book(book)
+                        .imageUrl(imageUrl)
+                        .build())
+                .toList();
+
+        book.getBookImages().addAll(bookImages);
+        book.getBookAuthors().addAll(bookAuthors);
+        book.getBookPublishers().addAll(bookPublishers);
+
+        bookRepository.save(book);
+        bookRepository.saveOrUpdateBookStock(book.getBookId(),book.getStock());
+    }
 }

@@ -1,4 +1,4 @@
-package shop.wannab.book_service.review.dto.response;
+package shop.wannab.book_service.review.controller.response;
 
 import lombok.Builder;
 import lombok.Getter;
