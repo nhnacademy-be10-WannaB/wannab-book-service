@@ -1,10 +1,12 @@
 package shop.wannab.book_service.book.controller.request;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 import shop.wannab.book_service.book.entity.Book;
+import shop.wannab.book_service.global.deserializer.GreaterThanSeparatedToListDeserializer;
 
 public record AladinBookCreateRequest(
         @NotBlank String title,
@@ -14,7 +16,9 @@ public record AladinBookCreateRequest(
         @NotBlank String isbn,
         @NotNull Integer price,
         @NotBlank String description,
-        List<String> thumbnail,
+        String thumbnail,
+        @JsonDeserialize(using = GreaterThanSeparatedToListDeserializer.class)
+        List<String> category,
         Integer stock,
         String bookChapter,
         Boolean status
