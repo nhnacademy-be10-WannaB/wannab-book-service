@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import shop.wannab.book_service.book.controller.request.AladinBookCreateRequest;
 import shop.wannab.book_service.book.controller.request.BookCreateRequest;
 import shop.wannab.book_service.book.controller.request.BookUpdateRequest;
 import shop.wannab.book_service.book.controller.response.BookListResponse;
@@ -68,16 +67,6 @@ public class AdminBookController {
     @DeleteMapping("/{book-id}")
     public ResponseEntity<ApiResponse<Void>> deleteBook(@PathVariable("book-id") Long bookId){
         adminBookService.deleteBook(bookId);
-        return ResponseEntity.ok(ApiResponse.success(null));
-    }
-
-    /**
-     * 알라디 도서 등록
-     * @param request 알라딘 도서 등록 객체
-     */
-    @PostMapping("/aladin")
-    public ResponseEntity<ApiResponse<Void>> createAladinBook(@RequestBody @Valid AladinBookCreateRequest request){
-        adminBookService.aladinCreateBook(request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 }
