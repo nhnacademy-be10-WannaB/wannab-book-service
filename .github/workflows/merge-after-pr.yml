@@ -47,5 +47,5 @@ jobs:
               -Dsonar.projectKey=wannab-book-service \
               -Dsonar.projectName='wannab-book-service' \
               -Dsonar.host.url=${SONAR_HOST_URL} \
-              -Dsonar.login=${SONAR_TOKEN} \
+              -Dsonar.login=${SONAR_TOKEN}
           fi
