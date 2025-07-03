@@ -50,9 +50,7 @@ jobs:
               -Dsonar.projectName='wannab-book-service' \
               -Dsonar.host.url=${SONAR_HOST_URL} \
               -Dsonar.login=${SONAR_TOKEN} \
-              -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} \
-              -Dsonar.pullrequest.branch=${{ github.head_ref }} \
-              -Dsonar.pullrequest.base=${{ github.base_ref }}
+              -Dsonar.branch.name=${{ github.head_ref }}
           fi
 
   test-success:
