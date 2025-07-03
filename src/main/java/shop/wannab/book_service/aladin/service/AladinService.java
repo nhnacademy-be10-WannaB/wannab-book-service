@@ -22,7 +22,10 @@ import shop.wannab.book_service.book.entity.BookImage;
 import shop.wannab.book_service.book.entity.BookPublisher;
 import shop.wannab.book_service.book.exception.BookApiException;
 import shop.wannab.book_service.book.exception.BookErrorCode;
+import shop.wannab.book_service.book.repository.BookCategoryRepository;
 import shop.wannab.book_service.book.repository.BookRepository;
+import shop.wannab.book_service.category.entity.Category;
+import shop.wannab.book_service.category.repository.CategoryRepository;
 import shop.wannab.book_service.publisher.entity.Publisher;
 import shop.wannab.book_service.publisher.repository.PublisherRepository;
 
@@ -35,6 +38,8 @@ public class AladinService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final PublisherRepository publisherRepository;
+    private final CategoryRepository categoryRepository;
+    private final BookCategoryRepository bookCategoryRepository;
 
     @Value("${aladin.api.ttbkey}")
     private String ttbKey;
@@ -91,8 +96,37 @@ public class AladinService {
         book.getBookPublishers().addAll(bookPublishers);
 
         // TODO : 카테고리 추가도 필요함
+        ensureCategoryHierarchy(request.category());
 
         bookRepository.save(book);
         bookRepository.saveOrUpdateBookStock(book.getBookId(),book.getStock());
+    }
+
+    private Category ensureCategoryHierarchy(List<String> categoryNames) {
+        if (categoryNames.size() < 2) {
+            throw new IllegalArgumentException("카테고리는 최소 2단계 이상이어야 합니다.");
+        }
+
+        String parentName = categoryNames.get(0);
+        String childName = categoryNames.get(1);
+
+        Category parentCategory = categoryRepository.findByName(parentName)
+                .orElseGet(() -> {
+                    Category newParent = new Category();
+                    newParent.setName(parentName);
+                    return categoryRepository.save(newParent);
+                });
+
+
+
+        Category childCategory = categoryRepository.findByName(childName)
+                .orElseGet(() -> {
+                    Category newChild = new Category();
+                    newChild.setName(childName);
+                    newChild.setParent(parentCategory);
+                    return categoryRepository.save(newChild);
+                });
+
+        return childCategory;
     }
 }
