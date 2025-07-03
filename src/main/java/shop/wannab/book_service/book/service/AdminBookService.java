@@ -93,6 +93,7 @@ public class AdminBookService {
                 request.getDescription(),
                 request.getPublicationDate(),
                 request.getOriginPrice(),
+                request.getSalesPrice(),
                 request.getStock(),
                 request.getBookChapter(),
                 request.getIsbn(),

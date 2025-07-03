@@ -21,6 +21,7 @@ public class BookUpdateRequest {
     private String description;
     private LocalDate publicationDate;
     private Integer originPrice;
+    private Integer salesPrice;
     private Integer stock;
     private String bookChapter;
     private String isbn;

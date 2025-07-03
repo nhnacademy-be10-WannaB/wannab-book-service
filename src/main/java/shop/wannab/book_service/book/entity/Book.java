@@ -71,12 +71,13 @@ public class Book {
 
 
     public void updateInfo(String title, String description, LocalDate publicationDate,
-                           Integer originPrice, Integer stock, String bookChapter,
+                           Integer originPrice,Integer salesPrice, Integer stock, String bookChapter,
                            String isbn, boolean status) {
         this.title = title;
         this.description = description;
         this.publicationDate = publicationDate;
         this.originPrice = originPrice;
+        this.salesPrice = salesPrice;
         this.stock = stock;
         this.bookChapter = bookChapter;
         this.isbn = isbn;
