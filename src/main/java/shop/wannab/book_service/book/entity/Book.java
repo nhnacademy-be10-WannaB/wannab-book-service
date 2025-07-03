@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
+import shop.wannab.book_service.review.entity.Review;
 
 @Builder
 @Getter
@@ -69,6 +70,12 @@ public class Book {
     @Builder.Default
     private List<BookImage> bookImages = new ArrayList<>();
 
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BookLike> bookLikes;
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Review> reviews = new ArrayList<>();
 
     public void updateInfo(String title, String description, LocalDate publicationDate,
                            Integer originPrice,Integer salesPrice, Integer stock, String bookChapter,

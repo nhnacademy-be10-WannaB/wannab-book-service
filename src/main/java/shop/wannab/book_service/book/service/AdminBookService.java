@@ -11,15 +11,14 @@ import shop.wannab.book_service.author.repository.AuthorRepository;
 import shop.wannab.book_service.book.controller.request.BookCreateRequest;
 import shop.wannab.book_service.book.controller.request.BookUpdateRequest;
 import shop.wannab.book_service.book.controller.response.BookListResponse;
-import shop.wannab.book_service.book.entity.Book;
-import shop.wannab.book_service.book.entity.BookAuthor;
-import shop.wannab.book_service.book.entity.BookImage;
-import shop.wannab.book_service.book.entity.BookPublisher;
+import shop.wannab.book_service.book.entity.*;
 import shop.wannab.book_service.book.exception.BookApiException;
 import shop.wannab.book_service.book.exception.BookErrorCode;
 import shop.wannab.book_service.book.repository.BookRepository;
 import shop.wannab.book_service.publisher.entity.Publisher;
 import shop.wannab.book_service.publisher.repository.PublisherRepository;
+import shop.wannab.book_service.tag.entity.Tag;
+import shop.wannab.book_service.tag.repository.TagRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +28,7 @@ public class AdminBookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final PublisherRepository publisherRepository;
+    private final TagRepository tagRepository;
 
     //도서 리스트 조회
     @Transactional(readOnly = true)
@@ -45,6 +45,7 @@ public class AdminBookService {
         }
 
         Book book = request.toEntity();
+
         List<BookAuthor> bookAuthors = request.getAuthors().stream()
                 .map(authorName ->{
                     Author author = authorRepository.findAuthorsByAuthorName(authorName)
@@ -67,6 +68,17 @@ public class AdminBookService {
                             .build();
                 }).toList();
 
+        List<BookTag> bookTags = request.getBookTags().stream()
+                .map(name -> {
+                    Tag tag = tagRepository.findTagByTagName(name)
+                            .orElseGet(() -> tagRepository.save(
+                                    Tag.builder().tagName(name).build()));
+                    return BookTag.builder()
+                            .book(book)
+                            .tag(tag)
+                            .build();
+                }).toList();
+
         List<BookImage> bookImages = request.getBookImages().stream()
                 .map(imageUrl -> BookImage.builder()
                         .book(book)
@@ -77,10 +89,10 @@ public class AdminBookService {
         book.getBookImages().addAll(bookImages);
         book.getBookAuthors().addAll(bookAuthors);
         book.getBookPublishers().addAll(bookPublishers);
+        book.getBookTags().addAll(bookTags);
 
         bookRepository.save(book);
         bookRepository.saveOrUpdateBookStock(book.getBookId(),book.getStock());
-
     }
 
     //도서 수정
@@ -101,6 +113,8 @@ public class AdminBookService {
 
         book.getBookAuthors().clear();
         book.getBookPublishers().clear();
+        book.getBookImages().clear();
+        book.getBookTags().clear();
 
         List<BookAuthor> updatedAuthors = request.getAuthors().stream()
                 .map(name -> {
@@ -124,6 +138,17 @@ public class AdminBookService {
                             .build();
                 }).toList();
 
+        List<BookTag> updatedTags = request.getBookTags().stream()
+                .map(name -> {
+                    Tag tag = tagRepository.findTagByTagName(name)
+                            .orElseGet(() -> tagRepository.save(
+                                    Tag.builder().tagName(name).build()));
+                    return BookTag.builder()
+                            .book(book)
+                            .tag(tag)
+                            .build();
+                }).toList();
+
         List<BookImage> bookImages = request.getBookImages().stream()
                 .map(imageUrl -> BookImage.builder()
                         .book(book)
@@ -134,6 +159,8 @@ public class AdminBookService {
         book.getBookImages().addAll(bookImages);
         book.getBookAuthors().addAll(updatedAuthors);
         book.getBookPublishers().addAll(updatedPublishers);
+        book.getBookTags().addAll(updatedTags);
+
         bookRepository.saveOrUpdateBookStock(book.getBookId(),book.getStock());
     }
 
