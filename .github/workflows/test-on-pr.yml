@@ -36,21 +36,14 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - name: Run test and SonarQube analysis
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - name: Run build (clean verify)
         run: |
           if [ -f src/main/resources/application-ci.yml ]; then
             mvn clean verify \
               -Dspring.config.import=optional:classpath:/application-ci.yml \
-              -Dspring.profiles.active=ci \
-              org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-              -Dsonar.projectKey=wannab-book-service \
-              -Dsonar.projectName='wannab-book-service' \
-              -Dsonar.host.url=${SONAR_HOST_URL} \
-              -Dsonar.login=${SONAR_TOKEN} \
-              -Dsonar.branch.name=${{ github.head_ref }}
+              -Dspring.profiles.active=ci
+          else
+            mvn clean verify
           fi
 
   test-success:
