@@ -31,6 +31,7 @@ public record AladinBookCreateRequest(
                 .publicationDate(this.publishedDate)
                 .isbn(this.isbn)
                 .originPrice(this.price)
+                .salesPrice(this.price)
                 .stock(this.stock != null ? this.stock : 0)
                 .status(this.status != null ? this.status : true)
                 .bookChapter(this.bookChapter != null ? this.bookChapter : "")

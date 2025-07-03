@@ -23,6 +23,7 @@ public class BookCreateRequest {
     private String description;
     private LocalDate publicationDate;
     private Integer originPrice;
+    private Integer salesPrice;
     private Integer stock;
     private String bookChapter;
     @NotBlank private String isbn;
@@ -48,6 +49,7 @@ public class BookCreateRequest {
                 .publicationDate(this.publicationDate)
                 .isbn(this.isbn)
                 .originPrice(this.originPrice)
+                .salesPrice(this.salesPrice)
                 .stock(this.stock)
                 .status(this.status)
                 .bookChapter(this.bookChapter)
