@@ -17,6 +17,7 @@ public class BookDetailResponse {
     private Integer originPrice;
     private Integer salesPrice;
     private Integer stock;
+    private String isbn;
     private Boolean status;
     private String bookChapter;
     private List<String> authorNames;
@@ -29,6 +30,7 @@ public class BookDetailResponse {
         return BookDetailResponse.builder()
                 .bookId(book.getBookId())
                 .title(book.getTitle())
+                .isbn(book.getIsbn())
                 .description(book.getDescription())
                 .publicationDate(book.getPublicationDate())
                 .originPrice(book.getOriginPrice())

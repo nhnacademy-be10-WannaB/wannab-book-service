@@ -55,7 +55,7 @@ public class AdminBookController {
      */
     @PutMapping("/{book-id}")
     public ResponseEntity<ApiResponse<Void>> updateBook(@PathVariable("book-id") Long bookId,
-                                                        @RequestBody BookUpdateRequest request){
+                                                        @RequestBody @Valid BookUpdateRequest request){
         adminBookService.updateBook(bookId, request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }

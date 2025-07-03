@@ -2,6 +2,8 @@ package shop.wannab.book_service.book.controller.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,15 +19,15 @@ import java.util.List;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BookUpdateRequest {
-    private String title;
-    private String description;
-    private LocalDate publicationDate;
-    private Integer originPrice;
+    @NotBlank private String title;
+    @NotBlank private String description;
+    @NotNull private LocalDate publicationDate;
+    @NotNull private Integer originPrice;
     private Integer salesPrice;
-    private Integer stock;
+    @NotNull private Integer stock;
     private String bookChapter;
-    private String isbn;
-    private boolean status;
+    @NotBlank private String isbn;
+    @NotNull private boolean status;
 
     @JsonDeserialize(using = CommaSeparatedToListDeserializer.class)
     private List<String> categories;
@@ -38,4 +40,7 @@ public class BookUpdateRequest {
 
     @JsonDeserialize(using = CommaSeparatedToListDeserializer.class)
     private List<String> bookImages;
+
+    @JsonDeserialize(using = CommaSeparatedToListDeserializer.class)
+    private List<String> bookTags;
 }
