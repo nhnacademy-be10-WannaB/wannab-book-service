@@ -1,5 +1,6 @@
 package shop.wannab.book_service.book.repository;
 
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -9,9 +10,6 @@ import org.springframework.data.repository.query.Param;
 import shop.wannab.book_service.book.dto.BookIdTitlePriceProjection;
 import shop.wannab.book_service.book.dto.BookInfoForOrderProjection;
 import shop.wannab.book_service.book.entity.Book;
-import shop.wannab.book_service.book.entity.BookLike;
-
-import java.util.List;
 public interface BookRepository extends JpaRepository<Book, Long>, BookRedisRepository {
     boolean existsByBookIdAndStatusTrue(long bookId);
 
@@ -32,8 +30,5 @@ public interface BookRepository extends JpaRepository<Book, Long>, BookRedisRepo
     })
     Page<Book> findAll(Pageable pageable);
 
-
-
-
-
+    boolean existsByIsbn(String isbn);
 }

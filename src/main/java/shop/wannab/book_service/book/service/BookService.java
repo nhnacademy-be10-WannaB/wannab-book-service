@@ -12,9 +12,13 @@ import shop.wannab.book_service.book.dto.CartItem;
 import shop.wannab.book_service.book.dto.OrderBookInfo;
 import shop.wannab.book_service.book.dto.OrderBookInfoListDto;
 import shop.wannab.book_service.book.dto.OrderItemListDto;
-import shop.wannab.book_service.book.dto.response.BookDetailResponse;
+import shop.wannab.book_service.book.controller.response.BookDetailResponse;
 import shop.wannab.book_service.book.entity.Book;
+import shop.wannab.book_service.book.entity.BookLike;
+import shop.wannab.book_service.book.exception.BookApiException;
+import shop.wannab.book_service.book.exception.BookErrorCode;
 import shop.wannab.book_service.book.exception.OrderItemValidationError;
+import shop.wannab.book_service.book.repository.BookLikeRepository;
 import shop.wannab.book_service.global.exception.UnavailableOrderBooksException;
 import shop.wannab.book_service.book.repository.BookRepository;
 
@@ -27,7 +31,7 @@ import java.util.stream.Collectors;
 public class BookService {
 
     private final BookRepository bookRepository;
-
+    private final BookLikeRepository bookLikeRepository;
 
     @Transactional(readOnly = true)
     public void validateOrderItems(OrderItemListDto orderItemListDto) {
@@ -103,22 +107,17 @@ public class BookService {
         List<CartItem> orderItems = orderItemListDto.getOrderItems();
         List<OrderItemValidationError> errors = new ArrayList<>();
 
-        Map<Long, Integer> quantityMap = new HashMap<>();
-        List<Book> booksToUpdate = new ArrayList<>();
-
         for (CartItem orderItem : orderItems) {
             long bookId = orderItem.getBookId();
             int quantity = orderItem.getQuantity();
-            quantityMap.put(bookId, quantity);
 
-            Book book = bookRepository.findById(bookId).orElse(null);
-
-            if (book == null) {
+            Integer stock = bookRepository.getBookStock(bookId);
+            if (stock == null) {
                 errors.add(new OrderItemValidationError(bookId, "해당 상품을 찾을 수 없습니다."));
                 continue;
             }
 
-            if (quantity > book.getStock()) {
+            if (quantity > stock) {
                 errors.add(new OrderItemValidationError(bookId, "재고가 부족합니다."));
                 continue;
             }
@@ -128,24 +127,77 @@ public class BookService {
                 continue;
             }
 
-            booksToUpdate.add(book);
+            bookRepository.decreaseBookStock(bookId, quantity);
 
         }
         if (!errors.isEmpty()) {
             throw new UnavailableOrderBooksException(errors);
         }
 
-        //모든 검증이 문제가 없으면 재고 감소
-        for (Book book : booksToUpdate) {
-            int quantity = quantityMap.get(book.getBookId());
-            book.decreaseStock(quantity);
-        }
     }
 
     // 도서 상세 조회
+    @Transactional(readOnly = true)
     public BookDetailResponse getBookDetail(Long bookId){
         Book book = bookRepository.findBookDetail(bookId);
 
         return BookDetailResponse.of(book);
+    }
+
+    //도서 좋아요 등록
+    public void createBookLike(Long bookId, Long userId){
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(()->  new BookApiException(BookErrorCode.BOOK_NOT_FOUND));
+
+        if(isBookLiked(bookId,userId)){
+            throw new BookApiException(BookErrorCode.DUPLICATE_BOOK_LIKE);
+        }
+
+        BookLike bookLike = BookLike.builder()
+                        .book(book)
+                        .userId(userId)
+                        .build();
+        bookLikeRepository.save(bookLike);;
+    }
+
+    //도서 좋아요 취소
+    public void deleteBookLike(Long bookId, Long userId){
+        if(!isBookLiked(bookId,userId)){
+            throw new BookApiException(BookErrorCode.BOOK_LIKE_NOT_FOUND);
+        }
+        bookLikeRepository.deleteByUserIdAndBook_BookId(userId,bookId);
+    }
+
+    //도서 좋아요 여부 조회
+    @Transactional(readOnly = true)
+    public Boolean isBookLiked(Long bookId, Long userId){
+        boolean bookExists = bookRepository.existsById(bookId);
+        if (!bookExists) {
+            throw new BookApiException(BookErrorCode.BOOK_NOT_FOUND);
+        }
+        return bookLikeRepository.existsByUserIdAndBook_BookId(userId,bookId);
+    }
+
+    @Transactional
+    public void increaseStock(OrderItemListDto orderItemListDto) {
+        List<CartItem> orderItems = orderItemListDto.getOrderItems();
+        List<OrderItemValidationError> errors = new ArrayList<>();
+
+        for (CartItem orderItem : orderItems) {
+            long bookId = orderItem.getBookId();
+            int quantity = orderItem.getQuantity();
+
+            Book book = bookRepository.findById(bookId).orElse(null);
+
+            if (book == null) {
+                errors.add(new OrderItemValidationError(bookId, "해당 상품을 찾을 수 없습니다."));
+                continue;
+            }
+            bookRepository.increaseBookStock(bookId, quantity);
+        }
+        if (!errors.isEmpty()) {
+            throw new UnavailableOrderBooksException(errors);
+        }
+
     }
 }

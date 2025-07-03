@@ -1,0 +1,12 @@
+### 도서 좋아요 등록
+POST http://localhost:10390/api/books/1/likes
+X-USER-ID: 2
+Content-Type: application/json
+
+### 도서 좋아요 취소
+DELETE http://localhost:10390/api/books/1/likes
+X-USER-ID: 2
+
+### 도서 좋아요 여부 조회
+GET http://localhost:10390/api/books/1/likes
+X-USER-ID: 2

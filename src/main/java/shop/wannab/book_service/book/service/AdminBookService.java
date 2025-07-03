@@ -1,5 +1,6 @@
 package shop.wannab.book_service.book.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,18 +8,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.wannab.book_service.author.entity.Author;
 import shop.wannab.book_service.author.repository.AuthorRepository;
-import shop.wannab.book_service.book.dto.request.BookCreateRequest;
-import shop.wannab.book_service.book.dto.request.BookUpdateRequest;
-import shop.wannab.book_service.book.dto.response.BookListResponse;
-import shop.wannab.book_service.book.entity.Book;
-import shop.wannab.book_service.book.entity.BookAuthor;
-import shop.wannab.book_service.book.entity.BookPublisher;
-import shop.wannab.book_service.book.exception.BookNotFoundException;
+import shop.wannab.book_service.book.controller.request.BookCreateRequest;
+import shop.wannab.book_service.book.controller.request.BookUpdateRequest;
+import shop.wannab.book_service.book.controller.response.BookListResponse;
+import shop.wannab.book_service.book.entity.*;
+import shop.wannab.book_service.book.exception.BookApiException;
+import shop.wannab.book_service.book.exception.BookErrorCode;
 import shop.wannab.book_service.book.repository.BookRepository;
 import shop.wannab.book_service.publisher.entity.Publisher;
 import shop.wannab.book_service.publisher.repository.PublisherRepository;
-
-import java.util.List;
+import shop.wannab.book_service.tag.entity.Tag;
+import shop.wannab.book_service.tag.repository.TagRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +28,10 @@ public class AdminBookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final PublisherRepository publisherRepository;
+    private final TagRepository tagRepository;
 
     //도서 리스트 조회
+    @Transactional(readOnly = true)
     public Page<BookListResponse> getBookList(Pageable pageable) {
         Page<Book> books = bookRepository.findAll(pageable);
         return books.map(BookListResponse::from);
@@ -37,6 +39,11 @@ public class AdminBookService {
 
     // 도서 생성
     public void createBook(BookCreateRequest request) {
+
+        if (bookRepository.existsByIsbn(request.getIsbn())) {
+            throw new BookApiException(BookErrorCode.DUPLICATE_BOOK);
+        }
+
         Book book = request.toEntity();
 
         List<BookAuthor> bookAuthors = request.getAuthors().stream()
@@ -61,22 +68,44 @@ public class AdminBookService {
                             .build();
                 }).toList();
 
+        List<BookTag> bookTags = request.getBookTags().stream()
+                .map(name -> {
+                    Tag tag = tagRepository.findTagByTagName(name)
+                            .orElseGet(() -> tagRepository.save(
+                                    Tag.builder().tagName(name).build()));
+                    return BookTag.builder()
+                            .book(book)
+                            .tag(tag)
+                            .build();
+                }).toList();
+
+        List<BookImage> bookImages = request.getBookImages().stream()
+                .map(imageUrl -> BookImage.builder()
+                        .book(book)
+                        .imageUrl(imageUrl)
+                        .build())
+                .toList();
+
+        book.getBookImages().addAll(bookImages);
         book.getBookAuthors().addAll(bookAuthors);
         book.getBookPublishers().addAll(bookPublishers);
+        book.getBookTags().addAll(bookTags);
 
         bookRepository.save(book);
+        bookRepository.saveOrUpdateBookStock(book.getBookId(),book.getStock());
     }
 
     //도서 수정
     public void updateBook(Long bookId, BookUpdateRequest request) {
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(()-> new BookNotFoundException());
+                .orElseThrow(()-> new BookApiException(BookErrorCode.BOOK_NOT_FOUND));
 
         book.updateInfo(
                 request.getTitle(),
                 request.getDescription(),
                 request.getPublicationDate(),
                 request.getOriginPrice(),
+                request.getSalesPrice(),
                 request.getStock(),
                 request.getBookChapter(),
                 request.getIsbn(),
@@ -84,6 +113,8 @@ public class AdminBookService {
 
         book.getBookAuthors().clear();
         book.getBookPublishers().clear();
+        book.getBookImages().clear();
+        book.getBookTags().clear();
 
         List<BookAuthor> updatedAuthors = request.getAuthors().stream()
                 .map(name -> {
@@ -107,13 +138,38 @@ public class AdminBookService {
                             .build();
                 }).toList();
 
+        List<BookTag> updatedTags = request.getBookTags().stream()
+                .map(name -> {
+                    Tag tag = tagRepository.findTagByTagName(name)
+                            .orElseGet(() -> tagRepository.save(
+                                    Tag.builder().tagName(name).build()));
+                    return BookTag.builder()
+                            .book(book)
+                            .tag(tag)
+                            .build();
+                }).toList();
+
+        List<BookImage> bookImages = request.getBookImages().stream()
+                .map(imageUrl -> BookImage.builder()
+                        .book(book)
+                        .imageUrl(imageUrl)
+                        .build())
+                .toList();
+
+        book.getBookImages().addAll(bookImages);
         book.getBookAuthors().addAll(updatedAuthors);
         book.getBookPublishers().addAll(updatedPublishers);
+        book.getBookTags().addAll(updatedTags);
+
+        bookRepository.saveOrUpdateBookStock(book.getBookId(),book.getStock());
     }
 
+    //도서 삭제
     public void deleteBook(Long bookId) {
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(()-> new BookNotFoundException());
+                .orElseThrow(()->  new BookApiException(BookErrorCode.BOOK_NOT_FOUND));
         bookRepository.delete(book);
+        bookRepository.deleteBookStock(bookId);
     }
+
 }

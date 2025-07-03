@@ -1,31 +1,34 @@
-package shop.wannab.book_service.book.dto.response;
+package shop.wannab.book_service.book.controller.response;
 
+import java.time.LocalDate;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import shop.wannab.book_service.book.entity.Book;
 import shop.wannab.book_service.book.entity.BookAuthor;
 import shop.wannab.book_service.book.entity.BookImage;
 import shop.wannab.book_service.book.entity.BookPublisher;
-
-import java.time.LocalDate;
-import java.util.List;
+import shop.wannab.book_service.book.entity.BookTag;
 
 @Getter
 @Builder
 public class BookListResponse {
+    private Long bookId;
     private String title;
     private String description;
     private LocalDate publicationDate;
     private Integer originPrice;
     private String isbn;
     private Integer stock;
-    private boolean status;
+    private Boolean status;
     private List<String> authorNames;
     private List<String> publisherNames;
     private List<String> imageUrls;
+    private List<String> tagNames;
 
     public static BookListResponse from(Book book) {
         return BookListResponse.builder()
+                .bookId(book.getBookId())
                 .title(book.getTitle())
                 .description(book.getDescription())
                 .publicationDate(book.getPublicationDate())
@@ -42,6 +45,11 @@ public class BookListResponse {
                         .map(BookPublisher::getPublisher)
                         .filter(publisher -> publisher != null)
                         .map(publisher -> publisher.getPublisherName())
+                        .toList())
+                .tagNames(book.getBookTags().stream()
+                        .map(BookTag::getTag)
+                        .filter(tag -> tag != null)
+                        .map(tag -> tag.getTagName())
                         .toList())
                 .imageUrls(book.getBookImages().stream()
                         .map(BookImage::getImageUrl)

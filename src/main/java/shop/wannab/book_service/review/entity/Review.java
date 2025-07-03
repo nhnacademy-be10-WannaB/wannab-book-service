@@ -2,20 +2,20 @@ package shop.wannab.book_service.review.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import shop.wannab.book_service.book.entity.Book;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "reviews")
+@Setter
 public class Review  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +43,9 @@ public class Review  {
 
     private LocalDateTime reviewUpdatedAt;
 
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<ReviewImage> reviewImages = new ArrayList<>();
 
     public void updateInfo(String reviewContent, Integer reviewScore, LocalDateTime reviewUpdatedAt){
         this.reviewContent = reviewContent;

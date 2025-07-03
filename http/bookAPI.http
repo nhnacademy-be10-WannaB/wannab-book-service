@@ -1,5 +1,5 @@
 ### 도서 등록 요청
-POST http://localhost:8082/api/admin/books
+POST http://localhost:10390/api/admin/books
 Content-Type: application/json
 
 {
@@ -11,22 +11,23 @@ Content-Type: application/json
   "bookChapter": "1장 객체 생성과 파괴",
   "isbn": "9788968481901",
   "status": true,
-  "categories": ["프로그래밍", "자바"],
-  "authors": ["조슈아 블로크"],
-  "publishers": ["인사이트"]
+  "categories": "프로그래밍,자바",
+  "authors": "조슈아 블로크,한강",
+  "publishers": "인사이트, 교보문고",
+  "bookImages": "https://example.com/img1.jpg,https://example.com/img2.jpg"
 }
 
 
 ### 도서 조회
-GET http://localhost:8082/api/admin/books?page=0&size=10
+GET http://localhost:10390/api/admin/books?page=0&size=10
 Accept: application/json
 
 ### 도서 상세 조회
-GET http://localhost:8082/api/books/1
+GET http://localhost:10390/api/books/1
 Accept: application/json
 
 ### 도서 수정
-PUT http://localhost:8082/api/admin/books/1
+PUT http://localhost:10390/api/admin/books/1
 Content-Type: application/json
 Accept: application/json
 
@@ -39,10 +40,12 @@ Accept: application/json
   "bookChapter": "1. 리팩터링 개요\n2. 코드 스멜",
   "isbn": "9788966263061",
   "status": true,
-  "categories": ["프로그래밍", "소프트웨어 공학"],
-  "authors": ["마틴 파울러"],
-  "publishers": ["한빛미디어"]
+  "categories": "프로그래밍,수정 자바",
+  "authors": "조슈아 블로크,수정 한강",
+  "publishers": "인사이트, 수정 교보문고",
+  "bookImages": "https://example.com/img4.jpg,https://example.com/img5.jpg"
+
 }
 
 ### 도서 삭제
-DELETE http://localhost:8082/api/admin/books/2
+DELETE http://localhost:10390/api/admin/books/2₩

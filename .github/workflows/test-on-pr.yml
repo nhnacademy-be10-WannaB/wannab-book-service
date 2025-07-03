@@ -1,4 +1,4 @@
-name: PR Test
+name: PR Verify
 
 on:
   pull_request:
@@ -14,18 +14,36 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
-      - name: Run build (clean test)
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Run build (clean verify)
         run: |
           if [ -f src/main/resources/application-ci.yml ]; then
-            mvn clean test \
+            mvn clean verify \
               -Dspring.config.import=optional:classpath:/application-ci.yml \
               -Dspring.profiles.active=ci
           else
-            mvn clean test
+            mvn clean verify
           fi
 
   test-success:

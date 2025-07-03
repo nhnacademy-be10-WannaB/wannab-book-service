@@ -1,10 +1,11 @@
-package shop.wannab.book_service.review.dto.response;
+package shop.wannab.book_service.review.controller.response;
 
 import lombok.Builder;
 import lombok.Getter;
 import shop.wannab.book_service.review.entity.Review;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 @Getter
@@ -13,6 +14,7 @@ public class BookReviewListResponse {
     private Integer reviewScore;
     private LocalDateTime reviewCreatedAt;
     private String username;
+    private List<ReviewImageResponse> reviewImages;
 
     public static BookReviewListResponse from(Review review, String username){
         return BookReviewListResponse.builder()
@@ -20,6 +22,10 @@ public class BookReviewListResponse {
                 .reviewScore(review.getReviewScore())
                 .reviewCreatedAt(review.getReviewCreatedAt())
                 .username(username)
+                .reviewImages(
+                        review.getReviewImages().stream()
+                                .map(ReviewImageResponse::from)
+                                .toList())
                 .build();
     }
 }
