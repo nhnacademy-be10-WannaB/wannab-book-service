@@ -67,6 +67,7 @@ public class BookService {
     @Transactional(readOnly = true)
     public OrderBookInfoListDto getOrderBookInfos(OrderItemListDto orderItemListDto) {
         List<CartItem> orderItems = orderItemListDto.getOrderItems();
+        orderItems.removeIf(cartItem -> cartItem.getBookId() == -1);
         List<Long> ids = orderItems.stream().map(CartItem::getBookId).collect(Collectors.toList());
 
         List<BookInfoForOrderProjection> bookInfoList = bookRepository.findByBookIdIn(ids);

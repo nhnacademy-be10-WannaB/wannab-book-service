@@ -31,12 +31,12 @@ public class BookRedisRepositoryImpl implements BookRedisRepository {
 
     @Override
     public void decreaseBookStock(long bookId, int amount) {
-        redisTemplate.opsForHash().increment(BOOK_STOCK_KEY, bookId, amount);
+        redisTemplate.opsForHash().increment(BOOK_STOCK_KEY, bookId, -amount);
     }
 
     @Override
     public void increaseBookStock(long bookId, int amount) {
-        redisTemplate.opsForHash().increment(BOOK_STOCK_KEY, bookId, -amount);
+        redisTemplate.opsForHash().increment(BOOK_STOCK_KEY, bookId, +amount);
     }
 
 }
