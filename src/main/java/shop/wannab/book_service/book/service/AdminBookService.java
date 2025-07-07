@@ -189,8 +189,8 @@ public class AdminBookService {
 
         List<BookCategory> categories = new ArrayList<>();
 
-        String parentName = categoryNames.get(1);
-        String childName = categoryNames.get(2);
+        String parentName = categoryNames.get(0);
+        String childName = categoryNames.get(1);
 
         Category parentCategory = categoryRepository.findByName(parentName)
                 .orElseGet(() -> {
