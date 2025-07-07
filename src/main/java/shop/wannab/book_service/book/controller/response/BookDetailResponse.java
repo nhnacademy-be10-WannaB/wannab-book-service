@@ -24,9 +24,9 @@ public class BookDetailResponse {
     private List<String> publisherNames;
     private List<String> tagNames;
     private List<String> imageUrls;
+    private String categoryNames;
 
-
-    public static BookDetailResponse of(Book book) {
+    public static BookDetailResponse of(Book book, String categoryNames) {
         return BookDetailResponse.builder()
                 .bookId(book.getBookId())
                 .title(book.getTitle())
@@ -50,6 +50,7 @@ public class BookDetailResponse {
                 .imageUrls(book.getBookImages().stream()
                         .map(BookImage::getImageUrl)
                         .toList())
+                .categoryNames(categoryNames)
                 .build();
     }
 
