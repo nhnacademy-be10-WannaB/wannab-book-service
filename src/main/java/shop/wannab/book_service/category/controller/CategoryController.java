@@ -1,6 +1,7 @@
 package shop.wannab.book_service.category.controller;
 
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,5 +41,10 @@ public class CategoryController {
         categoryService.createCategory(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/api/books/categories/names")
+    public ResponseEntity<Map<Long, String>> getCategoryNames(@RequestBody List<Long> categoryIds){
+        return ResponseEntity.ok(categoryService.getCategoriesNames(categoryIds));
     }
 }
