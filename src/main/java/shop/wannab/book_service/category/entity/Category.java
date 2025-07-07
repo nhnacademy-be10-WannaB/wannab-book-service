@@ -14,18 +14,18 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.wannab.book_service.book.entity.BookCategory;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 public class Category {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @ManyToOne(fetch= FetchType.LAZY)
@@ -36,8 +36,10 @@ public class Category {
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     private List<Category> children = new ArrayList<>();
 
-    public Category(Long id, String name, Category parent) {
-        this.id = id;
+    @OneToMany(mappedBy = "category")
+    private List<BookCategory> bookCategories = new ArrayList<>();
+
+    public Category(String name, Category parent) {
         this.name = name;
         this.parent = parent;
     }
