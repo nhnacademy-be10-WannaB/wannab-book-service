@@ -1,6 +1,8 @@
 package shop.wannab.book_service.aladin.service;
 
 import feign.FeignException;
+
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,15 +18,14 @@ import shop.wannab.book_service.aladin.exception.AladinErrorCode;
 import shop.wannab.book_service.author.entity.Author;
 import shop.wannab.book_service.author.repository.AuthorRepository;
 import shop.wannab.book_service.book.controller.request.AladinBookCreateRequest;
-import shop.wannab.book_service.book.entity.Book;
-import shop.wannab.book_service.book.entity.BookAuthor;
-import shop.wannab.book_service.book.entity.BookImage;
-import shop.wannab.book_service.book.entity.BookPublisher;
+import shop.wannab.book_service.book.entity.*;
 import shop.wannab.book_service.book.exception.BookApiException;
 import shop.wannab.book_service.book.exception.BookErrorCode;
 import shop.wannab.book_service.book.repository.BookCategoryRepository;
 import shop.wannab.book_service.book.repository.BookRepository;
 import shop.wannab.book_service.category.entity.Category;
+import shop.wannab.book_service.category.exception.CategoryApiException;
+import shop.wannab.book_service.category.exception.CategoryErrorCode;
 import shop.wannab.book_service.category.repository.CategoryRepository;
 import shop.wannab.book_service.publisher.entity.Publisher;
 import shop.wannab.book_service.publisher.repository.PublisherRepository;
@@ -90,25 +91,27 @@ public class AladinService {
                 .build();
 
         List<BookImage> bookImages = List.of(bookImage);
+        List<BookCategory> categories = ensureCategoryHierarchy(request.category(),book);
 
+        book.getBookCategories().addAll(categories);
         book.getBookImages().addAll(bookImages);
         book.getBookAuthors().addAll(bookAuthors);
         book.getBookPublishers().addAll(bookPublishers);
 
-        // TODO : 카테고리 추가도 필요함
-        ensureCategoryHierarchy(request.category());
 
         bookRepository.save(book);
         bookRepository.saveOrUpdateBookStock(book.getBookId(),book.getStock());
     }
 
-    private Category ensureCategoryHierarchy(List<String> categoryNames) {
+    private List<BookCategory> ensureCategoryHierarchy(List<String> categoryNames,Book book) {
         if (categoryNames.size() < 2) {
-            throw new IllegalArgumentException("카테고리는 최소 2단계 이상이어야 합니다.");
+            throw new CategoryApiException(CategoryErrorCode.INVALID_CATEGORY_HIERARCHY);
         }
 
-        String parentName = categoryNames.get(0);
-        String childName = categoryNames.get(1);
+        List<BookCategory> categories = new ArrayList<>();
+
+        String parentName = categoryNames.get(1);
+        String childName = categoryNames.get(2);
 
         Category parentCategory = categoryRepository.findByName(parentName)
                 .orElseGet(() -> {
@@ -117,7 +120,10 @@ public class AladinService {
                     return categoryRepository.save(newParent);
                 });
 
-
+        categories.add(BookCategory.builder()
+                .book(book)
+                .category(parentCategory)
+                .build());
 
         Category childCategory = categoryRepository.findByName(childName)
                 .orElseGet(() -> {
@@ -127,6 +133,12 @@ public class AladinService {
                     return categoryRepository.save(newChild);
                 });
 
-        return childCategory;
+        categories.add(BookCategory.builder()
+                .book(book)
+                .category(childCategory)
+                .build());
+
+
+        return categories;
     }
 }

@@ -14,11 +14,16 @@ import shop.wannab.book_service.book.dto.OrderBookInfoListDto;
 import shop.wannab.book_service.book.dto.OrderItemListDto;
 import shop.wannab.book_service.book.controller.response.BookDetailResponse;
 import shop.wannab.book_service.book.entity.Book;
+import shop.wannab.book_service.book.entity.BookCategory;
 import shop.wannab.book_service.book.entity.BookLike;
 import shop.wannab.book_service.book.exception.BookApiException;
 import shop.wannab.book_service.book.exception.BookErrorCode;
 import shop.wannab.book_service.book.exception.OrderItemValidationError;
 import shop.wannab.book_service.book.repository.BookLikeRepository;
+import shop.wannab.book_service.category.entity.Category;
+import shop.wannab.book_service.category.exception.CategoryApiException;
+import shop.wannab.book_service.category.exception.CategoryErrorCode;
+import shop.wannab.book_service.category.repository.CategoryRepository;
 import shop.wannab.book_service.global.exception.UnavailableOrderBooksException;
 import shop.wannab.book_service.book.repository.BookRepository;
 
@@ -32,6 +37,7 @@ public class BookService {
 
     private final BookRepository bookRepository;
     private final BookLikeRepository bookLikeRepository;
+    private final CategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
     public void validateOrderItems(OrderItemListDto orderItemListDto) {
@@ -139,10 +145,36 @@ public class BookService {
 
     // 도서 상세 조회
     @Transactional(readOnly = true)
-    public BookDetailResponse getBookDetail(Long bookId){
+    public BookDetailResponse getBookDetail(Long bookId) {
         Book book = bookRepository.findBookDetail(bookId);
 
-        return BookDetailResponse.of(book);
+        List<BookCategory> bookCategories = book.getBookCategories();
+
+        String parentCategory = null;
+        String childCategory = null;
+
+        for (BookCategory bookCategory : bookCategories) {
+            Category category = bookCategory.getCategory();
+
+            if (category.getParent() == null) {
+                parentCategory = category.getName();
+            } else {
+                childCategory = category.getName();
+            }
+        }
+
+        String categoryNames;
+
+        if (parentCategory != null && childCategory != null) {
+            categoryNames = parentCategory + "<" + childCategory;
+        } else if (parentCategory != null) {
+            categoryNames = parentCategory;
+        } else if (childCategory != null) {
+            categoryNames = childCategory;
+        } else {
+            categoryNames = "";
+        }
+        return BookDetailResponse.of(book, categoryNames);
     }
 
     //도서 좋아요 등록
