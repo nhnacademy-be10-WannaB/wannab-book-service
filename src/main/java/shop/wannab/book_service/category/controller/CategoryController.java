@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import shop.wannab.book_service.category.dto.CategoryCreateRequest;
 import shop.wannab.book_service.category.dto.CategoryHierarchyDto;
 import shop.wannab.book_service.category.dto.ParentCategoryDto;
 import shop.wannab.book_service.category.service.CategoryService;
@@ -34,4 +35,10 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getParentCategory());
     }
 
+    @PostMapping("/api/categories/new")
+    public ResponseEntity<Void> createCategory(@RequestBody CategoryCreateRequest request) {
+        categoryService.createCategory(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 }

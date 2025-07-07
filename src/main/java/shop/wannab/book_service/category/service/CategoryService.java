@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.wannab.book_service.book.entity.BookCategory;
 import shop.wannab.book_service.book.repository.BookCategoryRepository;
+import shop.wannab.book_service.category.dto.CategoryCreateRequest;
 import shop.wannab.book_service.category.dto.ParentCategoryDto;
 import shop.wannab.book_service.category.entity.Category;
 import shop.wannab.book_service.category.dto.CategoryHierarchyDto;
@@ -33,7 +34,7 @@ public class CategoryService {
         return categoryHierarchyDtoList;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Long getCategoryId(Long bookId){
         List<BookCategory> bookCategories = bookCategoryRepository.findCategoriesByBookIdWithFetchJoin(bookId);
 
@@ -55,5 +56,18 @@ public class CategoryService {
             parentCategoryDtoList.add(parentCategoryDto);
         }
         return parentCategoryDtoList;
+    }
+
+    @Transactional
+    public void createCategory(CategoryCreateRequest request) {
+        Category parent = null;
+        if (request.getParentId() != null) {
+            parent = categoryRepository.findById(request.getParentId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 부모 카테고리입니다."));
+        }
+
+        Category newCategory = new Category(request.getName(), parent);
+
+        categoryRepository.save(newCategory);
     }
 }
