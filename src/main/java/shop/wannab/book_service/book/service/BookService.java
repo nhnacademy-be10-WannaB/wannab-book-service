@@ -21,8 +21,6 @@ import shop.wannab.book_service.book.exception.BookErrorCode;
 import shop.wannab.book_service.book.exception.OrderItemValidationError;
 import shop.wannab.book_service.book.repository.BookLikeRepository;
 import shop.wannab.book_service.category.entity.Category;
-import shop.wannab.book_service.category.exception.CategoryApiException;
-import shop.wannab.book_service.category.exception.CategoryErrorCode;
 import shop.wannab.book_service.category.repository.CategoryRepository;
 import shop.wannab.book_service.global.exception.UnavailableOrderBooksException;
 import shop.wannab.book_service.book.repository.BookRepository;
@@ -163,18 +161,18 @@ public class BookService {
             }
         }
 
-        String categoryNames;
+        String categories;
 
         if (parentCategory != null && childCategory != null) {
-            categoryNames = parentCategory + "<" + childCategory;
+            categories = parentCategory + ">" + childCategory;
         } else if (parentCategory != null) {
-            categoryNames = parentCategory;
+            categories = parentCategory;
         } else if (childCategory != null) {
-            categoryNames = childCategory;
+            categories = childCategory;
         } else {
-            categoryNames = "";
+            categories = "";
         }
-        return BookDetailResponse.of(book, categoryNames);
+        return BookDetailResponse.of(book, categories);
     }
 
     //도서 좋아요 등록
