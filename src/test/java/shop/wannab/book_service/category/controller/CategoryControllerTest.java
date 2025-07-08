@@ -11,7 +11,6 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
@@ -83,19 +82,12 @@ class CategoryControllerTest {
                         responseFields(
                                 fieldWithPath("content[].id").description("카테고리 ID"),
                                 fieldWithPath("content[].name").description("카테고리 이름"),
-                                subsectionWithPath("pageable").description("페이지 정보"),
+                                fieldWithPath("number").description("현재 페이지 번호"),
+                                fieldWithPath("size").description("페이지 크기"),
                                 fieldWithPath("totalPages").description("전체 페이지 수"),
                                 fieldWithPath("totalElements").description("전체 요소 수"),
-                                fieldWithPath("last").description("마지막 페이지 여부"),
-                                fieldWithPath("size").description("페이지 크기"),
-                                fieldWithPath("number").description("현재 페이지 번호"),
-                                fieldWithPath("sort").description("정렬 정보"),
-                                fieldWithPath("numberOfElements").description("현재 페이지 요소 수"),
-                                fieldWithPath("first").description("첫 페이지 여부"),
-                                fieldWithPath("empty").description("비어있는 페이지 여부"),
-                                fieldWithPath("sort.empty").description("정렬 조건 없음"),
-                                fieldWithPath("sort.sorted").description("정렬 적용 여부"),
-                                fieldWithPath("sort.unsorted").description("정렬 비적용 여부")
+                                fieldWithPath("hasNext").description("다음 페이지 존재 여부"),
+                                fieldWithPath("hasPrevious").description("이전 페이지 존재 여부")
                         )
                 ));
 
@@ -133,19 +125,12 @@ class CategoryControllerTest {
                         responseFields(
                                 fieldWithPath("content[].id").description("카테고리 ID"),
                                 fieldWithPath("content[].name").description("카테고리 이름"),
-                                subsectionWithPath("pageable").description("페이지 정보"),
+                                fieldWithPath("number").description("현재 페이지 번호"),
+                                fieldWithPath("size").description("페이지 크기"),
                                 fieldWithPath("totalPages").description("전체 페이지 수"),
                                 fieldWithPath("totalElements").description("전체 요소 수"),
-                                fieldWithPath("last").description("마지막 페이지 여부"),
-                                fieldWithPath("size").description("페이지 크기"),
-                                fieldWithPath("number").description("현재 페이지 번호"),
-                                fieldWithPath("sort").description("정렬 정보"),
-                                fieldWithPath("numberOfElements").description("현재 페이지 요소 수"),
-                                fieldWithPath("first").description("첫 페이지 여부"),
-                                fieldWithPath("empty").description("비어있는 페이지 여부"),
-                                fieldWithPath("sort.empty").description("정렬 조건 없음"),
-                                fieldWithPath("sort.sorted").description("정렬 적용 여부"),
-                                fieldWithPath("sort.unsorted").description("정렬 비적용 여부")
+                                fieldWithPath("hasNext").description("다음 페이지 존재 여부"),
+                                fieldWithPath("hasPrevious").description("이전 페이지 존재 여부")
                         )
                 ));
 
