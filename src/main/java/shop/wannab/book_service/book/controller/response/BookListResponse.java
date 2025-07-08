@@ -4,11 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
-import shop.wannab.book_service.book.entity.Book;
-import shop.wannab.book_service.book.entity.BookAuthor;
-import shop.wannab.book_service.book.entity.BookImage;
-import shop.wannab.book_service.book.entity.BookPublisher;
-import shop.wannab.book_service.book.entity.BookTag;
+import shop.wannab.book_service.book.entity.*;
 
 @Getter
 @Builder

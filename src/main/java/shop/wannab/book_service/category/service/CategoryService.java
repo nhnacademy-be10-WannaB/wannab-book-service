@@ -2,7 +2,9 @@ package shop.wannab.book_service.category.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,5 +84,20 @@ public class CategoryService {
 
         CategoryDeleteStrategy strategy = categoryDeleteStrategyResolver.resolve();
         strategy.delete(category);
+    }
+
+    @Transactional(readOnly = true)
+    public Map<Long, String> getCategoriesNames(List<Long> categoryIds) {
+        if (categoryIds == null || categoryIds.isEmpty()) {
+            return new HashMap<>();
+        }
+
+        Map<Long, String> categoryNames = new HashMap<>();
+        for (Long categoryId : categoryIds) {
+            categoryRepository.findById(categoryId)
+                    .ifPresent(category -> categoryNames.put(category.getId(), category.getName()));
+        }
+
+        return categoryNames;
     }
 }

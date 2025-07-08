@@ -2,6 +2,7 @@ package shop.wannab.book_service.category.controller;
 
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,6 +65,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+
     /**
      * 자식 카테고리 생성 API
      * @param request 카테고리 이름
@@ -84,5 +86,11 @@ public class CategoryController {
     public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
         categoryService.deleteCategory(categoryId);
         return ResponseEntity.noContent().build();
+    }
+  
+    //TODO : ResponseDto로 수정
+    @PostMapping("/names")
+    public ResponseEntity<Map<Long, String>> getCategoryNames(@RequestBody List<Long> categoryIds){
+        return ResponseEntity.ok(categoryService.getCategoriesNames(categoryIds));
     }
 }
