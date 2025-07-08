@@ -16,7 +16,7 @@ include::{snippets}/categories/find-parent/query-parameters.adoc[]
 include::{snippets}/categories/find-parent/http-response.adoc[]
 include::{snippets}/categories/find-parent/response-fields.adoc[]
 
-==== 자식 카테고리 조회
+==== 하위 카테고리 조회
 ===== 요청
 include::{snippets}/categories/find-child/http-request.adoc[]
 include::{snippets}/categories/find-child/query-parameters.adoc[]
