@@ -2,6 +2,7 @@ package shop.wannab.book_service.tag.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,4 +21,11 @@ public class Tag {
     @NotNull
     @Column(length = 50)
     private String tagName;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
+    public boolean isDeleted() {
+        return deletedAt != null;
+    }
 }
