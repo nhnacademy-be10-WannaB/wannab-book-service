@@ -1,0 +1,52 @@
+= Wannab Book API 문서
+:toc: left
+:toclevels: 2
+:sectnums:
+:sectnumlevels: 3
+
+== 카테고리
+
+=== 카테고리 조회
+==== 상위 카테고리 조회
+===== 요청
+include::{snippets}/categories/find-parent/http-request.adoc[]
+include::{snippets}/categories/find-parent/query-parameters.adoc[]
+
+===== 응답
+include::{snippets}/categories/find-parent/http-response.adoc[]
+include::{snippets}/categories/find-parent/response-fields.adoc[]
+
+==== 자식 카테고리 조회
+===== 요청
+include::{snippets}/categories/find-child/http-request.adoc[]
+include::{snippets}/categories/find-child/query-parameters.adoc[]
+
+===== 응답
+include::{snippets}/categories/find-child/http-response.adoc[]
+include::{snippets}/categories/find-child/response-fields.adoc[]
+
+=== 카테고리 생성
+==== 상위 카테고리 생성
+===== 요청
+include::{snippets}/categories/create-parent/http-request.adoc[]
+include::{snippets}/categories/create-parent/request-fields.adoc[]
+
+===== 응답
+include::{snippets}/categories/create-parent/http-response.adoc[]
+
+==== 하위 카테고리 생성
+===== 요청
+include::{snippets}/categories/create-child/http-request.adoc[]
+include::{snippets}/categories/create-child/request-fields.adoc[]
+include::{snippets}/categories/create-child/path-parameters.adoc[]
+
+===== 응답
+include::{snippets}/categories/create-child/http-response.adoc[]
+
+=== 카테고리 삭제
+==== 카테고리 삭제
+===== 요청
+include::{snippets}/categories/delete/http-request.adoc[]
+include::{snippets}/categories/delete/path-parameters.adoc[]
+
+
