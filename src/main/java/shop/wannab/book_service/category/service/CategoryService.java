@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.wannab.book_service.book.entity.BookCategory;
@@ -54,13 +56,13 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public List<CategoryResponse> getParentCategory() {
-        return categoryRepository.findParentCategories();
+    public Page<CategoryResponse> getParentCategory(Pageable pageable) {
+        return categoryRepository.findParentCategories(pageable);
     }
 
     @Transactional(readOnly = true)
-    public List<CategoryResponse> findChildCategoriesByParentId(Long parentId) {
-        return categoryRepository.findChildCategoriesByParentId(parentId);
+    public Page<CategoryResponse> findChildCategoriesByParentId(Long parentId, Pageable pageable) {
+        return categoryRepository.findChildCategoriesByParentId(parentId, pageable);
     }
 
     @Transactional
@@ -99,5 +101,10 @@ public class CategoryService {
         }
 
         return categoryNames;
+    }
+
+    @Transactional
+    public List<CategoryResponse> getAllParentCategory() {
+        return categoryRepository.findParentCategories();
     }
 }

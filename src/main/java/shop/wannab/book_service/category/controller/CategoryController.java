@@ -4,6 +4,9 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +21,7 @@ import shop.wannab.book_service.category.dto.CategoryHierarchyDto;
 import shop.wannab.book_service.category.dto.request.CategoryCreateRequest;
 import shop.wannab.book_service.category.dto.response.CategoryResponse;
 import shop.wannab.book_service.category.service.CategoryService;
+import shop.wannab.book_service.global.response.PageResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,7 +37,7 @@ public class CategoryController {
 
     @GetMapping("/parents")
     public ResponseEntity<List<CategoryResponse>> getParentCategory(){
-        return ResponseEntity.ok(categoryService.getParentCategory());
+        return ResponseEntity.ok(categoryService.getAllParentCategory());
     }
 
     /**
@@ -46,13 +50,19 @@ public class CategoryController {
      * parentId가 지정된 경우, 해당 ID에 속한 자식 카테고리 목록을 반환
      */
     @GetMapping
-    public ResponseEntity<List<CategoryResponse>> findCategories(@RequestParam(required = false) Long parentId) {
+    public ResponseEntity<PageResponse<CategoryResponse>> findCategories(@RequestParam(required = false) Long parentId,
+                                                                         @RequestParam(defaultValue = "0") int page,
+                                                                         @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<CategoryResponse> result;
         if (parentId == null) {
-            List<CategoryResponse> parentCategories = categoryService.getParentCategory();
-            return ResponseEntity.ok(parentCategories);
+            result = categoryService.getParentCategory(pageable);
+        } else {
+            result = categoryService.findChildCategoriesByParentId(parentId, pageable);
         }
-        List<CategoryResponse> childCategories = categoryService.findChildCategoriesByParentId(parentId);
-        return ResponseEntity.ok(childCategories);
+
+        return ResponseEntity.ok(PageResponse.from(result));
     }
 
     /**
