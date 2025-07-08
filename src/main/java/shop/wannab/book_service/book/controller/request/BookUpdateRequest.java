@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.wannab.book_service.global.deserializer.CommaSeparatedToListDeserializer;
+import shop.wannab.book_service.global.deserializer.GreaterThanSeparatedToListDeserializer;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,7 +30,7 @@ public class BookUpdateRequest {
     @NotBlank private String isbn;
     @NotNull private boolean status;
 
-    @JsonDeserialize(using = CommaSeparatedToListDeserializer.class)
+    @JsonDeserialize(using = GreaterThanSeparatedToListDeserializer.class)
     private List<String> categories;
 
     @JsonDeserialize(using = CommaSeparatedToListDeserializer.class)

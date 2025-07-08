@@ -77,6 +77,10 @@ public class Book {
     @Builder.Default
     private List<Review> reviews = new ArrayList<>();
 
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<BookCategory> bookCategories = new ArrayList<>();
+
     public void updateInfo(String title, String description, LocalDate publicationDate,
                            Integer originPrice,Integer salesPrice, Integer stock, String bookChapter,
                            String isbn, boolean status) {

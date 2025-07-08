@@ -119,7 +119,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional(readOnly = true)
     public Double getReviewAverage(Long bookId) {
 
-        if (bookRepository.existsById(bookId)){
+        if (!bookRepository.existsById(bookId)){
             throw new BookApiException(BookErrorCode.BOOK_NOT_FOUND);
         }
 
