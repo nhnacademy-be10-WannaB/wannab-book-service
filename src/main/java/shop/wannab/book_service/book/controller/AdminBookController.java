@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.wannab.book_service.book.controller.request.BookCreateRequest;
 import shop.wannab.book_service.book.controller.request.BookUpdateRequest;
 import shop.wannab.book_service.book.controller.response.BookListResponse;
-import shop.wannab.book_service.book.service.AdminBookService;
+import shop.wannab.book_service.book.service.impl.AdminBookServiceImpl;
 import shop.wannab.book_service.global.response.ApiResponse;
 
 @RestController
@@ -25,7 +25,7 @@ import shop.wannab.book_service.global.response.ApiResponse;
 @RequiredArgsConstructor
 public class AdminBookController {
 
-    private final AdminBookService adminBookService;
+    private final AdminBookServiceImpl adminBookServiceImpl;
 
     /**
      * 도서 목록 리스트
@@ -34,7 +34,7 @@ public class AdminBookController {
     @GetMapping
     public ResponseEntity<ApiResponse<Page<BookListResponse>>> getBooks(
             @PageableDefault(size = 20) Pageable pageable) {
-        Page<BookListResponse> bookList = adminBookService.getBookList(pageable);
+        Page<BookListResponse> bookList = adminBookServiceImpl.getBookList(pageable);
         return ResponseEntity.ok(ApiResponse.success(bookList));
     }
 
@@ -44,7 +44,7 @@ public class AdminBookController {
      */
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createBook(@RequestBody @Valid BookCreateRequest request){
-        adminBookService.createBook(request);
+        adminBookServiceImpl.createBook(request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
@@ -56,7 +56,7 @@ public class AdminBookController {
     @PutMapping("/{book-id}")
     public ResponseEntity<ApiResponse<Void>> updateBook(@PathVariable("book-id") Long bookId,
                                                         @RequestBody @Valid BookUpdateRequest request){
-        adminBookService.updateBook(bookId, request);
+        adminBookServiceImpl.updateBook(bookId, request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
@@ -66,7 +66,7 @@ public class AdminBookController {
      */
     @DeleteMapping("/{book-id}")
     public ResponseEntity<ApiResponse<Void>> deleteBook(@PathVariable("book-id") Long bookId){
-        adminBookService.deleteBook(bookId);
+        adminBookServiceImpl.deleteBook(bookId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 }
