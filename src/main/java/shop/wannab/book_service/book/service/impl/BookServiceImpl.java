@@ -1,8 +1,11 @@
 package shop.wannab.book_service.book.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.wannab.book_service.book.controller.response.BookListResponse;
 import shop.wannab.book_service.book.dto.BookIdListDto;
 import shop.wannab.book_service.book.dto.BookIdTitlePriceDto;
 import shop.wannab.book_service.book.dto.BookIdTitlePriceListDto;
@@ -22,7 +25,6 @@ import shop.wannab.book_service.book.exception.OrderItemValidationError;
 import shop.wannab.book_service.book.repository.BookLikeRepository;
 import shop.wannab.book_service.book.service.BookService;
 import shop.wannab.book_service.category.entity.Category;
-import shop.wannab.book_service.category.repository.CategoryRepository;
 import shop.wannab.book_service.global.exception.UnavailableOrderBooksException;
 import shop.wannab.book_service.book.repository.BookRepository;
 
@@ -36,7 +38,6 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final BookLikeRepository bookLikeRepository;
-    private final CategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
     public void validateOrderItems(OrderItemListDto orderItemListDto) {
@@ -235,5 +236,12 @@ public class BookServiceImpl implements BookService {
             throw new UnavailableOrderBooksException(errors);
         }
 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<BookListResponse> searchBooks(Long categoryId, Pageable pageable){
+        Page<Book> books = bookRepository.findByCategoryId(categoryId,pageable);
+        return books.map(BookListResponse::from);
     }
 }
