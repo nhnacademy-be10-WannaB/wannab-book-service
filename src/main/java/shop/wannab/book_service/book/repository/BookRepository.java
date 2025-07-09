@@ -31,4 +31,9 @@ public interface BookRepository extends JpaRepository<Book, Long>, BookRedisRepo
     Page<Book> findAll(Pageable pageable);
 
     boolean existsByIsbn(String isbn);
+
+    @Query(value = "SELECT b FROM books b JOIN b.bookCategories bc WHERE bc.category.id = :categoryId",
+           countQuery = "SELECT count(b) FROM books b JOIN b.bookCategories bc WHERE bc.category.id = :categoryId")
+    Page<Book> findByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable);
+
 }

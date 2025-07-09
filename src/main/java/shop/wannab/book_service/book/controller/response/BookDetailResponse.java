@@ -45,7 +45,7 @@ public class BookDetailResponse {
                         .map(bp -> bp.getPublisher().getPublisherName())
                         .toList())
                 .tagNames(book.getBookTags().stream()
-                        .map(bt -> bt.getTag().getTagName())
+                        .map(bt -> bt.getTag().getName())
                         .toList())
                 .imageUrls(book.getBookImages().stream()
                         .map(BookImage::getImageUrl)

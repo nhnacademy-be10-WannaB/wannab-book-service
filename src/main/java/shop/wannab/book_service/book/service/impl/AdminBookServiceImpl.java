@@ -79,9 +79,9 @@ public class AdminBookServiceImpl implements AdminBookService {
 
         List<BookTag> bookTags = request.getBookTags().stream()
                 .map(name -> {
-                    Tag tag = tagRepository.findTagByTagName(name)
+                    Tag tag = tagRepository.findTagByName(name)
                             .orElseGet(() -> tagRepository.save(
-                                    Tag.builder().tagName(name).build()));
+                                    Tag.builder().name(name).build()));
                     return BookTag.builder()
                             .book(book)
                             .tag(tag)
@@ -153,9 +153,9 @@ public class AdminBookServiceImpl implements AdminBookService {
 
         List<BookTag> updatedTags = request.getBookTags().stream()
                 .map(name -> {
-                    Tag tag = tagRepository.findTagByTagName(name)
+                    Tag tag = tagRepository.findTagByName(name)
                             .orElseGet(() -> tagRepository.save(
-                                    Tag.builder().tagName(name).build()));
+                                    Tag.builder().name(name).build()));
                     return BookTag.builder()
                             .book(book)
                             .tag(tag)

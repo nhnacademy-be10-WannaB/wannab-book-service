@@ -74,7 +74,7 @@ class AdminBookServiceImplTest {
 
         when(authorRepository.findAuthorsByAuthorName("홍길동")).thenReturn(Optional.empty());
         when(publisherRepository.findPublisherByPublisherName("출판사")).thenReturn(Optional.empty());
-        when(tagRepository.findTagByTagName("태그")).thenReturn(Optional.empty());
+        when(tagRepository.findTagByName("태그")).thenReturn(Optional.empty());
         when(categoryRepository.findByName("문학")).thenReturn(Optional.empty());
         when(categoryRepository.findByName("소설")).thenReturn(Optional.empty());
 

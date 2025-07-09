@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.wannab.book_service.category.dto.CategoryHierarchyDto;
 import shop.wannab.book_service.category.dto.request.CategoryCreateRequest;
+import shop.wannab.book_service.category.dto.response.CategoryIdsResponse;
 import shop.wannab.book_service.category.dto.response.CategoryResponse;
 import shop.wannab.book_service.category.service.CategoryService;
 import shop.wannab.book_service.global.response.PageResponse;
@@ -102,5 +103,17 @@ public class CategoryController {
     @PostMapping("/names")
     public ResponseEntity<Map<Long, String>> getCategoryNames(@RequestBody List<Long> categoryIds){
         return ResponseEntity.ok(categoryService.getCategoriesNames(categoryIds));
+    }
+
+    //TODO : ResponseDto로 수정
+    @PostMapping("/ids-map")
+    public ResponseEntity<Map<Long, Long>> getCategoryIds(@RequestBody List<Long> bookIds) {
+        return ResponseEntity.ok(categoryService.findAllCategoryIds(bookIds));
+    }
+
+    @GetMapping("/{bookId}/ancestor-category-ids")
+    public ResponseEntity<List<Long>> getAncestorCategoryIds(@PathVariable Long bookId) {
+        List<Long> ids = categoryService.getAncestorCategoryIdsForBook(bookId);
+        return ResponseEntity.ok(ids);
     }
 }

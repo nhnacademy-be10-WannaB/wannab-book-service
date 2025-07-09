@@ -3,8 +3,11 @@ package shop.wannab.book_service.category.service;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +17,7 @@ import shop.wannab.book_service.book.entity.BookCategory;
 import shop.wannab.book_service.book.repository.BookCategoryRepository;
 import shop.wannab.book_service.category.dto.CategoryHierarchyDto;
 import shop.wannab.book_service.category.dto.request.CategoryCreateRequest;
+import shop.wannab.book_service.category.dto.response.CategoryIdsResponse;
 import shop.wannab.book_service.category.dto.response.CategoryResponse;
 import shop.wannab.book_service.category.entity.Category;
 import shop.wannab.book_service.category.exception.CategoryApiException;
@@ -45,14 +49,19 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public Long getCategoryId(Long bookId){
+    public List<Long> getAncestorCategoryIdsForBook(Long bookId) {
         List<BookCategory> bookCategories = bookCategoryRepository.findCategoriesByBookIdWithFetchJoin(bookId);
 
-        if (bookCategories.isEmpty()) {
-            throw new EntityNotFoundException("해당 책에 대한 카테고리 정보를 찾을 수 없습니다. bookId: " + bookId);
-        }
+        Set<Long> allCategoryIds = new HashSet<>();
 
-        return bookCategories.get(0).getCategory().getId();
+        for (BookCategory bookCategory : bookCategories) {
+            Category currentCategory = bookCategory.getCategory();
+            while (currentCategory != null) {
+                allCategoryIds.add(currentCategory.getId());
+                currentCategory = currentCategory.getParent();
+            }
+        }
+        return new ArrayList<>(allCategoryIds);
     }
 
     @Transactional(readOnly = true)
@@ -106,5 +115,16 @@ public class CategoryService {
     @Transactional
     public List<CategoryResponse> getAllParentCategory() {
         return categoryRepository.findParentCategories();
+    }
+
+    @Transactional
+    public Map<Long, Long> findAllCategoryIds(List<Long> bookIds) {
+        List<BookCategory> bookCategories = bookCategoryRepository.findBookCategoriesByBookIds(bookIds);
+        return bookCategories.stream()
+                .collect(Collectors.toMap(
+                        bc -> bc.getBook().getBookId(), // Key: bookId
+                        bc -> bc.getCategory().getId(),  // Value: categoryId
+                        (existing, replacement) -> existing // 혹시 모를 중복 key 발생 시 기존 값 유지
+                ));
     }
 }
