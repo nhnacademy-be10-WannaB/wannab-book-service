@@ -45,7 +45,7 @@ public class BookListResponse {
                 .tagNames(book.getBookTags().stream()
                         .map(BookTag::getTag)
                         .filter(tag -> tag != null)
-                        .map(tag -> tag.getTagName())
+                        .map(tag -> tag.getName())
                         .toList())
                 .imageUrls(book.getBookImages().stream()
                         .map(BookImage::getImageUrl)

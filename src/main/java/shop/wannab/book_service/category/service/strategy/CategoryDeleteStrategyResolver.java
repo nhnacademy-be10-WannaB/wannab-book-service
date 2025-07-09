@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CategoryDeleteStrategyResolver {
 
-    private final PhysicalDeleteStrategy physicalDeleteStrategy;
-    private final SoftDeleteStrategy softDeleteStrategy;
+    private final PhysicalCategoryDeleteStrategy physicalCategoryDeleteStrategy;
+    private final SoftCategoryDeleteStrategy softCategoryDeleteStrategy;
 
     public CategoryDeleteStrategy resolve() {
-        return physicalDeleteStrategy;
+        return physicalCategoryDeleteStrategy;
     }
 }
