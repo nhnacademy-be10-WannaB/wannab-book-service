@@ -8,7 +8,7 @@ import shop.wannab.book_service.book.dto.BookIdTitlePriceListDto;
 import shop.wannab.book_service.book.dto.OrderBookInfoListDto;
 import shop.wannab.book_service.book.dto.OrderItemListDto;
 import shop.wannab.book_service.book.controller.response.BookDetailResponse;
-import shop.wannab.book_service.book.service.BookService;
+import shop.wannab.book_service.book.service.impl.BookServiceImpl;
 import shop.wannab.book_service.global.response.ApiResponse;
 
 
@@ -17,46 +17,46 @@ import shop.wannab.book_service.global.response.ApiResponse;
 @RequiredArgsConstructor
 public class BookController {
 
-    protected final BookService bookService;
+    protected final BookServiceImpl bookServiceImpl;
 
     @PostMapping("/validation/primary")
     public void validateOrderItems(@RequestBody OrderItemListDto orderItemListDto) {
-        bookService.validateOrderItems(orderItemListDto);
+        bookServiceImpl.validateOrderItems(orderItemListDto);
     }
     @PostMapping("/for-order")
     OrderBookInfoListDto getOrderBookInfos(@RequestBody OrderItemListDto orderItemListDto) {
-        return bookService.getOrderBookInfos(orderItemListDto);
+        return bookServiceImpl.getOrderBookInfos(orderItemListDto);
     }
 
     //도서 상세조회
     @GetMapping("/{book-id}")
     public ResponseEntity<ApiResponse<BookDetailResponse>> getBookDetail(@PathVariable("book-id") Long bookId) {
-        BookDetailResponse response = bookService.getBookDetail(bookId);
+        BookDetailResponse response = bookServiceImpl.getBookDetail(bookId);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @PostMapping("/simple-info")
     BookIdTitlePriceListDto getBookSimpleInfos(@RequestBody BookIdListDto bookIdListDto) {
-        BookIdTitlePriceListDto dto = bookService.getBookIdTitlePriceList(bookIdListDto);
+        BookIdTitlePriceListDto dto = bookServiceImpl.getBookIdTitlePriceList(bookIdListDto);
         return dto;
     }
 
     @PostMapping("/decrease-stock")
     public ResponseEntity<Void> decreaseStock(@RequestBody OrderItemListDto orderItemListDto) {
-        bookService.decreaseStock(orderItemListDto);
+        bookServiceImpl.decreaseStock(orderItemListDto);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/increase-stock")
     ResponseEntity<Void> increaseStock(@RequestBody OrderItemListDto orderItemListDto) {
-        bookService.increaseStock(orderItemListDto);
+        bookServiceImpl.increaseStock(orderItemListDto);
         return ResponseEntity.ok().build();
     }
     // 도서 좋아요 등록
     @PostMapping("/{book-id}/likes")
     public ResponseEntity<ApiResponse<Void>> createBookLike(@PathVariable("book-id") Long bookId,
                                                             @RequestHeader("X-USER-ID") Long userId) {
-        bookService.createBookLike(bookId, userId);
+        bookServiceImpl.createBookLike(bookId, userId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
@@ -64,7 +64,7 @@ public class BookController {
     @DeleteMapping("/{book-id}/likes")
     public ResponseEntity<ApiResponse<Void>> deleteBookLike(@PathVariable("book-id") Long bookId,
                                                             @RequestHeader("X-USER-ID") Long userId) {
-        bookService.deleteBookLike(bookId, userId);
+        bookServiceImpl.deleteBookLike(bookId, userId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
@@ -72,7 +72,7 @@ public class BookController {
     @GetMapping("/{book-id}/likes")
     public ResponseEntity<ApiResponse<Boolean>> isBookLiked(@PathVariable("book-id") Long bookId,
                                                             @RequestHeader("X-USER-ID") Long userId) {
-        Boolean isLiked = bookService.isBookLiked(bookId, userId);
+        Boolean isLiked = bookServiceImpl.isBookLiked(bookId, userId);
         return ResponseEntity.ok(ApiResponse.success(isLiked));
     }
 }
