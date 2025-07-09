@@ -30,7 +30,7 @@ public record SearchRequest(
                 .start(req.start() != null ? req.start() : 1)
                 .maxResults(req.maxResults() != null ? req.maxResults() : 100)
                 .sort(req.sort() != null ? req.sort().name() : "Accuracy")
-                .cover(req.cover() != null ? req.cover().name() : "Mid")
+                .cover(req.cover() != null ? req.cover().name() : "Big")
                 .categoryId(req.categoryId() != null ? req.categoryId() : 0)
                 .build();
     }
