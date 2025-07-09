@@ -14,6 +14,7 @@ import shop.wannab.book_service.book.entity.BookCategory;
 import shop.wannab.book_service.book.repository.BookCategoryRepository;
 import shop.wannab.book_service.category.dto.CategoryHierarchyDto;
 import shop.wannab.book_service.category.dto.request.CategoryCreateRequest;
+import shop.wannab.book_service.category.dto.response.CategoryIdsResponse;
 import shop.wannab.book_service.category.dto.response.CategoryResponse;
 import shop.wannab.book_service.category.entity.Category;
 import shop.wannab.book_service.category.exception.CategoryApiException;
@@ -106,5 +107,11 @@ public class CategoryService {
     @Transactional
     public List<CategoryResponse> getAllParentCategory() {
         return categoryRepository.findParentCategories();
+    }
+
+    @Transactional
+    public CategoryIdsResponse findAllCategoryIds(List<Long> bookIds) {
+        List<Long> bookIdsFromCategoryIds = bookCategoryRepository.findCategoryIdsByBookIds(bookIds);
+        return new CategoryIdsResponse(bookIdsFromCategoryIds);
     }
 }
