@@ -105,8 +105,15 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getCategoriesNames(categoryIds));
     }
 
-    @PostMapping("/ids")
-    public ResponseEntity<CategoryIdsResponse> getCategoryIds(@RequestBody List<Long> bookIds) {
+    //TODO : ResponseDto로 수정
+    @PostMapping("/ids-map")
+    public ResponseEntity<Map<Long, Long>> getCategoryIds(@RequestBody List<Long> bookIds) {
         return ResponseEntity.ok(categoryService.findAllCategoryIds(bookIds));
+    }
+
+    @GetMapping("/{bookId}/ancestor-category-ids")
+    public ResponseEntity<List<Long>> getAncestorCategoryIds(@PathVariable Long bookId) {
+        List<Long> ids = categoryService.getAncestorCategoryIdsForBook(bookId);
+        return ResponseEntity.ok(ids);
     }
 }
