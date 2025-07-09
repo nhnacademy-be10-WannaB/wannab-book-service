@@ -53,7 +53,6 @@ class ReviewServiceImplTest {
     @Test
     @DisplayName("도서 리뷰 목록 조회 - 성공")
     void getBookReviewList_success() {
-        // given
         Long bookId = 1L;
         PageRequest pageable = PageRequest.of(0, 10);
         Review review = Review.builder().userId(1L).build();
@@ -62,10 +61,8 @@ class ReviewServiceImplTest {
         given(bookRepository.existsById(bookId)).willReturn(true);
         given(reviewRepository.findByBook_BookId(bookId, pageable)).willReturn(reviews);
 
-        // when
         Page<BookReviewListResponse> result = reviewService.getBookReviewList(pageable, bookId);
 
-        // then
         assertThat(result).isNotNull();
         assertThat(result.getTotalElements()).isEqualTo(1);
     }
@@ -73,13 +70,11 @@ class ReviewServiceImplTest {
     @Test
     @DisplayName("도서 리뷰 목록 조회 - 도서 없음")
     void getBookReviewList_bookNotFound() {
-        // given
         Long bookId = 1L;
         PageRequest pageable = PageRequest.of(0, 10);
 
         given(bookRepository.existsById(bookId)).willReturn(false);
 
-        // when & then
         assertThatThrownBy(() -> reviewService.getBookReviewList(pageable, bookId))
                 .isInstanceOf(BookApiException.class);
     }
@@ -87,7 +82,6 @@ class ReviewServiceImplTest {
     @Test
     @DisplayName("회원 리뷰 목록 조회 - 성공")
     void getUserReviewList_success() {
-        // given
         Long userId = 1L;
         PageRequest pageable = PageRequest.of(0, 10);
         Review review = Review.builder().build();
@@ -95,10 +89,8 @@ class ReviewServiceImplTest {
 
         given(reviewRepository.findByUserId(userId, pageable)).willReturn(reviews);
 
-        // when
         Page<UserReviewListResponse> result = reviewService.getUserReviewList(pageable, userId);
 
-        // then
         assertThat(result).isNotNull();
         assertThat(result.getTotalElements()).isEqualTo(1);
     }
@@ -106,7 +98,6 @@ class ReviewServiceImplTest {
     @Test
     @DisplayName("리뷰 생성 - 성공")
     void createReview_success() {
-        // given
         Long bookId = 1L;
         Long userId = 1L;
         ReviewCreateRequest request = ReviewCreateRequest.builder()
@@ -121,24 +112,20 @@ class ReviewServiceImplTest {
         given(bookRepository.findById(bookId)).willReturn(Optional.of(book));
         given(reviewRepository.existsByBook_BookIdAndUserId(bookId, userId)).willReturn(false);
 
-        // when
         reviewService.createReview(request, bookId, userId);
 
-        // then
         verify(reviewRepository).save(any(Review.class));
     }
 
     @Test
     @DisplayName("리뷰 생성 - 도서 없음")
     void createReview_bookNotFound() {
-        // given
         Long bookId = 1L;
         Long userId = 1L;
         ReviewCreateRequest request = ReviewCreateRequest.builder().build();
 
         given(bookRepository.findById(bookId)).willReturn(Optional.empty());
 
-        // when & then
         assertThatThrownBy(() -> reviewService.createReview(request, bookId, userId))
                 .isInstanceOf(BookApiException.class);
     }
@@ -146,7 +133,6 @@ class ReviewServiceImplTest {
     @Test
     @DisplayName("리뷰 생성 - 이미 리뷰 존재")
     void createReview_alreadyExists() {
-        // given
         Long bookId = 1L;
         Long userId = 1L;
         ReviewCreateRequest request = ReviewCreateRequest.builder().build();
@@ -155,7 +141,6 @@ class ReviewServiceImplTest {
         given(bookRepository.findById(bookId)).willReturn(Optional.of(book));
         given(reviewRepository.existsByBook_BookIdAndUserId(bookId, userId)).willReturn(true);
 
-        // when & then
         assertThatThrownBy(() -> reviewService.createReview(request, bookId, userId))
                 .isInstanceOf(ReviewApiException.class);
     }
@@ -163,7 +148,6 @@ class ReviewServiceImplTest {
     @Test
     @DisplayName("리뷰 수정 - 성공")
     void updateReview_success() {
-        // given
         Long reviewId = 1L;
         ReviewUpdateRequest request = ReviewUpdateRequest.builder()
                 .reviewContent("updated content")
@@ -175,23 +159,17 @@ class ReviewServiceImplTest {
 
         given(reviewRepository.findById(reviewId)).willReturn(Optional.of(review));
 
-        // when
         reviewService.updateReview(request, reviewId);
-
-        // then
-        // No exception, and review.updateInfo should be called (implicitly tested by no exception)
     }
 
     @Test
     @DisplayName("리뷰 수정 - 리뷰 없음")
     void updateReview_notFound() {
-        // given
         Long reviewId = 1L;
         ReviewUpdateRequest request = ReviewUpdateRequest.builder().build();
 
         given(reviewRepository.findById(reviewId)).willReturn(Optional.empty());
 
-        // when & then
         assertThatThrownBy(() -> reviewService.updateReview(request, reviewId))
                 .isInstanceOf(ReviewApiException.class);
     }
@@ -199,28 +177,23 @@ class ReviewServiceImplTest {
     @Test
     @DisplayName("리뷰 삭제 - 성공")
     void deleteReview_success() {
-        // given
         Long reviewId = 1L;
         Review review = Review.builder().build();
 
         given(reviewRepository.findById(reviewId)).willReturn(Optional.of(review));
 
-        // when
         reviewService.deleteReview(reviewId);
 
-        // then
         verify(reviewRepository).delete(any(Review.class));
     }
 
     @Test
     @DisplayName("리뷰 삭제 - 리뷰 없음")
     void deleteReview_notFound() {
-        // given
         Long reviewId = 1L;
 
         given(reviewRepository.findById(reviewId)).willReturn(Optional.empty());
 
-        // when & then
         assertThatThrownBy(() -> reviewService.deleteReview(reviewId))
                 .isInstanceOf(ReviewApiException.class);
     }
@@ -228,26 +201,21 @@ class ReviewServiceImplTest {
     @Test
     @DisplayName("리뷰 평균 조회 - 성공")
     void getReviewAverage_success() {
-        // given
         Long bookId = 1L;
         given(bookRepository.existsById(bookId)).willReturn(true);
         given(reviewRepository.findAverageScoreByBookId(bookId)).willReturn(4.5);
 
-        // when
         Double average = reviewService.getReviewAverage(bookId);
 
-        // then
         assertThat(average).isEqualTo(4.5);
     }
 
     @Test
     @DisplayName("리뷰 평균 조회 - 도서 없음")
     void getReviewAverage_bookNotFound() {
-        // given
         Long bookId = 1L;
         given(bookRepository.existsById(bookId)).willReturn(false);
 
-        // when & then
         assertThatThrownBy(() -> reviewService.getReviewAverage(bookId))
                 .isInstanceOf(BookApiException.class);
     }
@@ -255,15 +223,12 @@ class ReviewServiceImplTest {
     @Test
     @DisplayName("리뷰 평균 조회 - 리뷰 없음")
     void getReviewAverage_noReviews() {
-        // given
         Long bookId = 1L;
         given(bookRepository.existsById(bookId)).willReturn(true);
         given(reviewRepository.findAverageScoreByBookId(bookId)).willReturn(null);
 
-        // when
         Double average = reviewService.getReviewAverage(bookId);
 
-        // then
         assertThat(average).isEqualTo(0.0);
     }
 }
