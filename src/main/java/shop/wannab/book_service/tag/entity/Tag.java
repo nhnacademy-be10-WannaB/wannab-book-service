@@ -14,18 +14,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity(name = "tags")
 public class Tag {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long tagId;
+    private Long id;
 
     @NotNull
     @Column(length = 50)
-    private String tagName;
+    private String name;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
     public boolean isDeleted() {
         return deletedAt != null;
+    }
+
+    public static Tag create(String name) {
+        return new Tag(null, name, null);
     }
 }
