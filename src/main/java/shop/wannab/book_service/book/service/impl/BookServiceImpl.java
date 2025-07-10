@@ -73,17 +73,17 @@ public class BookServiceImpl implements BookService {
     @Transactional(readOnly = true)
     public OrderBookInfoListDto getOrderBookInfos(OrderItemListDto orderItemListDto) {
         List<CartItem> orderItems = orderItemListDto.getOrderItems();
-        orderItems.removeIf(cartItem -> cartItem.getBookId() == -1);
         List<Long> ids = orderItems.stream().map(CartItem::getBookId).collect(Collectors.toList());
+        List<Long> existingBookIds = bookRepository.findBookIdByBookIdIn(ids);
+        orderItems.removeIf(cartItem -> !existingBookIds.contains(cartItem.getBookId()));
 
-        List<BookInfoForOrderProjection> bookInfoList = bookRepository.findByBookIdIn(ids);
+        List<BookInfoForOrderProjection> bookInfoList = bookRepository.findByBookIdIn(existingBookIds);
 
         Map<Long, BookInfoForOrderProjection> bookInfoMap = new HashMap<>();
 
         for (BookInfoForOrderProjection projection : bookInfoList) {
             bookInfoMap.put(projection.getBookId(), projection);
         }
-
         List<OrderBookInfo> orderBookInfos = new ArrayList<>();
 
         for (CartItem item : orderItems) {

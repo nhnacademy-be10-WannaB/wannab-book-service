@@ -11,4 +11,3 @@ public interface BookInfoForOrderProjection {
     Integer getSalesPrice();
     List<BookImage> getBookImages();
 }
-
