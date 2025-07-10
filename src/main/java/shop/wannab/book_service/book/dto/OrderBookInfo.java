@@ -3,6 +3,7 @@ package shop.wannab.book_service.book.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.wannab.book_service.book.repository.projection.BookInfoForOrderProjection;
 
 @Getter
 @Setter

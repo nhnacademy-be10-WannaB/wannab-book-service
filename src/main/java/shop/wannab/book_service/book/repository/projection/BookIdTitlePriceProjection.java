@@ -1,4 +1,4 @@
-package shop.wannab.book_service.book.dto;
+package shop.wannab.book_service.book.repository.projection;
 
 public interface BookIdTitlePriceProjection {
     Long getBookId();

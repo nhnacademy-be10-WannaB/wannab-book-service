@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.wannab.book_service.book.controller.request.BookCreateRequest;
 import shop.wannab.book_service.book.controller.request.BookUpdateRequest;
@@ -32,9 +33,10 @@ public class AdminBookController {
      * @param pageable 페이징 객체
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<BookListResponse>>> getBooks(
-            @PageableDefault(size = 20) Pageable pageable) {
-        Page<BookListResponse> bookList = adminBookServiceImpl.getBookList(pageable);
+    public ResponseEntity<ApiResponse<Page<BookListResponse>>> getBooks(@PageableDefault(size = 20) Pageable pageable,
+                                                                        @RequestParam(defaultValue = "") String keyword) {
+
+        Page<BookListResponse> bookList = adminBookServiceImpl.getBookList(keyword ,pageable);
         return ResponseEntity.ok(ApiResponse.success(bookList));
     }
 
