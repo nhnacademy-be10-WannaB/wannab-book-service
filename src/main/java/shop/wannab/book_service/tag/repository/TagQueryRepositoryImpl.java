@@ -8,11 +8,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import shop.wannab.book_service.book.entity.QBookTag;
 import shop.wannab.book_service.tag.dto.response.TagResponse;
 import shop.wannab.book_service.tag.entity.QTag;
 
 
+@Repository
 @RequiredArgsConstructor
 public class TagQueryRepositoryImpl implements TagQueryRepository{
 
@@ -22,6 +25,7 @@ public class TagQueryRepositoryImpl implements TagQueryRepository{
     private final QBookTag bookTag = QBookTag.bookTag;
 
     @Override
+    @Transactional(readOnly = true)
     public Page<TagResponse> searchTags(String keyword, Pageable pageable) {
         BooleanBuilder condition = new BooleanBuilder();
         if (keyword != null && !keyword.isBlank()) {
@@ -48,6 +52,7 @@ public class TagQueryRepositoryImpl implements TagQueryRepository{
     }
 
     @Override
+    @Transactional
     public void deleteTagWithBookTags(Long tagId) {
         queryFactory
                 .delete(bookTag)

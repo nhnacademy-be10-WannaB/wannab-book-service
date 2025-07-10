@@ -7,10 +7,10 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import shop.wannab.book_service.book.dto.BookIdTitlePriceProjection;
-import shop.wannab.book_service.book.dto.BookInfoForOrderProjection;
+import shop.wannab.book_service.book.repository.projection.BookIdTitlePriceProjection;
+import shop.wannab.book_service.book.repository.projection.BookInfoForOrderProjection;
 import shop.wannab.book_service.book.entity.Book;
-public interface BookRepository extends JpaRepository<Book, Long>, BookRedisRepository {
+public interface BookRepository extends JpaRepository<Book, Long>, BookRedisRepository, BookQueryRepository {
 
     boolean existsByBookIdAndStatusTrue(long bookId);
 

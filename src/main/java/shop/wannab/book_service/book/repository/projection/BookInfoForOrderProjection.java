@@ -1,4 +1,4 @@
-package shop.wannab.book_service.book.dto;
+package shop.wannab.book_service.book.repository.projection;
 
 import shop.wannab.book_service.book.entity.BookImage;
 
