@@ -117,14 +117,24 @@ public class CategoryService {
         return categoryRepository.findParentCategories();
     }
 
+
     @Transactional
-    public Map<Long, Long> findAllCategoryIds(List<Long> bookIds) {
+    public Map<Long, Set<Long>> findAllCategoryIdsWithHierarchy(List<Long> bookIds) {
         List<BookCategory> bookCategories = bookCategoryRepository.findBookCategoriesByBookIds(bookIds);
-        return bookCategories.stream()
-                .collect(Collectors.toMap(
-                        bc -> bc.getBook().getBookId(), // Key: bookId
-                        bc -> bc.getCategory().getId(),  // Value: categoryId
-                        (existing, replacement) -> existing // 혹시 모를 중복 key 발생 시 기존 값 유지
-                ));
+
+        Map<Long, Set<Long>> bookToAllCategoryIdsMap = new HashMap<>();
+
+        for (BookCategory bc : bookCategories) {
+            Long bookId = bc.getBook().getBookId();
+            Category currentCategory = bc.getCategory();
+
+            Set<Long> allCategoryIds = bookToAllCategoryIdsMap.computeIfAbsent(bookId, k -> new HashSet<>());
+
+            while (currentCategory != null) {
+                allCategoryIds.add(currentCategory.getId());
+                currentCategory = currentCategory.getParent();
+            }
+        }
+        return bookToAllCategoryIdsMap;
     }
 }
