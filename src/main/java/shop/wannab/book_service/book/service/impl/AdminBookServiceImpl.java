@@ -2,8 +2,10 @@ package shop.wannab.book_service.book.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,10 +14,17 @@ import shop.wannab.book_service.author.repository.AuthorRepository;
 import shop.wannab.book_service.book.controller.request.BookCreateRequest;
 import shop.wannab.book_service.book.controller.request.BookUpdateRequest;
 import shop.wannab.book_service.book.controller.response.BookListResponse;
-import shop.wannab.book_service.book.entity.*;
+import shop.wannab.book_service.book.entity.Book;
+import shop.wannab.book_service.book.entity.BookAuthor;
+import shop.wannab.book_service.book.entity.BookCategory;
+import shop.wannab.book_service.book.entity.BookImage;
+import shop.wannab.book_service.book.entity.BookPublisher;
+import shop.wannab.book_service.book.entity.BookTag;
 import shop.wannab.book_service.book.exception.BookApiException;
 import shop.wannab.book_service.book.exception.BookErrorCode;
 import shop.wannab.book_service.book.repository.BookRepository;
+import shop.wannab.book_service.book.repository.projection.BookInfoProjection;
+import shop.wannab.book_service.book.repository.query.RowGrouper;
 import shop.wannab.book_service.book.service.AdminBookService;
 import shop.wannab.book_service.category.entity.Category;
 import shop.wannab.book_service.category.exception.CategoryApiException;
@@ -37,12 +46,20 @@ public class AdminBookServiceImpl implements AdminBookService {
     private final TagRepository tagRepository;
     private final CategoryRepository categoryRepository;
 
-    //도서 리스트 조회
+    // 도서 리스트 조회
     @Override
     @Transactional(readOnly = true)
-    public Page<BookListResponse> getBookList(Pageable pageable) {
-        Page<Book> books = bookRepository.findAll(pageable);
-        return books.map(BookListResponse::from);
+    public Page<BookListResponse> getBookList(String keyword, Pageable pageable) {
+        List<Long> ids = bookRepository.findPageIds(keyword, pageable);
+        if (ids.isEmpty()) return Page.empty(pageable);
+
+        List<BookInfoProjection> rows = bookRepository.fetchDetails(ids);
+
+        Map<Long, BookListResponse> map = RowGrouper.group(rows, ids);
+
+        long total = bookRepository.countAll(keyword);
+
+        return new PageImpl<>(new ArrayList<>(map.values()), pageable, total);
     }
 
     // 도서 생성

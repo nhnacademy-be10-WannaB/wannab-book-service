@@ -7,11 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import shop.wannab.book_service.book.entity.QBookCategory;
 import shop.wannab.book_service.category.dto.response.CategoryResponse;
 import shop.wannab.book_service.category.entity.Category;
 import shop.wannab.book_service.category.entity.QCategory;
 
+@Repository
 @RequiredArgsConstructor
 public class CategoryQueryRepositoryImpl implements CategoryQueryRepository{
 
@@ -21,6 +24,7 @@ public class CategoryQueryRepositoryImpl implements CategoryQueryRepository{
     private final QBookCategory bookCategory = QBookCategory.bookCategory;
 
     @Override
+    @Transactional(readOnly = true)
     public List<CategoryResponse> findParentCategories() {
         return queryFactory
                 .select(Projections.constructor(CategoryResponse.class,
@@ -32,6 +36,7 @@ public class CategoryQueryRepositoryImpl implements CategoryQueryRepository{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<CategoryResponse> findParentCategories(Pageable pageable) {
         List<CategoryResponse> content = queryFactory
                 .select(Projections.constructor(CategoryResponse.class,
@@ -53,6 +58,7 @@ public class CategoryQueryRepositoryImpl implements CategoryQueryRepository{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<CategoryResponse> findChildCategoriesByParentId(Long parentId, Pageable pageable) {
         List<CategoryResponse> content = queryFactory
                 .select(Projections.constructor(CategoryResponse.class,
@@ -74,6 +80,7 @@ public class CategoryQueryRepositoryImpl implements CategoryQueryRepository{
     }
 
     @Override
+    @Transactional
     public void deleteCategoryWithBookCategories(Category targetCategory) {
         Long categoryId = targetCategory.getId();
 

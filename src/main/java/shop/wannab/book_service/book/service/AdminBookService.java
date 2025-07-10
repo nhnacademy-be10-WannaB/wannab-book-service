@@ -7,7 +7,7 @@ import shop.wannab.book_service.book.controller.request.BookUpdateRequest;
 import shop.wannab.book_service.book.controller.response.BookListResponse;
 
 public interface AdminBookService {
-    Page<BookListResponse> getBookList(Pageable pageable);
+    Page<BookListResponse> getBookList(String keyword, Pageable pageable);
     void createBook(BookCreateRequest request);
     void updateBook(Long bookId, BookUpdateRequest request);
     void deleteBook(Long bookId);

@@ -1,12 +1,17 @@
 package shop.wannab.book_service.book.controller.response;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
-import lombok.Getter;
-import shop.wannab.book_service.book.entity.*;
+import lombok.Data;
+import shop.wannab.book_service.book.entity.Book;
+import shop.wannab.book_service.book.entity.BookAuthor;
+import shop.wannab.book_service.book.entity.BookImage;
+import shop.wannab.book_service.book.entity.BookPublisher;
+import shop.wannab.book_service.book.entity.BookTag;
 
-@Getter
+@Data
 @Builder
 public class BookListResponse {
     private Long bookId;
@@ -21,6 +26,16 @@ public class BookListResponse {
     private List<String> publisherNames;
     private List<String> imageUrls;
     private List<String> tagNames;
+
+    public static BookListResponse empty(Long id) {
+        return BookListResponse.builder()
+                .bookId(id)
+                .authorNames(new ArrayList<>())
+                .publisherNames(new ArrayList<>())
+                .tagNames(new ArrayList<>())
+                .imageUrls(new ArrayList<>())
+                .build();
+    }
 
     public static BookListResponse from(Book book) {
         return BookListResponse.builder()

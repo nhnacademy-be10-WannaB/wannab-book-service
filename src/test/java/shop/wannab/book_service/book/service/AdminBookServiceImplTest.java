@@ -1,29 +1,37 @@
 package shop.wannab.book_service.book.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.*;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
+import shop.wannab.book_service.author.repository.AuthorRepository;
 import shop.wannab.book_service.book.controller.request.BookCreateRequest;
 import shop.wannab.book_service.book.controller.request.BookUpdateRequest;
 import shop.wannab.book_service.book.controller.response.BookListResponse;
-import shop.wannab.book_service.book.entity.*;
+import shop.wannab.book_service.book.entity.Book;
 import shop.wannab.book_service.book.exception.BookApiException;
 import shop.wannab.book_service.book.repository.BookRepository;
+import shop.wannab.book_service.book.repository.projection.BookInfoProjection;
 import shop.wannab.book_service.book.service.impl.AdminBookServiceImpl;
 import shop.wannab.book_service.category.repository.CategoryRepository;
 import shop.wannab.book_service.publisher.repository.PublisherRepository;
-import shop.wannab.book_service.author.repository.AuthorRepository;
 import shop.wannab.book_service.tag.repository.TagRepository;
-
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -43,15 +51,22 @@ class AdminBookServiceImplTest {
     @DisplayName("도서 목록 조회 - 유효한 Pageable")
     void getBookList_validPageable_returnsPagedBookList() {
         Pageable pageable = PageRequest.of(0, 10);
-        Book book = Book.builder()
-                .bookId(1L)
-                .title("테스트 도서")
-                .build();
-        Page<Book> bookPage = new PageImpl<>(List.of(book));
 
-        when(bookRepository.findAll(pageable)).thenReturn(bookPage);
+        when(bookRepository.findPageIds(anyString(), eq(pageable)))
+                .thenReturn(List.of(1L));
 
-        Page<BookListResponse> result = adminBookService.getBookList(pageable);
+        when(bookRepository.fetchDetails(List.of(1L)))
+                .thenReturn(List.of(
+                        new BookInfoProjection(
+                                1L, "테스트 도서", "desc", null,
+                                null, null, null, null,
+                                "홍길동", "테스트출판사", "태그", "url")
+                ));
+
+        when(bookRepository.countAll(anyString()))
+                .thenReturn(1L);
+
+        Page<BookListResponse> result = adminBookService.getBookList("", pageable);
 
         assertEquals(1, result.getTotalElements());
         assertEquals("테스트 도서", result.getContent().getFirst().getTitle());
