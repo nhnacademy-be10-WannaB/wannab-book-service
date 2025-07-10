@@ -11,7 +11,12 @@ import shop.wannab.book_service.book.dto.BookIdTitlePriceProjection;
 import shop.wannab.book_service.book.dto.BookInfoForOrderProjection;
 import shop.wannab.book_service.book.entity.Book;
 public interface BookRepository extends JpaRepository<Book, Long>, BookRedisRepository {
+
     boolean existsByBookIdAndStatusTrue(long bookId);
+
+    @Query("SELECT b.bookId FROM books b WHERE b.bookId IN :bookIds")
+    List<Long> findBookIdByBookIdIn(List<Long> bookIds);
+
 
     List<BookInfoForOrderProjection> findByBookIdIn(List<Long> ids);
 

@@ -13,6 +13,7 @@ public class OrderBookInfo {
     private int originPrice;
     private int salesPrice;
     private int quantity;
+    private String thumbnailUrl;
 
     public OrderBookInfo(BookInfoForOrderProjection info, int quantity) {
         this.bookId = info.getBookId();
@@ -20,5 +21,6 @@ public class OrderBookInfo {
         this.originPrice = info.getOriginPrice();
         this.salesPrice = info.getSalesPrice();
         this.quantity = quantity;
+        this.thumbnailUrl = info.getBookImages().get(0).getImageUrl();
     }
 }

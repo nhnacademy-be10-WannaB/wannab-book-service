@@ -1,8 +1,13 @@
 package shop.wannab.book_service.book.dto;
 
+import shop.wannab.book_service.book.entity.BookImage;
+
+import java.util.List;
+
 public interface BookInfoForOrderProjection {
-    long getBookId();
+    Long getBookId();
     String getTitle();
-    int getOriginPrice();
-    int getSalesPrice();
+    Integer getOriginPrice();
+    Integer getSalesPrice();
+    List<BookImage> getBookImages();
 }
