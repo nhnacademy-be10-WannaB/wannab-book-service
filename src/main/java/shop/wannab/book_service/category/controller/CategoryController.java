@@ -3,6 +3,7 @@ package shop.wannab.book_service.category.controller;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -107,8 +108,8 @@ public class CategoryController {
 
     //TODO : ResponseDto로 수정
     @PostMapping("/ids-map")
-    public ResponseEntity<Map<Long, Long>> getCategoryIds(@RequestBody List<Long> bookIds) {
-        return ResponseEntity.ok(categoryService.findAllCategoryIds(bookIds));
+    public ResponseEntity<Map<Long, Set<Long>>> getCategoryIds(@RequestBody List<Long> bookIds) {
+        return ResponseEntity.ok(categoryService.findAllCategoryIdsWithHierarchy(bookIds));
     }
 
     @GetMapping("/{bookId}/ancestor-category-ids")
