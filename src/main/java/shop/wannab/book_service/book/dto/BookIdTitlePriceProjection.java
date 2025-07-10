@@ -1,7 +1,7 @@
 package shop.wannab.book_service.book.dto;
 
 public interface BookIdTitlePriceProjection {
-    long getBookId();
+    Long getBookId();
     String getTitle();
-    int getSalesPrice();
+    Integer getSalesPrice();
 }
