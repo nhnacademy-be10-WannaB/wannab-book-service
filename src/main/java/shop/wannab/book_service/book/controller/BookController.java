@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import shop.wannab.book_service.book.controller.response.BookLikeListResponse;
 import shop.wannab.book_service.book.controller.response.BookListResponse;
 import shop.wannab.book_service.book.dto.BookIdListDto;
 import shop.wannab.book_service.book.dto.BookIdTitlePriceListDto;
@@ -89,8 +90,20 @@ public class BookController {
         return ResponseEntity.ok(ApiResponse.success(books));
     }
 
+
+    @GetMapping("/liked-books")
+    public ResponseEntity<ApiResponse<Page<BookLikeListResponse>>> getLikedBooks(
+            @RequestHeader("X-USER-ID") Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<BookLikeListResponse> bookLikes = bookServiceImpl.getLikedBooks(userId, page, size);
+        return ResponseEntity.ok(ApiResponse.success(bookLikes));
+    }
+  
     @PostMapping("/names")
     public ResponseEntity<Map<Long, String>> getBookNames(@RequestBody List<Long> bookIds) {
         return ResponseEntity.ok(bookServiceImpl.findBookNamesByIds(bookIds));
+
     }
 }

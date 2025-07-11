@@ -10,4 +10,6 @@ public class UserResponse {
     private String nickname;
     private String phone;
     private String birth;
+    private String password;
+    private int points;
 }

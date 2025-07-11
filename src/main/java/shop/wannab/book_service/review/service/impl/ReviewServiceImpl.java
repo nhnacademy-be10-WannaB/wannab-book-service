@@ -6,10 +6,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.wannab.book_service.book.entity.Book;
+import shop.wannab.book_service.book.entity.BookCategory;
+import shop.wannab.book_service.book.entity.BookImage;
 import shop.wannab.book_service.book.exception.BookApiException;
 import shop.wannab.book_service.book.exception.BookErrorCode;
 import shop.wannab.book_service.book.repository.BookRepository;
 import shop.wannab.book_service.client.UserClient;
+import shop.wannab.book_service.client.dto.response.UserResponse;
 import shop.wannab.book_service.client.dto.response.UserResponseWrapper;
 import shop.wannab.book_service.review.controller.request.ReviewCreateRequest;
 import shop.wannab.book_service.review.controller.request.ReviewUpdateRequest;
@@ -48,10 +51,8 @@ public class ReviewServiceImpl implements ReviewService {
             String userName = null;
 
             try {
-                UserResponseWrapper userResponseWrapper = userClient.getUserInfo(userId);
-                if ("SUCCESS".equals(userResponseWrapper.getStatus())) {
-                    userName = userResponseWrapper.getData().getUsername();
-                }
+                UserResponse userResponse = userClient.getUserInfo(userId);
+                    userName = userResponse.getUsername();
             } catch (Exception e) {
                 userName = "알 수 없음";
             }
@@ -81,6 +82,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .userId(userId)
                 .book(book)
                 .obId(request.getObId())
+                .bookName(request.getBookName())
                 .reviewScore(request.getReviewScore())
                 .reviewCreatedAt(request.getReviewCreatedAt())
                 .reviewContent(request.getReviewContent())
@@ -105,7 +107,13 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(()->new ReviewApiException(ReviewErrorCode.REVIEW_NOT_FOUND));
 
-        review.updateInfo(request.getReviewContent(), request.getReviewScore(), request.getReviewUpdatedAt());
+        List<ReviewImage> newImages = request.getReviewImages().stream()
+                .map(url -> ReviewImage.builder()
+                        .reviewImageUrl(url)
+                        .build())
+                .toList();
+
+        review.updateInfo(request.getReviewContent(), request.getReviewScore(), request.getReviewUpdatedAt(),newImages);
     }
 
     //리뷰 삭제
