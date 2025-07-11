@@ -1,5 +1,7 @@
 package shop.wannab.book_service.book.controller;
 
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -85,5 +87,10 @@ public class BookController {
                             @PageableDefault(size = 20) Pageable pageable){
         Page<BookListResponse> books = bookServiceImpl.searchBooks(categoryId,pageable);
         return ResponseEntity.ok(ApiResponse.success(books));
+    }
+
+    @PostMapping("/names")
+    public ResponseEntity<Map<Long, String>> getBookNames(@RequestBody List<Long> bookIds) {
+        return ResponseEntity.ok(bookServiceImpl.findBookNamesByIds(bookIds));
     }
 }

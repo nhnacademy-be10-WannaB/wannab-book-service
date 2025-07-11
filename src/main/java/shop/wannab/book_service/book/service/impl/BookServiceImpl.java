@@ -227,4 +227,14 @@ public class BookServiceImpl implements BookService {
         Page<Book> books = bookRepository.findByCategoryId(categoryId,pageable);
         return books.map(BookListResponse::from);
     }
+
+    @Transactional
+    public Map<Long,String> findBookNamesByIds(List<Long> bookIds){
+        if (bookIds == null || bookIds.isEmpty()) {
+            return Map.of();
+        }
+        List<Book> books = bookRepository.findAllById(bookIds);
+        return books.stream()
+                .collect(Collectors.toMap(Book::getBookId, Book::getTitle));
+    }
 }
