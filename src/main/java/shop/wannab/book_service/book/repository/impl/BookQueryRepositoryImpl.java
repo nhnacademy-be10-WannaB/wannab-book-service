@@ -42,7 +42,6 @@ public class BookQueryRepositoryImpl implements BookQueryRepository {
                 .from(book)
                 .where(BookPredicates.titleLike(keyword))
                 .orderBy(BookSorts.from(pageable))
-                .distinct()
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
