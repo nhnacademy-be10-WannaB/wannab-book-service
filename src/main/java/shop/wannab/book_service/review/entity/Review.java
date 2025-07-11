@@ -39,17 +39,30 @@ public class Review  {
     private Integer reviewScore;
 
     @NotNull
+    private String bookName;
+
+    @NotNull
     private LocalDateTime reviewCreatedAt;
 
     private LocalDateTime reviewUpdatedAt;
+
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ReviewImage> reviewImages = new ArrayList<>();
 
-    public void updateInfo(String reviewContent, Integer reviewScore, LocalDateTime reviewUpdatedAt){
+    public void updateInfo(String reviewContent, Integer reviewScore, LocalDateTime reviewUpdatedAt,List<ReviewImage> newImages){
         this.reviewContent = reviewContent;
         this.reviewUpdatedAt = reviewUpdatedAt;
         this.reviewScore = reviewScore;
+        this.reviewImages.clear();
+
+        for (ReviewImage image : newImages) {
+            this.addReviewImage(image);
+        }
+    }
+    public void addReviewImage(ReviewImage image) {
+        this.reviewImages.add(image);
+        image.setReview(this);
     }
 }
