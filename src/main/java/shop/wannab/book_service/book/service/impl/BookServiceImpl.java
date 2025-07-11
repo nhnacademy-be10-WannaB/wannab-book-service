@@ -2,9 +2,12 @@ package shop.wannab.book_service.book.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.wannab.book_service.book.controller.response.BookLikeListResponse;
 import shop.wannab.book_service.book.controller.response.BookListResponse;
 import shop.wannab.book_service.book.dto.BookIdListDto;
 import shop.wannab.book_service.book.dto.BookIdTitlePriceDto;
@@ -244,4 +247,25 @@ public class BookServiceImpl implements BookService {
         Page<Book> books = bookRepository.findByCategoryId(categoryId,pageable);
         return books.map(BookListResponse::from);
     }
+
+
+    @Override
+    public Page<BookLikeListResponse> getLikedBooks(Long userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> books = bookLikeRepository.findBooksLikedByUserId(userId, pageable);
+        return books.map(BookLikeListResponse::from);
+    }
+
+
+
+    @Transactional
+    public Map<Long,String> findBookNamesByIds(List<Long> bookIds){
+        if (bookIds == null || bookIds.isEmpty()) {
+            return Map.of();
+        }
+        List<Book> books = bookRepository.findAllById(bookIds);
+        return books.stream()
+                .collect(Collectors.toMap(Book::getBookId, Book::getTitle));
+    }
 }
+

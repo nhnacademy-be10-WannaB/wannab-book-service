@@ -10,15 +10,19 @@ import java.util.List;
 @Getter
 @Builder
 public class UserReviewListResponse {
+    private Long reviewId;
     private String reviewContent;
     private Integer reviewScore;
+    private String bookName;
     private LocalDateTime reviewCreatedAt;
     private List<ReviewImageResponse> reviewImages;
 
     public static UserReviewListResponse from(Review review){
         return UserReviewListResponse.builder()
+                .reviewId(review.getReviewId())
                 .reviewContent(review.getReviewContent())
                 .reviewScore(review.getReviewScore())
+                .bookName(review.getBookName())
                 .reviewCreatedAt(review.getReviewCreatedAt())
                 .reviewImages(
                         review.getReviewImages().stream()

@@ -18,8 +18,10 @@ import java.util.List;
 public class ReviewCreateRequest {
     private String reviewContent;
     private Integer reviewScore;
+    private String bookName;
     private LocalDateTime reviewCreatedAt;
     private Long obId;
+
 
     @JsonDeserialize(using = CommaSeparatedToListDeserializer.class)
     private List<String> reviewImages;
