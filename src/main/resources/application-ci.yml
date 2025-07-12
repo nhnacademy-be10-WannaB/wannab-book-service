@@ -41,7 +41,20 @@ eureka:
   client:
     enabled: false
 
+management:
+  health:
+    elasticsearch:
+      enabled: false
+
 aladin:
   api:
     base-url: "http://secret/"
     ttbkey: "secret"
+
+elasticsearch:
+  host: localhost
+  port: 9200
+  username: secret
+  password: secret
+  index:
+    book: wannab_books_v1
