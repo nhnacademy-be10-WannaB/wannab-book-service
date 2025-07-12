@@ -2,4 +2,7 @@
 GET http://localhost:10390/api/books/search?keyword=자바
 
 ### 도서 키워드 통합 검색 테스트
-GET http://localhost:10390/api/books/search/total?keyword=설치
+GET http://localhost:10390/api/books/search/total?keyword=자바
+
+### 도서 키워드 초성 통합 검색 테스트
+GET http://localhost:10390/api/books/search/total?keyword=ㅅㅊ

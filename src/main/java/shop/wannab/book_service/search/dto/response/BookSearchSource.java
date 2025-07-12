@@ -5,6 +5,7 @@ import java.util.List;
 public record BookSearchSource(
         String bookId,
         String title,
+        String title_chosung,
         String description,
         List<String> tags,
         List<String> authors,

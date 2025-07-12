@@ -5,19 +5,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import shop.wannab.book_service.search.dto.response.BookSearchResponse;
+import org.springframework.stereotype.Component;
+import shop.wannab.book_service.search.dto.response.BookSearchResult;
 import shop.wannab.book_service.search.dto.response.BookSearchSource;
 
-public class BookSearchMapper {
+@Component
+public class HitResultMapper {
 
-    public static BookSearchResponse fromHit(Hit<BookSearchSource> hit) {
-        return new BookSearchResponse(
+    public BookSearchResult fromHit(Hit<BookSearchSource> hit) {
+        return new BookSearchResult(
                 hit.source(),
                 safeHighlight(hit)
         );
     }
 
-    private static Map<String, List<String>> safeHighlight(Hit<?> hit) {
+    private Map<String, List<String>> safeHighlight(Hit<?> hit) {
         return Optional.ofNullable(hit.highlight()).orElse(Collections.emptyMap());
     }
 }

@@ -1,6 +1,10 @@
 package shop.wannab.book_service.search.domain;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -24,5 +28,18 @@ public enum BookSearchField {
 
     public static List<BookSearchField> basicList(){
         return List.of(values());
+    }
+
+    public static Set<BookSearchField> basicSet() {
+        return EnumSet.allOf(BookSearchField.class);
+    }
+
+    /**
+     * enum 선언 순서대로 정렬된 List 를 반환하는 메서드
+     */
+    public static List<BookSearchField> ordered(Collection<BookSearchField> selected) {
+        return Arrays.stream(values())
+                .filter(selected::contains)
+                .toList();
     }
 }
