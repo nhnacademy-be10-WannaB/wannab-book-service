@@ -112,38 +112,21 @@ public class BookServiceImpl implements BookService {
 
     //재고감소
     @Transactional
-    public void decreaseStock(OrderItemListDto orderItemListDto) {
+    public void decreaseRedisStock(OrderItemListDto orderItemListDto) {
 
         List<CartItem> orderItems = orderItemListDto.getOrderItems();
-        List<OrderItemValidationError> errors = new ArrayList<>();
 
         for (CartItem orderItem : orderItems) {
             long bookId = orderItem.getBookId();
             int quantity = orderItem.getQuantity();
-
-            Integer stock = bookRepository.getBookStock(bookId);
-            if (stock == null) {
-                errors.add(new OrderItemValidationError(bookId, "해당 상품을 찾을 수 없습니다."));
-                continue;
-            }
-
-            if (quantity > stock) {
-                errors.add(new OrderItemValidationError(bookId, "재고가 부족합니다."));
-                continue;
-            }
-
-            if (!bookRepository.existsByBookIdAndStatusTrue(bookId)) {
-                errors.add(new OrderItemValidationError(bookId, "판매중인 상품이 아닙니다."));
-                continue;
-            }
-
-            bookRepository.decreaseBookStock(bookId, quantity);
-
+            bookRepository.decreaseBookRedisStock(bookId, quantity);
         }
-        if (!errors.isEmpty()) {
-            throw new UnavailableOrderBooksException(errors);
-        }
+    }
 
+    @Transactional
+    public void decreaseDbStock(long bookId, int quantity) {
+        Book book = bookRepository.findById(bookId).orElseThrow();
+        book.setStock(book.getStock() - quantity);
     }
 
     // 도서 상세 조회
