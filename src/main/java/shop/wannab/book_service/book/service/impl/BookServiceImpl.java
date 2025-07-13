@@ -2,9 +2,12 @@ package shop.wannab.book_service.book.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.wannab.book_service.book.controller.response.BookLikeListResponse;
 import shop.wannab.book_service.book.controller.response.BookListResponse;
 import shop.wannab.book_service.book.dto.BookIdListDto;
 import shop.wannab.book_service.book.dto.BookIdTitlePriceDto;
@@ -109,38 +112,21 @@ public class BookServiceImpl implements BookService {
 
     //재고감소
     @Transactional
-    public void decreaseStock(OrderItemListDto orderItemListDto) {
+    public void decreaseRedisStock(OrderItemListDto orderItemListDto) {
 
         List<CartItem> orderItems = orderItemListDto.getOrderItems();
-        List<OrderItemValidationError> errors = new ArrayList<>();
 
         for (CartItem orderItem : orderItems) {
             long bookId = orderItem.getBookId();
             int quantity = orderItem.getQuantity();
-
-            Integer stock = bookRepository.getBookStock(bookId);
-            if (stock == null) {
-                errors.add(new OrderItemValidationError(bookId, "해당 상품을 찾을 수 없습니다."));
-                continue;
-            }
-
-            if (quantity > stock) {
-                errors.add(new OrderItemValidationError(bookId, "재고가 부족합니다."));
-                continue;
-            }
-
-            if (!bookRepository.existsByBookIdAndStatusTrue(bookId)) {
-                errors.add(new OrderItemValidationError(bookId, "판매중인 상품이 아닙니다."));
-                continue;
-            }
-
-            bookRepository.decreaseBookStock(bookId, quantity);
-
+            bookRepository.decreaseBookRedisStock(bookId, quantity);
         }
-        if (!errors.isEmpty()) {
-            throw new UnavailableOrderBooksException(errors);
-        }
+    }
 
+    @Transactional
+    public void decreaseDbStock(long bookId, int quantity) {
+        Book book = bookRepository.findById(bookId).orElseThrow();
+        book.setStock(book.getStock() - quantity);
     }
 
     // 도서 상세 조회
@@ -244,4 +230,25 @@ public class BookServiceImpl implements BookService {
         Page<Book> books = bookRepository.findByCategoryId(categoryId,pageable);
         return books.map(BookListResponse::from);
     }
+
+
+    @Override
+    public Page<BookLikeListResponse> getLikedBooks(Long userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> books = bookLikeRepository.findBooksLikedByUserId(userId, pageable);
+        return books.map(BookLikeListResponse::from);
+    }
+
+
+
+    @Transactional
+    public Map<Long,String> findBookNamesByIds(List<Long> bookIds){
+        if (bookIds == null || bookIds.isEmpty()) {
+            return Map.of();
+        }
+        List<Book> books = bookRepository.findAllById(bookIds);
+        return books.stream()
+                .collect(Collectors.toMap(Book::getBookId, Book::getTitle));
+    }
 }
+

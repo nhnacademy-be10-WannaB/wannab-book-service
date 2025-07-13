@@ -6,10 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.BatchSize;
 import shop.wannab.book_service.review.entity.Review;
 
@@ -44,6 +41,7 @@ public class Book {
     private Integer salesPrice;
 
     @NotNull
+    @Setter
     private Integer stock;
 
     @NotNull
