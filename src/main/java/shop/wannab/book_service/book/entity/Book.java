@@ -1,14 +1,27 @@
 package shop.wannab.book_service.book.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
+import shop.wannab.book_service.author.entity.Author;
+import shop.wannab.book_service.category.entity.Category;
+import shop.wannab.book_service.publisher.entity.Publisher;
 import shop.wannab.book_service.review.entity.Review;
+import shop.wannab.book_service.tag.entity.Tag;
 
 @Builder
 @Getter
@@ -93,4 +106,23 @@ public class Book {
         this.status = status;
     }
 
+    public void addAuthor(Author author) {
+        this.bookAuthors.add(new BookAuthor(this, author));
+    }
+
+    public void addPublisher(Publisher publisher) {
+        this.bookPublishers.add(new BookPublisher(this, publisher));
+    }
+
+    public void addTag(Tag tag) {
+        this.bookTags.add(new BookTag(this, tag));
+    }
+
+    public void addImage(String imageUrl) {
+        this.bookImages.add(new BookImage(this, imageUrl));
+    }
+
+    public void addCategory(Category category) {
+        this.bookCategories.add(new BookCategory(this, category));
+    }
 }

@@ -45,7 +45,7 @@ public class BookCreateRequest {
     @JsonDeserialize(using = CommaSeparatedToListDeserializer.class)
     private List<String> bookTags;
 
-    public Book toEntity(){
+    public Book toEntityWithOutAuthorAndPublisher(){
         return Book.builder()
                 .title(this.title)
                 .description(this.description)

@@ -24,7 +24,7 @@ public record AladinBookCreateRequest(
         Boolean status
 ) {
 
-    public Book toEntity(){
+    public Book toEntityWithOutAuthorAndPublisher(){
         return Book.builder()
                 .title(this.title)
                 .description(this.description)

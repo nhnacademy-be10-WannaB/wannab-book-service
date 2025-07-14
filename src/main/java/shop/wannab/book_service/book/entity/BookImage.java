@@ -13,9 +13,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity(name = "book_images")
 public class BookImage {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long BookImageId;
+    private Long bookImageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", nullable = false)
@@ -24,4 +25,9 @@ public class BookImage {
     @NotNull
     @Column(length = 300)
     private String imageUrl;
+
+    public BookImage(Book book, String imageUrl) {
+        this.book = book;
+        this.imageUrl = imageUrl;
+    }
 }
