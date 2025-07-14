@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity(name = "book_like")
 public class BookLike {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookLikeId;

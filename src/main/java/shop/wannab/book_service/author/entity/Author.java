@@ -20,4 +20,8 @@ public class Author {
     @NotNull
     @Column(length = 50)
     private String authorName;
+
+    public Author(String authorName) {
+        this.authorName = authorName;
+    }
 }

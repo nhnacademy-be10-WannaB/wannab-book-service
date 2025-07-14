@@ -20,4 +20,8 @@ public class Publisher {
     @NotNull
     @Column(length = 50)
     private String publisherName;
+
+    public Publisher(String publisherName) {
+        this.publisherName = publisherName;
+    }
 }
