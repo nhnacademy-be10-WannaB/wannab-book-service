@@ -2,12 +2,9 @@ package shop.wannab.book_service.book.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.wannab.book_service.book.controller.response.BookLikeListResponse;
 import shop.wannab.book_service.book.controller.response.BookListResponse;
 import shop.wannab.book_service.book.dto.BookIdListDto;
 import shop.wannab.book_service.book.dto.BookIdTitlePriceDto;
@@ -21,11 +18,7 @@ import shop.wannab.book_service.book.dto.OrderItemListDto;
 import shop.wannab.book_service.book.controller.response.BookDetailResponse;
 import shop.wannab.book_service.book.entity.Book;
 import shop.wannab.book_service.book.entity.BookCategory;
-import shop.wannab.book_service.book.entity.BookLike;
-import shop.wannab.book_service.book.exception.BookApiException;
-import shop.wannab.book_service.book.exception.BookErrorCode;
 import shop.wannab.book_service.book.exception.OrderItemValidationError;
-import shop.wannab.book_service.book.repository.BookLikeRepository;
 import shop.wannab.book_service.book.service.BookService;
 import shop.wannab.book_service.category.entity.Category;
 import shop.wannab.book_service.global.exception.UnavailableOrderBooksException;
@@ -40,7 +33,6 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
-    private final BookLikeRepository bookLikeRepository;
 
     @Transactional(readOnly = true)
     public void validateOrderItems(OrderItemListDto orderItemListDto) {
@@ -164,42 +156,6 @@ public class BookServiceImpl implements BookService {
         return BookDetailResponse.of(book, categories);
     }
 
-    //도서 좋아요 등록
-    @Override
-    public void createBookLike(Long bookId, Long userId){
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(()->  new BookApiException(BookErrorCode.BOOK_NOT_FOUND));
-
-        if(isBookLiked(bookId,userId)){
-            throw new BookApiException(BookErrorCode.DUPLICATE_BOOK_LIKE);
-        }
-
-        BookLike bookLike = BookLike.builder()
-                        .book(book)
-                        .userId(userId)
-                        .build();
-        bookLikeRepository.save(bookLike);;
-    }
-
-    //도서 좋아요 취소
-    @Override
-    public void deleteBookLike(Long bookId, Long userId){
-        if(!isBookLiked(bookId,userId)){
-            throw new BookApiException(BookErrorCode.BOOK_LIKE_NOT_FOUND);
-        }
-        bookLikeRepository.deleteByUserIdAndBook_BookId(userId,bookId);
-    }
-
-    //도서 좋아요 여부 조회
-    @Override
-    @Transactional(readOnly = true)
-    public Boolean isBookLiked(Long bookId, Long userId){
-        boolean bookExists = bookRepository.existsById(bookId);
-        if (!bookExists) {
-            throw new BookApiException(BookErrorCode.BOOK_NOT_FOUND);
-        }
-        return bookLikeRepository.existsByUserIdAndBook_BookId(userId,bookId);
-    }
 
     @Transactional
     public void increaseStock(OrderItemListDto orderItemListDto) {
@@ -221,7 +177,6 @@ public class BookServiceImpl implements BookService {
         if (!errors.isEmpty()) {
             throw new UnavailableOrderBooksException(errors);
         }
-
     }
 
     @Override
@@ -230,16 +185,6 @@ public class BookServiceImpl implements BookService {
         Page<Book> books = bookRepository.findByCategoryId(categoryId,pageable);
         return books.map(BookListResponse::from);
     }
-
-
-    @Override
-    public Page<BookLikeListResponse> getLikedBooks(Long userId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Book> books = bookLikeRepository.findBooksLikedByUserId(userId, pageable);
-        return books.map(BookLikeListResponse::from);
-    }
-
-
 
     @Transactional
     public Map<Long,String> findBookNamesByIds(List<Long> bookIds){

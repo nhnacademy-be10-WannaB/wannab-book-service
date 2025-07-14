@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.wannab.book_service.book.dto.BookIdListDto;
 import shop.wannab.book_service.book.dto.OrderItemListDto;
+import shop.wannab.book_service.book.service.impl.BookLikeServiceImpl;
 import shop.wannab.book_service.book.service.impl.BookServiceImpl;
 
 import java.util.Collections;
@@ -32,6 +33,9 @@ class BookControllerTest {
 
     @MockBean
     private BookServiceImpl bookServiceImpl;
+
+    @MockBean
+    private BookLikeServiceImpl bookLikeServiceImpl;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -66,7 +70,7 @@ class BookControllerTest {
     void createBookLike() throws Exception {
         long bookId = 1L;
         long userId = 1L;
-        doNothing().when(bookServiceImpl).createBookLike(any(Long.class), any(Long.class));
+        doNothing().when(bookLikeServiceImpl).createBookLike(any(Long.class), any(Long.class));
 
         mockMvc.perform(post("/api/books/{book-id}/likes", bookId)
                         .header("X-USER-ID", userId))
@@ -80,7 +84,7 @@ class BookControllerTest {
     void deleteBookLike() throws Exception {
         long bookId = 1L;
         long userId = 1L;
-        doNothing().when(bookServiceImpl).deleteBookLike(any(Long.class), any(Long.class));
+        doNothing().when(bookLikeServiceImpl).deleteBookLike(any(Long.class), any(Long.class));
 
         mockMvc.perform(delete("/api/books/{book-id}/likes", bookId)
                         .header("X-USER-ID", userId))
@@ -94,7 +98,7 @@ class BookControllerTest {
     void isBookLiked() throws Exception {
         long bookId = 1L;
         long userId = 1L;
-        given(bookServiceImpl.isBookLiked(any(Long.class), any(Long.class))).willReturn(true);
+        given(bookLikeServiceImpl.isBookLiked(any(Long.class), any(Long.class))).willReturn(true);
 
         mockMvc.perform(get("/api/books/{book-id}/likes", bookId)
                         .header("X-USER-ID", userId))

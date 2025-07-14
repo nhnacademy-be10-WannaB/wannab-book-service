@@ -10,3 +10,6 @@ X-USER-ID: 2
 ### 도서 좋아요 여부 조회
 GET http://localhost:10390/api/books/1/likes
 X-USER-ID: 2
+
+### hotbooks 조회
+GET http://localhost:10390/api/books/hot-books
