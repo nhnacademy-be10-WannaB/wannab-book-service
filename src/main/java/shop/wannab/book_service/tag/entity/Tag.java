@@ -30,6 +30,10 @@ public class Tag {
         return deletedAt != null;
     }
 
+    public Tag(String name) {
+        this.name = name;
+    }
+
     public static Tag create(String name) {
         return new Tag(null, name, null);
     }

@@ -80,7 +80,7 @@ class AdminBookServiceImplTest {
 
         when(request.getIsbn()).thenReturn("123456");
         when(bookRepository.existsByIsbn("123456")).thenReturn(false);
-        when(request.toEntity()).thenReturn(book);
+        when(request.toEntityWithOutAuthorAndPublisher()).thenReturn(book);
         when(request.getAuthors()).thenReturn(List.of("홍길동"));
         when(request.getPublishers()).thenReturn(List.of("출판사"));
         when(request.getBookTags()).thenReturn(List.of("태그"));

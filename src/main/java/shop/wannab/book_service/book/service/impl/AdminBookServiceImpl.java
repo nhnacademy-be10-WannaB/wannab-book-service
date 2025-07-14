@@ -30,6 +30,7 @@ import shop.wannab.book_service.category.entity.Category;
 import shop.wannab.book_service.category.exception.CategoryApiException;
 import shop.wannab.book_service.category.exception.CategoryErrorCode;
 import shop.wannab.book_service.category.repository.CategoryRepository;
+import shop.wannab.book_service.category.service.CategoryService;
 import shop.wannab.book_service.publisher.entity.Publisher;
 import shop.wannab.book_service.publisher.repository.PublisherRepository;
 import shop.wannab.book_service.tag.entity.Tag;
@@ -45,6 +46,7 @@ public class AdminBookServiceImpl implements AdminBookService {
     private final PublisherRepository publisherRepository;
     private final TagRepository tagRepository;
     private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     // 도서 리스트 조회
     @Override
@@ -70,7 +72,7 @@ public class AdminBookServiceImpl implements AdminBookService {
             throw new BookApiException(BookErrorCode.DUPLICATE_BOOK);
         }
 
-        Book book = request.toEntity();
+        Book book = request.toEntityWithOutAuthorAndPublisher();
 
         List<BookAuthor> bookAuthors = request.getAuthors().stream()
                 .map(authorName ->{
@@ -111,6 +113,7 @@ public class AdminBookServiceImpl implements AdminBookService {
                         .imageUrl(imageUrl)
                         .build())
                 .toList();
+
         List<BookCategory> categories = ensureCategoryHierarchy(request.getCategories(),book);
 
         book.getBookCategories().addAll(categories);
@@ -138,7 +141,8 @@ public class AdminBookServiceImpl implements AdminBookService {
                 request.getStock(),
                 request.getBookChapter(),
                 request.getIsbn(),
-                request.isStatus());
+                request.isStatus()
+        );
 
         book.getBookAuthors().clear();
         book.getBookPublishers().clear();
@@ -185,7 +189,7 @@ public class AdminBookServiceImpl implements AdminBookService {
                         .imageUrl(imageUrl)
                         .build())
                 .toList();
-        List<BookCategory> categories = ensureCategoryHierarchy(request.getCategories(),book);
+        List<BookCategory> categories = ensureCategoryHierarchy(request.getCategories(), book);
 
         book.getBookCategories().addAll(categories);
         book.getBookImages().addAll(bookImages);
@@ -204,7 +208,7 @@ public class AdminBookServiceImpl implements AdminBookService {
         bookRepository.deleteBookStock(bookId);
     }
 
-    private List<BookCategory> ensureCategoryHierarchy(List<String> categoryNames,Book book) {
+    private List<BookCategory> ensureCategoryHierarchy(List<String> categoryNames, Book book) {
         if (categoryNames.size() < 2) {
             throw new CategoryApiException(CategoryErrorCode.INVALID_CATEGORY_HIERARCHY);
         }

@@ -49,7 +49,7 @@ management:
 aladin:
   api:
     base-url: "http://secret/"
-    ttbkey: "secret"
+    ttb-key: "secret"
 
 elasticsearch:
   host: localhost

@@ -24,4 +24,9 @@ public class BookTag {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_id", nullable = false)
     private Tag tag;
+
+    public BookTag(Book book, Tag tag) {
+        this.book = book;
+        this.tag = tag;
+    }
 }
