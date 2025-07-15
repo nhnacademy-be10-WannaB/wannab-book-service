@@ -15,6 +15,7 @@ public record BookIndexDocument(
         LocalDate publicationDate,
         String description,
         List<String> categories,
+        List<String> tags,
         String thumbnailUrl,
         boolean status,
         int originPrice,
@@ -25,6 +26,8 @@ public record BookIndexDocument(
                 .map(list -> list.size() > 2 ? list.subList(0, 2) : list)
                 .orElse(List.of());
 
+        List<String> tags = List.of();
+
         return new BookIndexDocument(
                 bookId,
                 req.title(),
@@ -33,6 +36,7 @@ public record BookIndexDocument(
                 req.publishedDate(),
                 req.description(),
                 categories,
+                tags,
                 req.thumbnail(),
                 req.status() != null ? req.status() : true,
                 req.price(),
@@ -53,6 +57,7 @@ public record BookIndexDocument(
                 req.getPublicationDate(),
                 req.getDescription(),
                 categories,
+                req.getBookTags(),
                 req.getBookImages().getFirst(),
                 req.isStatus(),
                 req.getOriginPrice(),

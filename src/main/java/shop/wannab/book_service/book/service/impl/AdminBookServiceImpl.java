@@ -126,7 +126,7 @@ public class AdminBookServiceImpl implements AdminBookService {
         book.getBookTags().addAll(bookTags);
 
         Book save = bookRepository.save(book);
-        bookRepository.saveOrUpdateBookStock(book.getBookId(),book.getStock());
+        bookRepository.saveOrUpdateBookStock(book.getBookId(), book.getStock());
 
         bookIndexCommandFactory.index(BookIndexDocument.from(request, String.valueOf(save.getBookId())));
     }
