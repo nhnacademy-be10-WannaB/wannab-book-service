@@ -14,6 +14,7 @@ import shop.wannab.book_service.author.repository.AuthorRepository;
 import shop.wannab.book_service.book.controller.request.BookCreateRequest;
 import shop.wannab.book_service.book.controller.request.BookUpdateRequest;
 import shop.wannab.book_service.book.controller.response.BookListResponse;
+import shop.wannab.book_service.book.dto.BookIndexDocument;
 import shop.wannab.book_service.book.entity.Book;
 import shop.wannab.book_service.book.entity.BookAuthor;
 import shop.wannab.book_service.book.entity.BookCategory;
@@ -22,6 +23,7 @@ import shop.wannab.book_service.book.entity.BookPublisher;
 import shop.wannab.book_service.book.entity.BookTag;
 import shop.wannab.book_service.book.exception.BookApiException;
 import shop.wannab.book_service.book.exception.BookErrorCode;
+import shop.wannab.book_service.book.factory.BookIndexCommandFactory;
 import shop.wannab.book_service.book.repository.BookRepository;
 import shop.wannab.book_service.book.repository.projection.BookInfoProjection;
 import shop.wannab.book_service.book.repository.query.RowGrouper;
@@ -47,6 +49,7 @@ public class AdminBookServiceImpl implements AdminBookService {
     private final TagRepository tagRepository;
     private final CategoryRepository categoryRepository;
     private final CategoryService categoryService;
+    private final BookIndexCommandFactory bookIndexCommandFactory;
 
     // 도서 리스트 조회
     @Override
@@ -122,8 +125,10 @@ public class AdminBookServiceImpl implements AdminBookService {
         book.getBookPublishers().addAll(bookPublishers);
         book.getBookTags().addAll(bookTags);
 
-        bookRepository.save(book);
-        bookRepository.saveOrUpdateBookStock(book.getBookId(),book.getStock());
+        Book save = bookRepository.save(book);
+        bookRepository.saveOrUpdateBookStock(book.getBookId(), book.getStock());
+
+        bookIndexCommandFactory.index(BookIndexDocument.from(request, String.valueOf(save.getBookId())));
     }
 
     //도서 수정

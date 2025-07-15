@@ -32,7 +32,6 @@ public class BookAggregateFactory {
 
     /**
      * 알라딘 도서 생성 요청을 Aggregate 로 반환하는 메서드
-     * TODO tag 추가 필요
      */
     public Book toAggregate(AladinBookCreateRequest req) {
         Book book = req.toEntityWithOutAuthorAndPublisher();

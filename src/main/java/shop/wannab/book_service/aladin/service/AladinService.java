@@ -12,10 +12,12 @@ import shop.wannab.book_service.aladin.controller.request.BookInfoRequest;
 import shop.wannab.book_service.aladin.exception.AladinApiException;
 import shop.wannab.book_service.aladin.exception.AladinErrorCode;
 import shop.wannab.book_service.book.controller.request.AladinBookCreateRequest;
+import shop.wannab.book_service.book.dto.BookIndexDocument;
 import shop.wannab.book_service.book.entity.Book;
 import shop.wannab.book_service.book.exception.BookApiException;
 import shop.wannab.book_service.book.exception.BookErrorCode;
 import shop.wannab.book_service.book.factory.BookAggregateFactory;
+import shop.wannab.book_service.book.factory.BookIndexCommandFactory;
 import shop.wannab.book_service.book.repository.BookRepository;
 import shop.wannab.book_service.global.properties.AladinKeyProperties;
 
@@ -28,6 +30,7 @@ public class AladinService {
     private final BookRepository bookRepository;
     private final BookAggregateFactory bookAggregateFactory;
     private final AladinKeyProperties aladinKeyProperties;
+    private final BookIndexCommandFactory bookIndexCommandFactory;
 
     @Transactional(readOnly = true)
     public SearchResponse searchBooks(BookInfoRequest request) {
@@ -48,7 +51,9 @@ public class AladinService {
 
         Book book = bookAggregateFactory.toAggregate(request);
 
-        bookRepository.save(book);
+        Book save = bookRepository.save(book);
         bookRepository.saveOrUpdateBookStock(book.getBookId(), book.getStock());
+
+        bookIndexCommandFactory.index(BookIndexDocument.from(request, String.valueOf(save.getBookId())));
     }
 }
