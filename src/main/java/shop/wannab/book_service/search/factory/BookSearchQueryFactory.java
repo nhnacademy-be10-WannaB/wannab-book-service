@@ -1,8 +1,10 @@
 package shop.wannab.book_service.search.factory;
 
+import co.elastic.clients.elasticsearch._types.query_dsl.CombinedFieldsOperator;
 import co.elastic.clients.elasticsearch._types.query_dsl.Operator;
 import co.elastic.clients.elasticsearch.core.MsearchRequest;
 import java.util.Collection;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -28,42 +30,42 @@ public class BookSearchQueryFactory {
     public MsearchRequest buildMultiSearch(String keyword,
                                            Collection<BookSearchField> targets) {
 
-        MsearchRequest request = MsearchRequest.of(ms -> {
-            targets.forEach(field -> ms.searches(si -> si
-                    .header(h -> h.index(indexProps.getBook()))
-                    .body(b -> {
-                        b.size(field.getDefaultSize())
-                                .query(q -> q.bool(bq -> bq
-                                        .must(m -> m.match(mq -> mq
-                                                .field(field.getFieldName())
-                                                .query(keyword)
-                                                .operator(Operator.And)))
-                                        .should(s -> s.rankFeature(rf -> rf
-                                                .field("likeCount").log(l -> l.scalingFactor(2))))
-                                        .should(s -> s.rankFeature(rf -> rf
-                                                .field("reviewCount").log(l -> l.scalingFactor(2))))
-                                        .should(s -> s.rankFeature(rf -> rf
-                                                .field("averageRating").saturation(r -> r)))
-                                ));
+        Map<String, Float> boosts = indexProps.getBoost().getFields();
 
-                        if(field.isHighlight()){
-                            b.highlight(hl -> hl
-                                    .type("unified")
-                                    .requireFieldMatch(true)
-                                    .preTags("<em>").postTags("</em>")
-                                    .fields(field.getFieldName(), f -> f
-                                            .fragmentSize(150)
-                                            .numberOfFragments(3)
-                                            .noMatchSize(150)
-                                    )
-                            );
-                        }
-                        return b;
-                    })
-            ));
+        return MsearchRequest.of(ms -> {
+            ms.searches(si -> si
+                    .header(h -> h.index(indexProps.getIndex()))
+                    .body(b -> b
+                            .size(BookSearchField.ALL.getDefaultSize())
+                            .query(q -> q.combinedFields(cf -> cf
+                                            .query(keyword)
+                                            .operator(CombinedFieldsOperator.Or)
+                                            .fields(boosts.entrySet().stream()
+                                                    .map(e -> e.getKey() + "^" + e.getValue())
+                                                    .toList())))
+                            )
+                    );
+
+
+            targets.stream()
+                    .filter(f -> f != BookSearchField.ALL)
+                    .forEach(field -> ms.searches(si -> si
+                            .header(h -> h.index(indexProps.getIndex()))
+                            .body(b -> b
+                                    .size(field.getDefaultSize())
+                                    .query(q -> q.bool(bq -> bq
+                                            .must(m -> m.match(mq -> mq
+                                                    .field(field.getFieldName())
+                                                    .query(keyword)
+                                                    .operator(Operator.And)))
+                                            .should(s -> s.rankFeature(rf -> rf
+                                                    .field("likeCount").log(l -> l.scalingFactor(2))))
+                                            .should(s -> s.rankFeature(rf -> rf
+                                                    .field("reviewCount").log(l -> l.scalingFactor(2))))
+                                            .should(s -> s.rankFeature(rf -> rf
+                                                    .field("averageRating").saturation(r -> r))))
+                                    ))));
             return ms;
         });
-
-        return request;
     }
 }

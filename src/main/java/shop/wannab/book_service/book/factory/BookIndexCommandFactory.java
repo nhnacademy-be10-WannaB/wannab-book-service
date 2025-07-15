@@ -19,7 +19,7 @@ public class BookIndexCommandFactory {
     public void index(BookIndexDocument document) {
         try {
             elasticsearchClient.index(i -> i
-                    .index(indexProps.getBook())
+                    .index(indexProps.getIndex())
                     .id(document.bookId())
                     .document(document)
             );
@@ -32,7 +32,7 @@ public class BookIndexCommandFactory {
     public void deleteById(String bookId) {
         try {
             elasticsearchClient.delete(d -> d
-                    .index(indexProps.getBook())
+                    .index(indexProps.getIndex())
                     .id(bookId)
             );
         } catch (IOException e) {
