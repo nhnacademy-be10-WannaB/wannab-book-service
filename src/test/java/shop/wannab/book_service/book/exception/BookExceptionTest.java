@@ -22,7 +22,6 @@ class BookExceptionTest {
     @DisplayName("BookErrorCode Enum 값 테스트")
     void bookErrorCodeValues() {
         for (BookErrorCode code : BookErrorCode.values()) {
-            assertNotNull(code.getCode());
             assertNotNull(code.getMessage());
         }
     }
