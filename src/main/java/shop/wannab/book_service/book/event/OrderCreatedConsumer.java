@@ -32,10 +32,8 @@ public class OrderCreatedConsumer {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @RabbitListener(queues = ORDER_CREATED_QUEUE)
-    public void handleOrderCreated(String message) throws JsonProcessingException {
-        OrderCreatedEvent event = objectMapper.readValue(message, OrderCreatedEvent.class);
+    public void handleOrderCreated(OrderItemListDto dto) throws JsonProcessingException {
 
-        OrderItemListDto dto = event.getItemListDto();
         bookService.decreaseRedisStock(dto);
         for (CartItem item : dto.getOrderItems()) {
             stockBuffer.merge(item.getBookId(), item.getQuantity(), Integer::sum);
