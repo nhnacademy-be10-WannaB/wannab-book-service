@@ -56,5 +56,13 @@ elasticsearch:
   port: 9200
   username: secret
   password: secret
-  index:
-    book: wannab_books_v1
+
+search:
+  index: wannab_books_v3
+  boost:
+    fields:
+      title: 5.0
+      authors: 3.0
+      tags: 2.0
+      description: 1.0
+      publishers: 1.0

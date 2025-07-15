@@ -36,7 +36,7 @@ public class BookSearchService {
      */
     public List<BookSearchResult> searchBooksByKeyword(String keyword) throws IOException {
         SearchResponse<BookSearchResult> response = client.search(s -> s
-                        .index(indexProps.getBook())
+                        .index(indexProps.getIndex())
                         .query(q -> q
                                 .match(m -> m
                                         .field("all")

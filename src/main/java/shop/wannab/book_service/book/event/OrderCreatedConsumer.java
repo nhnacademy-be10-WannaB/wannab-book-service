@@ -1,20 +1,16 @@
 package shop.wannab.book_service.book.event;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import shop.wannab.book_service.book.dto.CartItem;
 import shop.wannab.book_service.book.dto.OrderItemListDto;
-import shop.wannab.book_service.book.entity.Book;
-import shop.wannab.book_service.book.repository.BookRepository;
 import shop.wannab.book_service.book.service.impl.BookServiceImpl;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -29,13 +25,10 @@ public class OrderCreatedConsumer {
     private final BookServiceImpl bookService;
     private final Map<Long, Integer> stockBuffer = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(4);
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @RabbitListener(queues = ORDER_CREATED_QUEUE)
-    public void handleOrderCreated(String message) throws JsonProcessingException {
-        OrderCreatedEvent event = objectMapper.readValue(message, OrderCreatedEvent.class);
+    public void handleOrderCreated(OrderItemListDto dto) throws JsonProcessingException {
 
-        OrderItemListDto dto = event.getItemListDto();
         bookService.decreaseRedisStock(dto);
         for (CartItem item : dto.getOrderItems()) {
             stockBuffer.merge(item.getBookId(), item.getQuantity(), Integer::sum);

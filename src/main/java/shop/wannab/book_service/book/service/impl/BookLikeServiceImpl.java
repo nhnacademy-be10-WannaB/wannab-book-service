@@ -76,7 +76,7 @@ public class BookLikeServiceImpl implements BookLikeService {
     public List<HotBooksListResponse> getHotBooksList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        List<Book> books = bookLikeRepository.findTop10BooksByLikeCount(pageable); // 여전히 List<Book>
+        List<Book> books = bookLikeRepository.findTop10BooksByLikeCount(pageable);
 
         return books.stream()
                 .map(book -> new HotBooksListResponse(

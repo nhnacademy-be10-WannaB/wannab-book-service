@@ -24,4 +24,13 @@ public class OrderBookInfo {
         this.quantity = quantity;
         this.thumbnailUrl = info.getBookImages().get(0).getImageUrl();
     }
+
+    public OrderBookInfo(long bookId, String title, int originPrice, int salesPrice, int quantity, String thumbnailUrl) {
+        this.bookId = bookId;
+        this.title = title;
+        this.originPrice = originPrice;
+        this.salesPrice = salesPrice;
+        this.quantity = quantity;
+        this.thumbnailUrl = thumbnailUrl;
+    }
 }
