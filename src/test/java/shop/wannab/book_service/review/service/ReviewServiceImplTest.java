@@ -49,6 +49,8 @@ class ReviewServiceImplTest {
     private BookRepository bookRepository;
     @Mock
     OrderClient orderClient;
+    @Mock
+    UserClient userClient;
 
     @Test
     @DisplayName("도서 리뷰 목록 조회 - 성공")
@@ -249,5 +251,13 @@ class ReviewServiceImplTest {
         Double average = reviewService.getReviewAverage(bookId);
 
         assertThat(average).isEqualTo(0.0);
+    }
+
+    @Test
+    @DisplayName("리뷰 포인트 증가 - 성공")
+    void createReviewPoint_success() {
+        Long userId = 1L;
+        reviewService.createReviewPoint(userId);
+        verify(userClient).createReviewPoint(userId);
     }
 }

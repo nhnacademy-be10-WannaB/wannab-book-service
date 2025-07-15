@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -13,10 +15,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import shop.wannab.book_service.book.dto.BookIdListDto;
-import shop.wannab.book_service.book.dto.OrderBookInfo;
-import shop.wannab.book_service.book.dto.OrderBookInfoListDto;
-import shop.wannab.book_service.book.dto.OrderItemListDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import shop.wannab.book_service.book.dto.*;
 import shop.wannab.book_service.book.service.impl.BookLikeServiceImpl;
 import shop.wannab.book_service.book.service.impl.BookServiceImpl;
 
@@ -26,9 +26,6 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -36,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(BookController.class)
 @ActiveProfiles("ci")
-@ExtendWith(org.springframework.restdocs.jupiter.RestDocumentationExtension.class)
 class BookControllerTest {
 
     private MockMvc mockMvc;
@@ -51,9 +47,8 @@ class BookControllerTest {
     private ObjectMapper objectMapper;
 
     @BeforeEach
-    void setUp(WebApplicationContext webApplicationContext, org.springframework.restdocs.RestDocumentationContextProvider restDocumentation) {
+    void setUp(WebApplicationContext webApplicationContext) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                .apply(documentationConfiguration(restDocumentation))
                 .build();
     }
 
@@ -67,10 +62,7 @@ class BookControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andDo(print())
-                .andDo(document("validate-order-items",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
+                .andDo(print());
     }
 
     @Test
@@ -82,10 +74,7 @@ class BookControllerTest {
         mockMvc.perform(get("/api/books/{book-id}", bookId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("SUCCESS"))
-                .andDo(print())
-                .andDo(document("get-book-detail",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
+                .andDo(print());
     }
 
     @Test
@@ -99,10 +88,7 @@ class BookControllerTest {
                         .header("X-USER-ID", userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("SUCCESS"))
-                .andDo(print())
-                .andDo(document("create-book-like",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
+                .andDo(print());
     }
 
     @Test
@@ -116,10 +102,7 @@ class BookControllerTest {
                         .header("X-USER-ID", userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("SUCCESS"))
-                .andDo(print())
-                .andDo(document("delete-book-like",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
+                .andDo(print());
     }
 
     @Test
@@ -134,10 +117,7 @@ class BookControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("SUCCESS"))
                 .andExpect(jsonPath("$.data").value(true))
-                .andDo(print())
-                .andDo(document("is-book-liked",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
+                .andDo(print());
     }
 
     @Test
@@ -151,10 +131,7 @@ class BookControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andDo(print())
-                .andDo(document("get-order-book-infos",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
+                .andDo(print());
     }
 
     @Test
@@ -167,10 +144,7 @@ class BookControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andDo(print())
-                .andDo(document("decrease-stock",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
+                .andDo(print());
     }
 
     @Test
@@ -183,10 +157,7 @@ class BookControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andDo(print())
-                .andDo(document("increase-stock",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
+                .andDo(print());
     }
 
 }
