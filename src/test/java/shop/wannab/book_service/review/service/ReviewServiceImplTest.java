@@ -13,9 +13,8 @@ import org.springframework.test.context.ActiveProfiles;
 import shop.wannab.book_service.book.entity.Book;
 import shop.wannab.book_service.book.exception.BookApiException;
 import shop.wannab.book_service.book.repository.BookRepository;
+import shop.wannab.book_service.client.OrderClient;
 import shop.wannab.book_service.client.UserClient;
-import shop.wannab.book_service.client.dto.response.UserResponse;
-import shop.wannab.book_service.global.response.ApiResponse;
 import shop.wannab.book_service.review.controller.request.ReviewCreateRequest;
 import shop.wannab.book_service.review.controller.request.ReviewUpdateRequest;
 import shop.wannab.book_service.review.controller.response.BookReviewListResponse;
@@ -34,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,9 +46,9 @@ class ReviewServiceImplTest {
     @Mock
     private ReviewRepository reviewRepository;
     @Mock
-    private UserClient userClient;
-    @Mock
     private BookRepository bookRepository;
+    @Mock
+    OrderClient orderClient;
 
     @Test
     @DisplayName("도서 리뷰 목록 조회 - 성공")
@@ -111,6 +111,7 @@ class ReviewServiceImplTest {
 
         given(bookRepository.findById(bookId)).willReturn(Optional.of(book));
         given(reviewRepository.existsByBook_BookIdAndUserId(bookId, userId)).willReturn(false);
+        given(orderClient.isReviewable(anyLong())).willReturn(true);
 
         reviewService.createReview(request, bookId, userId);
 
@@ -140,6 +141,24 @@ class ReviewServiceImplTest {
 
         given(bookRepository.findById(bookId)).willReturn(Optional.of(book));
         given(reviewRepository.existsByBook_BookIdAndUserId(bookId, userId)).willReturn(true);
+
+        assertThatThrownBy(() -> reviewService.createReview(request, bookId, userId))
+                .isInstanceOf(ReviewApiException.class);
+    }
+
+    @Test
+    @DisplayName("리뷰 생성 - 리뷰 작성 권한 없음")
+    void createReview_notReviewable() {
+        Long bookId = 1L;
+        Long userId = 1L;
+        ReviewCreateRequest request = ReviewCreateRequest.builder()
+                .obId(1L)
+                .build();
+        Book book = Book.builder().build();
+
+        given(bookRepository.findById(bookId)).willReturn(Optional.of(book));
+        given(reviewRepository.existsByBook_BookIdAndUserId(bookId, userId)).willReturn(false);
+        given(orderClient.isReviewable(anyLong())).willReturn(false);
 
         assertThatThrownBy(() -> reviewService.createReview(request, bookId, userId))
                 .isInstanceOf(ReviewApiException.class);

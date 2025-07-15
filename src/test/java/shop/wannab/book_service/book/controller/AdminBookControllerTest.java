@@ -56,18 +56,6 @@ class AdminBookControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("SUCCESS"))
                 .andDo(print());
-//                .andDo(document("books/get-list",
-//                        queryParameters(
-//                                parameterWithName("page").optional().description("페이지 번호 (기본값: 0)"),
-//                                parameterWithName("size").optional().description("페이지 크기 (기본값: 10)")
-//                        ),
-//                        responseFields(
-//                                fieldWithPath("status").description("응답 상태"),
-//                                fieldWithPath("data").description("응답 데이터"),
-//                                fieldWithPath("error").description("에러 정보")
-//                        )
-
-//                ));
     }
 
     @Test

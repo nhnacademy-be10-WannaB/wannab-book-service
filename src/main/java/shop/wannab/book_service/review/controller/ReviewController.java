@@ -28,6 +28,7 @@ public class ReviewController {
                                                           @RequestHeader("X-USER-ID") Long userId,
                                                           @RequestBody ReviewCreateRequest request) {
         reviewService.createReview(request, bookId, userId);
+        reviewService.createReviewPoint(userId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 

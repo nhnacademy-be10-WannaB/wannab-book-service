@@ -11,6 +11,7 @@ import shop.wannab.book_service.book.entity.BookImage;
 import shop.wannab.book_service.book.exception.BookApiException;
 import shop.wannab.book_service.book.exception.BookErrorCode;
 import shop.wannab.book_service.book.repository.BookRepository;
+import shop.wannab.book_service.client.OrderClient;
 import shop.wannab.book_service.client.UserClient;
 import shop.wannab.book_service.client.dto.response.UserResponse;
 import shop.wannab.book_service.client.dto.response.UserResponseWrapper;
@@ -34,6 +35,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserClient userClient;
     private final BookRepository bookRepository;
+    private final OrderClient orderClient;
 
     // 도서 리뷰 리스트 조회
     @Override
@@ -77,6 +79,9 @@ public class ReviewServiceImpl implements ReviewService {
             throw new ReviewApiException(ReviewErrorCode.REVIEW_ALREADY_EXISTS);
         }
 
+        if (!orderClient.isReviewable(request.getObId())){
+           throw new ReviewApiException(ReviewErrorCode.REVIEW_NOT_ELIGIBLE);
+        }
 
         Review review = Review.builder()
                 .userId(userId)
@@ -136,5 +141,10 @@ public class ReviewServiceImpl implements ReviewService {
             averageScore = 0.0;
         }
         return averageScore;
+    }
+
+    @Override
+    public void createReviewPoint(Long userId){
+        userClient.createReviewPoint(userId);
     }
 }

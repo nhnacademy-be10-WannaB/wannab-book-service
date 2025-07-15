@@ -8,4 +8,5 @@ import shop.wannab.book_service.book.controller.response.BookListResponse;
 public interface BookService {
     BookDetailResponse getBookDetail(Long bookId);
     Page<BookListResponse> searchBooks(Long categoryId, Pageable pageable);
+    void decreaseRedisStock(shop.wannab.book_service.book.dto.OrderItemListDto orderItemListDto);
 }

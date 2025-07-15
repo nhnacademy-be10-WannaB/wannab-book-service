@@ -21,4 +21,5 @@ public interface ReviewService {
 
     Double getReviewAverage(Long bookId);
 
+    void createReviewPoint(Long userId);
 }
