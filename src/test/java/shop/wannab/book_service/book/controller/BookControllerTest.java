@@ -1,6 +1,10 @@
 package shop.wannab.book_service.book.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +13,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import shop.wannab.book_service.book.dto.BookIdListDto;
-import shop.wannab.book_service.book.dto.OrderItemListDto;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import shop.wannab.book_service.book.dto.*;
 import shop.wannab.book_service.book.service.impl.BookLikeServiceImpl;
 import shop.wannab.book_service.book.service.impl.BookServiceImpl;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -28,7 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("ci")
 class BookControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
     @MockBean
@@ -39,6 +45,12 @@ class BookControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @BeforeEach
+    void setUp(WebApplicationContext webApplicationContext) {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .build();
+    }
 
     @Test
     @DisplayName("주문 아이템 유효성 검사")
@@ -107,4 +119,45 @@ class BookControllerTest {
                 .andExpect(jsonPath("$.data").value(true))
                 .andDo(print());
     }
+
+    @Test
+    @DisplayName("주문 도서 정보 조회")
+    void getOrderBookInfos() throws Exception {
+        OrderItemListDto request = new OrderItemListDto(List.of(new CartItem(1L, 2)));
+        OrderBookInfoListDto response = new OrderBookInfoListDto(List.of(new OrderBookInfo(1L, "Test Title", 10000, 10000, 2, "thumbnail.jpg")));
+        given(bookServiceImpl.getOrderBookInfos(any(OrderItemListDto.class))).willReturn(response);
+
+        mockMvc.perform(post("/api/books/for-order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("재고 감소")
+    void decreaseStock() throws Exception {
+        OrderItemListDto request = new OrderItemListDto(List.of(new CartItem(1L, 2)));
+        doNothing().when(bookServiceImpl).decreaseRedisStock(any(OrderItemListDto.class));
+
+        mockMvc.perform(post("/api/books/decrease-stock")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("재고 증가")
+    void increaseStock() throws Exception {
+        OrderItemListDto request = new OrderItemListDto(List.of(new CartItem(1L, 2)));
+        doNothing().when(bookServiceImpl).increaseStock(any(OrderItemListDto.class));
+
+        mockMvc.perform(post("/api/books/increase-stock")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
 }

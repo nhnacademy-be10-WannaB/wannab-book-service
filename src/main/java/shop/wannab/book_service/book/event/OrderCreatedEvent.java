@@ -13,4 +13,8 @@ import shop.wannab.book_service.book.dto.OrderItemListDto;
 public class OrderCreatedEvent {
     private Long orderId;
     private OrderItemListDto itemListDto;
+
+    public OrderCreatedEvent(OrderItemListDto itemListDto) {
+        this.itemListDto = itemListDto;
+    }
 }

@@ -8,13 +8,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import shop.wannab.book_service.book.dto.CartItem;
 import shop.wannab.book_service.book.dto.OrderItemListDto;
-import shop.wannab.book_service.book.entity.Book;
-import shop.wannab.book_service.book.repository.BookRepository;
 import shop.wannab.book_service.book.service.impl.BookServiceImpl;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
