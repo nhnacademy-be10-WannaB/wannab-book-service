@@ -26,6 +26,7 @@ import shop.wannab.book_service.book.controller.request.BookUpdateRequest;
 import shop.wannab.book_service.book.controller.response.BookListResponse;
 import shop.wannab.book_service.book.entity.Book;
 import shop.wannab.book_service.book.exception.BookApiException;
+import shop.wannab.book_service.book.factory.BookIndexCommandFactory;
 import shop.wannab.book_service.book.repository.BookRepository;
 import shop.wannab.book_service.book.repository.projection.BookInfoProjection;
 import shop.wannab.book_service.book.service.impl.AdminBookServiceImpl;
@@ -41,6 +42,7 @@ class AdminBookServiceImplTest {
     @InjectMocks
     private AdminBookServiceImpl adminBookService;
 
+    @Mock private BookIndexCommandFactory bookIndexCommandFactory;
     @Mock private BookRepository bookRepository;
     @Mock private AuthorRepository authorRepository;
     @Mock private PublisherRepository publisherRepository;
