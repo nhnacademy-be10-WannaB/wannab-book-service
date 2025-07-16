@@ -202,6 +202,8 @@ public class AdminBookServiceImpl implements AdminBookService {
         book.getBookPublishers().addAll(updatedPublishers);
         book.getBookTags().addAll(updatedTags);
         bookRepository.saveOrUpdateBookStock(book.getBookId(),book.getStock());
+
+        bookIndexCommandFactory.index(BookIndexDocument.from(request, String.valueOf(bookId)));
     }
 
     //도서 삭제
@@ -211,6 +213,8 @@ public class AdminBookServiceImpl implements AdminBookService {
                 .orElseThrow(()->  new BookApiException(BookErrorCode.BOOK_NOT_FOUND));
         bookRepository.delete(book);
         bookRepository.deleteBookStock(bookId);
+
+        bookIndexCommandFactory.deleteById(String.valueOf(bookId));
     }
 
     private List<BookCategory> ensureCategoryHierarchy(List<String> categoryNames, Book book) {
