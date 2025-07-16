@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import shop.wannab.book_service.book.controller.request.AladinBookCreateRequest;
 import shop.wannab.book_service.book.controller.request.BookCreateRequest;
+import shop.wannab.book_service.book.controller.request.BookUpdateRequest;
 
 public record BookIndexDocument(
         String bookId,
@@ -62,6 +63,28 @@ public record BookIndexDocument(
                 req.isStatus(),
                 req.getOriginPrice(),
                 req.getSalesPrice()
+        );
+    }
+
+    public static BookIndexDocument from(BookUpdateRequest req, String bookId) {
+        List<String> categories = Optional.ofNullable(req.getCategories())
+                .map(list -> list.size() > 2 ? list.subList(0, 2) : list)
+                .orElse(List.of());
+
+        return new BookIndexDocument(
+                bookId,
+                req.getTitle(),
+                req.getAuthors(),
+                req.getPublishers(),
+                req.getPublicationDate(),
+                req.getDescription(),
+                categories,
+                Optional.ofNullable(req.getBookTags()).orElse(List.of()),
+                req.getBookImages() != null && !req.getBookImages().isEmpty()
+                        ? req.getBookImages().getFirst() : null,
+                req.isStatus(),
+                req.getOriginPrice(),
+                req.getSalesPrice() != null ? req.getSalesPrice() : req.getOriginPrice()
         );
     }
 }
