@@ -51,12 +51,6 @@ public class BookController {
         return dto;
     }
 
-    @PostMapping("/decrease-stock")
-    public ResponseEntity<Void> decreaseStock(@RequestBody OrderItemListDto orderItemListDto) {
-        bookServiceImpl.decreaseRedisStock(orderItemListDto);
-        return ResponseEntity.ok().build();
-    }
-
     @PostMapping("/increase-stock")
     ResponseEntity<Void> increaseStock(@RequestBody OrderItemListDto orderItemListDto) {
         bookServiceImpl.increaseStock(orderItemListDto);
