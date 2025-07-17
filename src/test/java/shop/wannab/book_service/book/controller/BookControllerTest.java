@@ -138,18 +138,6 @@ class BookControllerTest {
                 .andDo(print());
     }
 
-    @Test
-    @DisplayName("재고 감소")
-    void decreaseStock() throws Exception {
-        OrderItemListDto request = new OrderItemListDto(List.of(new CartItem(1L, 2)));
-        doNothing().when(bookServiceImpl).decreaseRedisStock(any(OrderItemListDto.class));
-
-        mockMvc.perform(post("/api/books/decrease-stock")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andDo(print());
-    }
 
     @Test
     @DisplayName("재고 증가")

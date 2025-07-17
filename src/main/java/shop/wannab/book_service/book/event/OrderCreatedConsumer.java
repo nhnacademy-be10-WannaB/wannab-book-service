@@ -16,7 +16,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static shop.wannab.book_service.global.config.RabbitConfig.ORDER_CREATED_QUEUE;
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +25,7 @@ public class OrderCreatedConsumer {
     private final Map<Long, Integer> stockBuffer = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(4);
 
-    @RabbitListener(queues = ORDER_CREATED_QUEUE)
+    @RabbitListener(queues = "${queue.order-created.book}")
     public void handleOrderCreated(OrderItemListDto dto) throws JsonProcessingException {
 
         bookService.decreaseRedisStock(dto);

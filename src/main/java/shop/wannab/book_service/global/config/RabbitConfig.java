@@ -16,13 +16,6 @@ import java.util.Map;
 @Configuration
 public class RabbitConfig {
 
-    public static final String ORDER_CREATED_QUEUE = "wannab.order.created.book.queue";
-
-    @Bean
-    public Queue orderCreatedQueue() {
-        return new Queue(ORDER_CREATED_QUEUE);
-    }
-
     @Bean
     public MessageConverter messageConverter(ObjectMapper objectMapper) {
         Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter(objectMapper);
