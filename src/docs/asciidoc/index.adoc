@@ -50,3 +50,217 @@ include::{snippets}/categories/delete/http-request.adoc[]
 include::{snippets}/categories/delete/path-parameters.adoc[]
 
 
+== 도서
+
+=== 주문 아이템 유효성 검사
+==== 요청
+include::{snippets}/books/validateOrderItems/http-request.adoc[]
+include::{snippets}/books/validateOrderItems/request-fields.adoc[]
+
+==== 응답
+include::{snippets}/books/validateOrderItems/http-response.adoc[]
+
+=== 주문 도서 정보 조회
+==== 요청
+include::{snippets}/books/getOrderBookInfos/http-request.adoc[]
+include::{snippets}/books/getOrderBookInfos/request-fields.adoc[]
+
+==== 응답
+include::{snippets}/books/getOrderBookInfos/http-response.adoc[]
+include::{snippets}/books/getOrderBookInfos/response-fields.adoc[]
+
+=== 도서 상세 조회
+==== 요청
+include::{snippets}/books/getBookDetail/http-request.adoc[]
+include::{snippets}/books/getBookDetail/path-parameters.adoc[]
+
+==== 응답
+include::{snippets}/books/getBookDetail/http-response.adoc[]
+include::{snippets}/books/getBookDetail/response-fields.adoc[]
+
+=== 도서 좋아요 등록
+==== 요청
+include::{snippets}/books/createBookLike/http-request.adoc[]
+include::{snippets}/books/createBookLike/path-parameters.adoc[]
+include::{snippets}/books/createBookLike/request-headers.adoc[]
+
+==== 응답
+include::{snippets}/books/createBookLike/http-response.adoc[]
+include::{snippets}/books/createBookLike/response-fields.adoc[]
+
+=== 도서 좋아요 취소
+==== 요청
+include::{snippets}/books/deleteBookLike/http-request.adoc[]
+include::{snippets}/books/deleteBookLike/path-parameters.adoc[]
+include::{snippets}/books/deleteBookLike/request-headers.adoc[]
+
+==== 응답
+include::{snippets}/books/deleteBookLike/http-response.adoc[]
+include::{snippets}/books/deleteBookLike/response-fields.adoc[]
+
+=== 도서 좋아요 여부 조회
+==== 요청
+include::{snippets}/books/isBookLiked/http-request.adoc[]
+include::{snippets}/books/isBookLiked/path-parameters.adoc[]
+include::{snippets}/books/isBookLiked/request-headers.adoc[]
+
+==== 응답
+include::{snippets}/books/isBookLiked/http-response.adoc[]
+include::{snippets}/books/isBookLiked/response-fields.adoc[]
+
+=== 도서 간단 정보 조회
+==== 요청
+include::{snippets}/books/getBookSimpleInfos/http-request.adoc[]
+include::{snippets}/books/getBookSimpleInfos/request-fields.adoc[]
+
+==== 응답
+include::{snippets}/books/getBookSimpleInfos/http-response.adoc[]
+include::{snippets}/books/getBookSimpleInfos/response-fields.adoc[]
+
+=== 재고 증가
+==== 요청
+include::{snippets}/books/increaseStock/http-request.adoc[]
+include::{snippets}/books/increaseStock/request-fields.adoc[]
+
+==== 응답
+include::{snippets}/books/increaseStock/http-response.adoc[]
+
+=== 카테고리별 도서 검색
+==== 요청
+include::{snippets}/books/searchBooks/http-request.adoc[]
+include::{snippets}/books/searchBooks/path-parameters.adoc[]
+include::{snippets}/books/searchBooks/query-parameters.adoc[]
+
+==== 응답
+include::{snippets}/books/searchBooks/http-response.adoc[]
+include::{snippets}/books/searchBooks/response-fields.adoc[]
+
+=== 좋아요한 도서 목록 조회
+==== 요청
+include::{snippets}/books/getLikedBooks/http-request.adoc[]
+include::{snippets}/books/getLikedBooks/request-headers.adoc[]
+include::{snippets}/books/getLikedBooks/query-parameters.adoc[]
+
+==== 응답
+include::{snippets}/books/getLikedBooks/http-response.adoc[]
+include::{snippets}/books/getLikedBooks/response-fields.adoc[]
+
+=== 도서 이름 목록 조회
+==== 요청
+include::{snippets}/books/getBookNames/http-request.adoc[]
+include::{snippets}/books/getBookNames/request-fields.adoc[]
+
+==== 응답
+include::{snippets}/books/getBookNames/http-response.adoc[]
+include::{snippets}/books/getBookNames/response-fields.adoc[]
+
+=== 인기 도서 목록 조회
+==== 요청
+include::{snippets}/books/getHotBooks/http-request.adoc[]
+include::{snippets}/books/getHotBooks/query-parameters.adoc[]
+
+==== 응답
+include::{snippets}/books/getHotBooks/http-response.adoc[]
+include::{snippets}/books/getHotBooks/response-fields.adoc[]
+
+
+== 관리자 도서
+
+=== 도서 목록 조회
+==== 요청
+include::{snippets}/admin/books/getBooks/http-request.adoc[]
+include::{snippets}/admin/books/getBooks/query-parameters.adoc[]
+
+==== 응답
+include::{snippets}/admin/books/getBooks/http-response.adoc[]
+include::{snippets}/admin/books/getBooks/response-fields.adoc[]
+
+=== 도서 등록
+==== 요청
+include::{snippets}/admin/books/createBook/http-request.adoc[]
+include::{snippets}/admin/books/createBook/request-fields.adoc[]
+
+==== 응답
+include::{snippets}/admin/books/createBook/http-response.adoc[]
+include::{snippets}/admin/books/createBook/response-fields.adoc[]
+
+=== 도서 수정
+==== 요청
+include::{snippets}/admin/books/updateBook/http-request.adoc[]
+include::{snippets}/admin/books/updateBook/path-parameters.adoc[]
+include::{snippets}/admin/books/updateBook/request-fields.adoc[]
+
+==== 응답
+include::{snippets}/admin/books/updateBook/http-response.adoc[]
+include::{snippets}/admin/books/updateBook/response-fields.adoc[]
+
+=== 도서 삭제
+==== 요청
+include::{snippets}/admin/books/deleteBook/http-request.adoc[]
+include::{snippets}/admin/books/deleteBook/path-parameters.adoc[]
+
+==== 응답
+include::{snippets}/admin/books/deleteBook/http-response.adoc[]
+include::{snippets}/admin/books/deleteBook/response-fields.adoc[]
+
+
+== 리뷰
+
+=== 리뷰 등록
+==== 요청
+include::{snippets}/reviews/createReview/http-request.adoc[]
+include::{snippets}/reviews/createReview/path-parameters.adoc[]
+include::{snippets}/reviews/createReview/request-headers.adoc[]
+include::{snippets}/reviews/createReview/request-fields.adoc[]
+
+==== 응답
+include::{snippets}/reviews/createReview/http-response.adoc[]
+include::{snippets}/reviews/createReview/response-fields.adoc[]
+
+=== 회원 기준 리뷰 목록 조회
+==== 요청
+include::{snippets}/review/getUserReviews/http-request.adoc[]
+include::{snippets}/review/getUserReviews/query-parameters.adoc[]
+include::{snippets}/review/getUserReviews/request-headers.adoc[]
+
+==== 응답
+include::{snippets}/review/getUserReviews/http-response.adoc[]
+include::{snippets}/review/getUserReviews/response-fields.adoc[]
+
+=== 도서 기준 리뷰 목록 조회
+==== 요청
+include::{snippets}/review/getBookReviews/http-request.adoc[]
+include::{snippets}/review/getBookReviews/path-parameters.adoc[]
+include::{snippets}/review/getBookReviews/query-parameters.adoc[]
+
+==== 응답
+include::{snippets}/review/getBookReviews/http-response.adoc[]
+include::{snippets}/review/getBookReviews/response-fields.adoc[]
+
+=== 리뷰 수정
+==== 요청
+include::{snippets}/review/updateReview/http-request.adoc[]
+include::{snippets}/review/updateReview/path-parameters.adoc[]
+include::{snippets}/review/updateReview/request-fields.adoc[]
+
+==== 응답
+include::{snippets}/review/updateReview/http-response.adoc[]
+include::{snippets}/review/updateReview/response-fields.adoc[]
+
+=== 리뷰 삭제
+==== 요청
+include::{snippets}/review/deleteReview/http-request.adoc[]
+include::{snippets}/review/deleteReview/path-parameters.adoc[]
+
+==== 응답
+include::{snippets}/review/deleteReview/http-response.adoc[]
+include::{snippets}/review/deleteReview/response-fields.adoc[]
+
+=== 도서 리뷰 평균 점수 조회
+==== 요청
+include::{snippets}/review/getReviewAverage/http-request.adoc[]
+include::{snippets}/review/getReviewAverage/path-parameters.adoc[]
+
+==== 응답
+include::{snippets}/review/getReviewAverage/http-request.adoc[]
+include::{snippets}/review/getReviewAverage/response-fields.adoc[]
