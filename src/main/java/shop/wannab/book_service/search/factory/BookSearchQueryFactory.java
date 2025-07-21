@@ -1,9 +1,10 @@
 package shop.wannab.book_service.search.factory;
 
-import co.elastic.clients.elasticsearch._types.query_dsl.CombinedFieldsOperator;
 import co.elastic.clients.elasticsearch._types.query_dsl.Operator;
+import co.elastic.clients.elasticsearch._types.query_dsl.TextQueryType;
 import co.elastic.clients.elasticsearch.core.MsearchRequest;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,20 +32,39 @@ public class BookSearchQueryFactory {
                                            Collection<BookSearchField> targets) {
 
         Map<String, Float> boosts = indexProps.getBoost().getFields();
+        String chosungTitle = indexProps.getChosungTitle();
+        String chosungWord = indexProps.getChosungWord();
+
+        List<String> baseFields = targets.stream()
+                .map(BookSearchField::getFieldName)
+                .filter(boosts::containsKey)
+                .map(f -> f + "^" + boosts.get(f))
+                .toList();
 
         return MsearchRequest.of(ms -> {
             ms.searches(si -> si
                     .header(h -> h.index(indexProps.getIndex()))
                     .body(b -> b
                             .size(BookSearchField.ALL.getDefaultSize())
-                            .query(q -> q.combinedFields(cf -> cf
+                            .query(q -> q.bool(bl -> bl
+                                    .should(s -> s.multiMatch(mm -> mm
                                             .query(keyword)
-                                            .operator(CombinedFieldsOperator.Or)
-                                            .fields(boosts.entrySet().stream()
-                                                    .map(e -> e.getKey() + "^" + e.getValue())
-                                                    .toList())))
-                            )
-                    );
+                                            .operator(Operator.And)
+                                            .type(TextQueryType.MostFields)
+                                            .fields(baseFields)))
+                                    .should(s -> s.match(mq -> mq
+                                            .field(chosungWord)
+                                            .query(keyword)
+                                            .operator(Operator.And)
+                                            .boost(boosts.getOrDefault(chosungWord, 1f))))
+                                    .should(s -> s.prefix(p -> p
+                                            .field(chosungTitle)
+                                            .value(keyword)
+                                            .boost(boosts.getOrDefault(chosungTitle, 1f))))
+                                    .minimumShouldMatch("1")
+                            ))
+                    )
+            );
 
 
             targets.stream()
@@ -53,18 +73,48 @@ public class BookSearchQueryFactory {
                             .header(h -> h.index(indexProps.getIndex()))
                             .body(b -> b
                                     .size(field.getDefaultSize())
-                                    .query(q -> q.bool(bq -> bq
-                                            .must(m -> m.match(mq -> mq
-                                                    .field(field.getFieldName())
-                                                    .query(keyword)
-                                                    .operator(Operator.And)))
-                                            .should(s -> s.rankFeature(rf -> rf
-                                                    .field("likeCount").log(l -> l.scalingFactor(2))))
-                                            .should(s -> s.rankFeature(rf -> rf
-                                                    .field("reviewCount").log(l -> l.scalingFactor(2))))
-                                            .should(s -> s.rankFeature(rf -> rf
-                                                    .field("averageRating").saturation(r -> r))))
-                                    ))));
+                                    .query(q -> {
+                                        if (field == BookSearchField.TITLE) {
+                                            return q.bool(bq -> bq
+                                                    .should(s -> s.match(mq -> mq
+                                                            .field(field.getFieldName())
+                                                            .query(keyword)
+                                                            .operator(Operator.And)
+                                                            .boost(boosts.getOrDefault(field.getFieldName(), 1f))))
+                                                    .should(s -> s.match(mq -> mq
+                                                            .field(chosungWord)
+                                                            .query(keyword)
+                                                            .operator(Operator.And)
+                                                            .boost(boosts.getOrDefault(chosungWord, 1f))))
+                                                    .should(s -> s.prefix(p -> p
+                                                            .field(chosungTitle)
+                                                            .value(keyword)
+                                                            .boost(boosts.getOrDefault(chosungTitle, 1f))))
+                                                    .minimumShouldMatch("1")
+                                                    .should(s -> s.rankFeature(rf -> rf
+                                                            .field("likeCount").log(l -> l.scalingFactor(2))))
+                                                    .should(s -> s.rankFeature(rf -> rf
+                                                            .field("reviewCount").log(l -> l.scalingFactor(2))))
+                                                    .should(s -> s.rankFeature(rf -> rf
+                                                            .field("averageRating").saturation(r -> r)))
+                                            );
+                                        } else {
+                                            return q.bool(bq -> bq
+                                                    .must(m -> m.match(mq -> mq
+                                                            .field(field.getFieldName())
+                                                            .query(keyword)
+                                                            .operator(Operator.And)))
+                                                    .should(s -> s.rankFeature(rf -> rf
+                                                            .field("likeCount").log(l -> l.scalingFactor(2))))
+                                                    .should(s -> s.rankFeature(rf -> rf
+                                                            .field("reviewCount").log(l -> l.scalingFactor(2))))
+                                                    .should(s -> s.rankFeature(rf -> rf
+                                                            .field("averageRating").saturation(r -> r)))
+                                            );
+                                        }
+                                    })
+                            )
+                    ));
             return ms;
         });
     }
