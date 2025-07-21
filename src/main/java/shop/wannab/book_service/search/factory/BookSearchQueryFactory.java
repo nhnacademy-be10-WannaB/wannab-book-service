@@ -32,6 +32,8 @@ public class BookSearchQueryFactory {
                                            Collection<BookSearchField> targets) {
 
         Map<String, Float> boosts = indexProps.getBoost().getFields();
+        String chosungTitle = indexProps.getChosungTitle();
+        String chosungWord = indexProps.getChosungWord();
 
         List<String> baseFields = targets.stream()
                 .map(BookSearchField::getFieldName)
@@ -51,14 +53,14 @@ public class BookSearchQueryFactory {
                                             .type(TextQueryType.MostFields)
                                             .fields(baseFields)))
                                     .should(s -> s.match(mq -> mq
-                                            .field("title_chosung_word")
+                                            .field(chosungWord)
                                             .query(keyword)
                                             .operator(Operator.And)
-                                            .boost(boosts.getOrDefault("title_chosung_word", 1f))))
+                                            .boost(boosts.getOrDefault(chosungWord, 1f))))
                                     .should(s -> s.prefix(p -> p
-                                            .field("title_chosung_full")
+                                            .field(chosungTitle)
                                             .value(keyword)
-                                            .boost(boosts.getOrDefault("title_chosung_full", 1f))))
+                                            .boost(boosts.getOrDefault(chosungTitle, 1f))))
                                     .minimumShouldMatch("1")
                             ))
                     )
@@ -75,19 +77,19 @@ public class BookSearchQueryFactory {
                                         if (field == BookSearchField.TITLE) {
                                             return q.bool(bq -> bq
                                                     .should(s -> s.match(mq -> mq
-                                                            .field("title")
+                                                            .field(field.getFieldName())
                                                             .query(keyword)
                                                             .operator(Operator.And)
-                                                            .boost(boosts.getOrDefault("title", 1f))))
+                                                            .boost(boosts.getOrDefault(field.getFieldName(), 1f))))
                                                     .should(s -> s.match(mq -> mq
-                                                            .field("title_chosung_word")
+                                                            .field(chosungWord)
                                                             .query(keyword)
                                                             .operator(Operator.And)
-                                                            .boost(boosts.getOrDefault("title_chosung_word", 1f))))
+                                                            .boost(boosts.getOrDefault(chosungWord, 1f))))
                                                     .should(s -> s.prefix(p -> p
-                                                            .field("title_chosung_full")
+                                                            .field(chosungTitle)
                                                             .value(keyword)
-                                                            .boost(boosts.getOrDefault("title_chosung_full", 1f))))
+                                                            .boost(boosts.getOrDefault(chosungTitle, 1f))))
                                                     .minimumShouldMatch("1")
                                                     .should(s -> s.rankFeature(rf -> rf
                                                             .field("likeCount").log(l -> l.scalingFactor(2))))

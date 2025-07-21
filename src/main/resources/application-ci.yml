@@ -63,9 +63,11 @@ search:
   boost:
     fields:
       title: 5.0
-      title_chosung_word : 3.0
       title_chosung_full : 2.0
+      title_chosung_word : 3.0
       authors: 3.0
       tags: 2.0
       description: 1.0
       publishers: 1.0
+  chosung-title: title_chosung_full
+  chosung-word: title_chosung_word
