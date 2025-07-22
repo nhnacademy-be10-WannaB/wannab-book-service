@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "search")
 public class ElasticsearchIndexProperties {
     private String index;
+    private String pipeline;
+    private String chosungTitle;
+    private String chosungWord;
     private Boost boost = new Boost();
 
     @Getter @Setter

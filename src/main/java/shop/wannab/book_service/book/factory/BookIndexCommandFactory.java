@@ -21,6 +21,7 @@ public class BookIndexCommandFactory {
             elasticsearchClient.index(i -> i
                     .index(indexProps.getIndex())
                     .id(document.bookId())
+                    .pipeline(indexProps.getPipeline())
                     .document(document)
             );
         } catch (IOException e) {
