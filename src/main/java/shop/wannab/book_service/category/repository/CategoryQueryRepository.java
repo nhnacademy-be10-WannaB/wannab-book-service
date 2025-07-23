@@ -11,4 +11,5 @@ public interface CategoryQueryRepository {
     Page<CategoryResponse> findParentCategories(Pageable pageable);
     Page<CategoryResponse> findChildCategoriesByParentId(Long parentId, Pageable pageable);
     void deleteCategoryWithBookCategories(Category targetCategory);
+    List<Category> findRootsWithChildren();
 }

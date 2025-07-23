@@ -112,4 +112,14 @@ public class CategoryQueryRepositoryImpl implements CategoryQueryRepository{
                 .where(category.id.eq(categoryId))
                 .execute();
     }
+
+    @Override
+    public List<Category> findRootsWithChildren() {
+        return queryFactory
+                .selectDistinct(category)
+                .from(category)
+                .leftJoin(category.children).fetchJoin()
+                .where(category.parent.isNull())
+                .fetch();
+    }
 }

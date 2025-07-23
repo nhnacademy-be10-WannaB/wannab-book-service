@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,16 +37,13 @@ public class CategoryService {
     private final CategoryDeleteStrategyResolver categoryDeleteStrategyResolver;
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "categoryHierarchy")
     public List<CategoryHierarchyDto> getCategoryHierarchy() {
-        List<Category> rootCategories = categoryRepository.findByParentIsNull();
+        List<Category> rootCategories = categoryRepository.findRootsWithChildren();
 
-        List<CategoryHierarchyDto> categoryHierarchyDtoList = new ArrayList<>();
-
-        for (Category rootCategory : rootCategories) {
-            CategoryHierarchyDto dto = new CategoryHierarchyDto(rootCategory);
-            categoryHierarchyDtoList.add(dto);
-        }
-        return categoryHierarchyDtoList;
+        return rootCategories.stream()
+                .map(CategoryHierarchyDto::new)
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -74,12 +73,14 @@ public class CategoryService {
     }
 
     @Transactional
+    @CacheEvict(value = "categoryHierarchy", allEntries = true)
     public void createParentCategory(CategoryCreateRequest request) {
         Category category = Category.create(request.name(), null);
         categoryRepository.save(category);
     }
 
     @Transactional
+    @CacheEvict(value = "categoryHierarchy", allEntries = true)
     public void createChildCategory(CategoryCreateRequest request, Long parentId) {
         Category parent = categoryRepository.findById(parentId)
                 .orElseThrow(() -> new CategoryApiException(CategoryErrorCode.PARENTS_CATEGORY_NOT_FOUND));
@@ -88,6 +89,7 @@ public class CategoryService {
     }
 
     @Transactional
+    @CacheEvict(value = "categoryHierarchy", allEntries = true)
     public void deleteCategory(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
@@ -117,7 +119,7 @@ public class CategoryService {
     }
 
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Map<Long, Set<Long>> findAllCategoryIdsWithHierarchy(List<Long> bookIds) {
         List<BookCategory> bookCategories = bookCategoryRepository.findBookCategoriesByBookIds(bookIds);
 
@@ -144,6 +146,7 @@ public class CategoryService {
      * 3개면, 1번, 2번 인덱스 조회 및 저장
      */
     @Transactional
+    @CacheEvict(value = "categoryHierarchy", allEntries = true)
     public List<Category> ensureHierarchy(List<String> names) {
         if (names == null || names.isEmpty()) {
             throw new CategoryApiException(CategoryErrorCode.INVALID_CATEGORY_HIERARCHY);
