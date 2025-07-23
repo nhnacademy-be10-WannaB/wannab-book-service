@@ -8,7 +8,6 @@ import co.elastic.clients.elasticsearch.core.search.Hit;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -49,7 +48,7 @@ public class BookSearchService {
 
         return response.hits().hits().stream()
                 .map(Hit::source)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

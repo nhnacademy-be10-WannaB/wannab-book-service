@@ -1,5 +1,6 @@
 package shop.wannab.book_service.book.repository.impl;
 
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -27,21 +28,21 @@ public class BookQueryRepositoryImpl implements BookQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    private final QBook book = QBook.book;
-    private final QBookAuthor bookAuthor = QBookAuthor.bookAuthor;
-    private final QAuthor author = QAuthor.author;
-    private final QBookPublisher bookPublisher = QBookPublisher.bookPublisher;
-    private final QPublisher publisher = QPublisher.publisher;
-    private final QBookTag bookTag = QBookTag.bookTag;
-    private final QTag tag = QTag.tag;
-    private final QBookImage bookImage = QBookImage.bookImage;
+    private static final QBook book = QBook.book;
+    private static final QBookAuthor bookAuthor = QBookAuthor.bookAuthor;
+    private static final QAuthor author = QAuthor.author;
+    private static final QBookPublisher bookPublisher = QBookPublisher.bookPublisher;
+    private static final QPublisher publisher = QPublisher.publisher;
+    private static final QBookTag bookTag = QBookTag.bookTag;
+    private static final QTag tag = QTag.tag;
+    private static final QBookImage bookImage = QBookImage.bookImage;
 
     @Override
     public List<Long> findPageIds(String keyword, Pageable pageable) {
         return queryFactory.select(book.bookId)
                 .from(book)
                 .where(BookPredicates.titleLike(keyword))
-                .orderBy(BookSorts.from(pageable))
+                .orderBy(BookSorts.from(pageable).toArray(new OrderSpecifier[0]))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

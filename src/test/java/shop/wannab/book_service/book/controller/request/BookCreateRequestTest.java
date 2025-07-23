@@ -1,18 +1,17 @@
 package shop.wannab.book_service.book.controller.request;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 class BookCreateRequestTest {
 
@@ -61,7 +60,7 @@ class BookCreateRequestTest {
 
         Set<ConstraintViolation<BookCreateRequest>> violations = validator.validate(request);
         assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getPropertyPath().toString()).isEqualTo("title");
+        assertThat(violations.iterator().next().getPropertyPath()).hasToString("title");
     }
 
     @Test
@@ -79,7 +78,7 @@ class BookCreateRequestTest {
 
         Set<ConstraintViolation<BookCreateRequest>> violations = validator.validate(request);
         assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getPropertyPath().toString()).isEqualTo("description");
+        assertThat(violations.iterator().next().getPropertyPath()).hasToString("description");
     }
 
     @Test
@@ -97,7 +96,7 @@ class BookCreateRequestTest {
 
         Set<ConstraintViolation<BookCreateRequest>> violations = validator.validate(request);
         assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getPropertyPath().toString()).isEqualTo("publicationDate");
+        assertThat(violations.iterator().next().getPropertyPath()).hasToString("publicationDate");
     }
 
     @Test
@@ -115,7 +114,7 @@ class BookCreateRequestTest {
 
         Set<ConstraintViolation<BookCreateRequest>> violations = validator.validate(request);
         assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getPropertyPath().toString()).isEqualTo("originPrice");
+        assertThat(violations.iterator().next().getPropertyPath()).hasToString("originPrice");
     }
 
     @Test
@@ -133,7 +132,7 @@ class BookCreateRequestTest {
 
         Set<ConstraintViolation<BookCreateRequest>> violations = validator.validate(request);
         assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getPropertyPath().toString()).isEqualTo("stock");
+        assertThat(violations.iterator().next().getPropertyPath()).hasToString("stock");
     }
 
     @Test
@@ -151,7 +150,7 @@ class BookCreateRequestTest {
 
         Set<ConstraintViolation<BookCreateRequest>> violations = validator.validate(request);
         assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getPropertyPath().toString()).isEqualTo("isbn");
+        assertThat(violations.iterator().next().getPropertyPath()).hasToString("isbn");
     }
 
     @Test

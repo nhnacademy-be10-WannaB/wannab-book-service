@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import shop.wannab.book_service.book.dto.BookIndexDocument;
 import shop.wannab.book_service.global.properties.ElasticsearchIndexProperties;
+import shop.wannab.book_service.search.exception.ElsException;
 
 @Slf4j
 @Component
@@ -26,7 +27,7 @@ public class BookIndexCommandFactory {
             );
         } catch (IOException e) {
             log.error("엘라스틱 색인 실패 - bookId: {}", document.bookId(), e);
-            throw new RuntimeException("Elasticsearch 색인 실패", e);
+            throw new ElsException("Elasticsearch 색인 실패");
         }
     }
 
@@ -38,7 +39,7 @@ public class BookIndexCommandFactory {
             );
         } catch (IOException e) {
             log.error("엘라스틱 삭제 실패 - bookId: {}", bookId, e);
-            throw new RuntimeException("Elasticsearch 삭제 실패", e);
+            throw new ElsException("Elasticsearch 삭제 실패");
         }
     }
 }

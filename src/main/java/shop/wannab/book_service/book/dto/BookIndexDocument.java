@@ -39,7 +39,7 @@ public record BookIndexDocument(
                 categories,
                 tags,
                 req.thumbnail(),
-                req.status() != null ? req.status() : true,
+                Boolean.TRUE.equals(req.status()),
                 req.price(),
                 req.price()
         );

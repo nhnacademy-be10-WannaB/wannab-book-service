@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import shop.wannab.book_service.book.controller.response.*;
 import shop.wannab.book_service.book.dto.*;
+import shop.wannab.book_service.book.service.BookLikeQueryService;
 import shop.wannab.book_service.book.service.impl.BookLikeServiceImpl;
 import shop.wannab.book_service.book.service.impl.BookServiceImpl;
 
@@ -64,6 +65,9 @@ class BookControllerTest {
 
     @MockBean
     private BookLikeServiceImpl bookLikeServiceImpl;
+
+    @MockBean
+    private BookLikeQueryService bookLikeQueryService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -241,7 +245,7 @@ class BookControllerTest {
     void isBookLiked() throws Exception {
         long bookId = 1L;
         long userId = 1L;
-        given(bookLikeServiceImpl.isBookLiked(any(Long.class), any(Long.class))).willReturn(true);
+        given(bookLikeQueryService.isBookLiked(any(Long.class), any(Long.class))).willReturn(true);
 
         mockMvc.perform(get("/api/books/{book-id}/likes", bookId)
                         .header("X-USER-ID", userId))

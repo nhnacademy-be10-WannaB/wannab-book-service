@@ -21,8 +21,8 @@ public class TagQueryRepositoryImpl implements TagQueryRepository{
 
     private final JPAQueryFactory queryFactory;
 
-    private final QTag tag = QTag.tag;
-    private final QBookTag bookTag = QBookTag.bookTag;
+    private static final QTag tag = QTag.tag;
+    private static final QBookTag bookTag = QBookTag.bookTag;
 
     @Override
     @Transactional(readOnly = true)
