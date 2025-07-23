@@ -3,6 +3,7 @@ package shop.wannab.book_service.aladin.controller.request;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import shop.wannab.book_service.aladin.domain.AladinEnums.CoverOption;
 import shop.wannab.book_service.aladin.domain.AladinEnums.QueryType;
 import shop.wannab.book_service.aladin.domain.AladinEnums.SearchTarget;
@@ -22,6 +23,7 @@ import shop.wannab.book_service.aladin.domain.AladinEnums.SortOption;
  *
  * @author hunmin
  */
+@Builder
 public record BookInfoRequest(
         @NotBlank String query,
         QueryType queryType,
