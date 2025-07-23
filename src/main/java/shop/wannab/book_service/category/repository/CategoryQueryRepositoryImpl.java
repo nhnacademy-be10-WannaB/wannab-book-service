@@ -20,8 +20,8 @@ public class CategoryQueryRepositoryImpl implements CategoryQueryRepository{
 
     private final JPAQueryFactory queryFactory;
 
-    private final QCategory category = QCategory.category;
-    private final QBookCategory bookCategory = QBookCategory.bookCategory;
+    private static final QCategory category = QCategory.category;
+    private static final QBookCategory bookCategory = QBookCategory.bookCategory;
 
     @Override
     @Transactional(readOnly = true)

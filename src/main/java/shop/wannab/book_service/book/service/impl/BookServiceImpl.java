@@ -45,17 +45,12 @@ public class BookServiceImpl implements BookService {
             int quantity = orderItem.getQuantity();
 
             Integer stock = bookRepository.getBookStock(bookId);
+
             if (stock == null) {
                 errors.add(new OrderItemValidationError(bookId, "해당 상품을 찾을 수 없습니다."));
-                continue;
-            }
-
-            if (quantity > stock) {
+            } else if (quantity > stock) {
                 errors.add(new OrderItemValidationError(bookId, "재고가 부족합니다."));
-                continue;
-            }
-
-            if (!bookRepository.existsByBookIdAndStatusTrue(bookId)) {
+            } else if (!bookRepository.existsByBookIdAndStatusTrue(bookId)) {
                 errors.add(new OrderItemValidationError(bookId, "판매중인 상품이 아닙니다."));
             }
         }

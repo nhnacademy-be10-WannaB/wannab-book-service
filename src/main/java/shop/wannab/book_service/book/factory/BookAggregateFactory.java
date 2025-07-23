@@ -14,7 +14,6 @@ import shop.wannab.book_service.book.entity.Book;
 import shop.wannab.book_service.category.service.CategoryService;
 import shop.wannab.book_service.publisher.entity.Publisher;
 import shop.wannab.book_service.publisher.repository.PublisherRepository;
-import shop.wannab.book_service.tag.entity.Tag;
 import shop.wannab.book_service.tag.repository.TagRepository;
 
 /**
@@ -52,7 +51,6 @@ public class BookAggregateFactory {
 
     /**
      * 일반 도서 생성 요청을 Aggregate 로 반환하는 메서드
-     * TODO tag 추가 필요
      */
     public Book toAggregate(BookCreateRequest req) {
         Book book = req.toEntityWithOutAuthorAndPublisher();
@@ -97,21 +95,6 @@ public class BookAggregateFactory {
         publisherRepository.saveAll(newOnes);
 
         newOnes.forEach(a -> found.put(a.getPublisherName(), a));
-
-        return found;
-    }
-
-    private Map<String, Tag> preloadTags(List<String> names) {
-        Map<String, Tag> found = tagRepository.findAllByNameIn(names)
-                .stream().collect(Collectors.toMap(Tag::getName, Function.identity()));
-
-        List<Tag> newOnes = names.stream()
-                .filter(n -> !found.containsKey(n))
-                .map(Tag::new)
-                .toList();
-        tagRepository.saveAll(newOnes);
-
-        newOnes.forEach(t -> found.put(t.getName(), t));
 
         return found;
     }

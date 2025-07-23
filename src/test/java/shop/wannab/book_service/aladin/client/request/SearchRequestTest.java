@@ -39,7 +39,7 @@ class SearchRequestTest {
         assertThat(result.maxResults()).isEqualTo(100);
         assertThat(result.sort()).isEqualTo("Accuracy");
         assertThat(result.cover()).isEqualTo("Big");
-        assertThat(result.categoryId()).isEqualTo(0);
+        assertThat(result.categoryId()).isZero();
     }
 
     @DisplayName("BookInfoRequest에서 SearchRequest로 변환 시 값이 정상 매핑된다")

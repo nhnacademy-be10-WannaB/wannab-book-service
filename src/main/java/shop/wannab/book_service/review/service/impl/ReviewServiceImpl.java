@@ -1,20 +1,18 @@
 package shop.wannab.book_service.review.service.impl;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.wannab.book_service.book.entity.Book;
-import shop.wannab.book_service.book.entity.BookCategory;
-import shop.wannab.book_service.book.entity.BookImage;
 import shop.wannab.book_service.book.exception.BookApiException;
 import shop.wannab.book_service.book.exception.BookErrorCode;
 import shop.wannab.book_service.book.repository.BookRepository;
 import shop.wannab.book_service.client.OrderClient;
 import shop.wannab.book_service.client.UserClient;
 import shop.wannab.book_service.client.dto.response.UserResponse;
-import shop.wannab.book_service.client.dto.response.UserResponseWrapper;
 import shop.wannab.book_service.review.controller.request.ReviewCreateRequest;
 import shop.wannab.book_service.review.controller.request.ReviewUpdateRequest;
 import shop.wannab.book_service.review.controller.response.BookReviewListResponse;
@@ -25,8 +23,6 @@ import shop.wannab.book_service.review.exception.ReviewApiException;
 import shop.wannab.book_service.review.exception.ReviewErrorCode;
 import shop.wannab.book_service.review.repository.ReviewRepository;
 import shop.wannab.book_service.review.service.ReviewService;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -71,6 +67,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     //리뷰 생성
+    @Transactional
     public void createReview(ReviewCreateRequest request, Long bookId, Long userId){
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(()-> new BookApiException(BookErrorCode.BOOK_NOT_FOUND));
@@ -108,6 +105,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     //리뷰 수정
+    @Transactional
     public void updateReview(ReviewUpdateRequest request, Long reviewId){
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(()->new ReviewApiException(ReviewErrorCode.REVIEW_NOT_FOUND));
@@ -122,6 +120,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     //리뷰 삭제
+    @Transactional
     public void deleteReview(Long reviewId){
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(()->new ReviewApiException(ReviewErrorCode.REVIEW_NOT_FOUND));

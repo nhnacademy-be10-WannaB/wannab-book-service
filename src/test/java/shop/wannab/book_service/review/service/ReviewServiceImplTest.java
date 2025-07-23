@@ -1,5 +1,15 @@
 package shop.wannab.book_service.review.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,18 +33,6 @@ import shop.wannab.book_service.review.entity.Review;
 import shop.wannab.book_service.review.exception.ReviewApiException;
 import shop.wannab.book_service.review.repository.ReviewRepository;
 import shop.wannab.book_service.review.service.impl.ReviewServiceImpl;
-
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("ci")
@@ -170,10 +168,11 @@ class ReviewServiceImplTest {
     @DisplayName("리뷰 수정 - 성공")
     void updateReview_success() {
         Long reviewId = 1L;
+        LocalDateTime now = LocalDateTime.now();
         ReviewUpdateRequest request = ReviewUpdateRequest.builder()
                 .reviewContent("updated content")
                 .reviewScore(4)
-                .reviewUpdatedAt(LocalDateTime.now())
+                .reviewUpdatedAt(now)
                 .reviewImages(Collections.emptyList())
                 .build();
         Review review = Review.builder().build();
@@ -181,6 +180,11 @@ class ReviewServiceImplTest {
         given(reviewRepository.findById(reviewId)).willReturn(Optional.of(review));
 
         reviewService.updateReview(request, reviewId);
+
+        assertThat(review.getReviewContent()).isEqualTo("updated content");
+        assertThat(review.getReviewScore()).isEqualTo(4);
+        assertThat(review.getReviewUpdatedAt()).isEqualTo(now);
+        assertThat(review.getReviewImages()).hasSize(0);
     }
 
     @Test

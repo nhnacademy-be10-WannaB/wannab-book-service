@@ -1,11 +1,11 @@
 package shop.wannab.book_service.book.repository.query;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.querydsl.core.types.Predicate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import shop.wannab.book_service.book.entity.QBook;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class BookPredicatesTest {
 
@@ -16,7 +16,7 @@ class BookPredicatesTest {
     void titleLike_validKeyword() {
         String keyword = "test";
         Predicate predicate = BookPredicates.titleLike(keyword);
-        assertThat(predicate.toString()).isEqualTo("containsIc(book.title,test)");
+        assertThat(predicate).hasToString("containsIc(book.title,test)");
     }
 
     @Test
