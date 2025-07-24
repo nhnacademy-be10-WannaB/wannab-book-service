@@ -36,6 +36,8 @@ public class AladinService {
     public SearchResponse searchBooks(BookInfoRequest request) {
         SearchRequest params = SearchRequest.from(request);
         try{
+            log.error("request : {} error", request);
+            log.info("request : {}", request);
             return aladinClient.fetchFromAladin(params.toParamMap(aladinKeyProperties.getTtbKey()));
         } catch (FeignException e) {
             throw new AladinApiException(AladinErrorCode.ALDIN_API_ERROR, e);
