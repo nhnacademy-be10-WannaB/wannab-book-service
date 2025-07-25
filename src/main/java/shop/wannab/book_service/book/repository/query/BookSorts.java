@@ -21,14 +21,14 @@ public final class BookSorts {
             "bookId", book.bookId
     );
 
-    public static List<OrderSpecifier<? extends Comparable<?>>> from(Pageable pageable) {
+    public static List<OrderSpecifier<?>> from(Pageable pageable) {
         if (pageable.getSort().isUnsorted()) {
             return List.of(book.bookId.asc());
         }
 
         return pageable.getSort().stream()
                 .map(order -> {
-                    ComparableExpressionBase<? extends Comparable<?>> expr =
+                    ComparableExpressionBase<?> expr =
                             COLUMN_MAP.getOrDefault(order.getProperty(), book.bookId);
                     return order.isAscending() ? expr.asc() : expr.desc();
                 })

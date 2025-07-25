@@ -1,6 +1,5 @@
 package shop.wannab.book_service.search.controller;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -66,7 +65,7 @@ class BookSearchControllerTest {
                 new SearchResultWithSectionResponse(BookSearchField.AUTHORS, "저자", 2L, List.of())
         );
 
-        given(bookSearchService.multiSearchBooks(eq(keyword), eq(fields)))
+        given(bookSearchService.multiSearchBooks(keyword, fields))
                 .willReturn(responses);
 
         // when, then

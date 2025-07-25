@@ -18,7 +18,6 @@ import shop.wannab.book_service.book.dto.OrderItemListDto;
 import shop.wannab.book_service.book.controller.response.BookDetailResponse;
 import shop.wannab.book_service.book.service.BookLikeQueryService;
 import shop.wannab.book_service.book.service.BookLikeService;
-import shop.wannab.book_service.book.service.impl.BookLikeServiceImpl;
 import shop.wannab.book_service.book.service.impl.BookServiceImpl;
 import shop.wannab.book_service.global.response.ApiResponse;
 

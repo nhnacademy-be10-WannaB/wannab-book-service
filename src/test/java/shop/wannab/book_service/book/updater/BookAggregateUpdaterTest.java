@@ -1,6 +1,5 @@
 package shop.wannab.book_service.book.updater;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -76,16 +75,8 @@ class BookAggregateUpdaterTest {
         bookAggregateUpdater.apply(book, req);
 
         // then
-        verify(book).updateInfo(
-                eq("자바의 정석"),
-                eq("설명"),
-                eq(LocalDate.of(2023, 1, 1)),
-                eq(30000),
-                eq(27000),
-                eq(100),
-                eq("1장~10장"),
-                eq("123456789"),
-                eq(true)
+        verify(book).updateInfo("자바의 정석", "설명", LocalDate.of(2023, 1, 1), 30000,
+                27000, 100, "1장~10장", "123456789", true
         );
 
         verify(authorRepository).findAllByAuthorNameIn(authors);
