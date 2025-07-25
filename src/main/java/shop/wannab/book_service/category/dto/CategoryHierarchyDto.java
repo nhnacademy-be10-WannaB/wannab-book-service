@@ -1,6 +1,5 @@
 package shop.wannab.book_service.category.dto;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -10,11 +9,6 @@ import shop.wannab.book_service.category.entity.Category;
 
 @Getter
 @Setter
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.CLASS,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "@class"
-)
 @NoArgsConstructor
 public class CategoryHierarchyDto {
     private Long id;
