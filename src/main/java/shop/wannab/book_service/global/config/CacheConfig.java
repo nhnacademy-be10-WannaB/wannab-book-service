@@ -1,5 +1,8 @@
 package shop.wannab.book_service.global.config;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.Duration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,14 +15,29 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class CacheConfig {
 
     @Bean
-    public RedisCacheConfiguration redisCacheConfiguration() {
+    public RedisCacheConfiguration redisCacheConfiguration(GenericJackson2JsonRedisSerializer cacheValueSerializer) {
         return RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(
                         RedisSerializationContext.SerializationPair
                                 .fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(
                         RedisSerializationContext.SerializationPair
-                                .fromSerializer(new GenericJackson2JsonRedisSerializer()))
-                .entryTtl(Duration.ofHours(1));
+                                .fromSerializer(cacheValueSerializer))
+                .entryTtl(Duration.ofHours(1))
+                .computePrefixWith(cacheName -> "category:".concat(cacheName).concat(":"));
+    }
+
+    @Bean
+    public GenericJackson2JsonRedisSerializer cacheValueSerializer() {
+
+        ObjectMapper om = new ObjectMapper();
+        om.registerModule(new JavaTimeModule());
+
+        om.activateDefaultTyping(
+                om.getPolymorphicTypeValidator(),
+                ObjectMapper.DefaultTyping.NON_FINAL,
+                JsonTypeInfo.As.PROPERTY);
+
+        return new GenericJackson2JsonRedisSerializer(om);
     }
 }
