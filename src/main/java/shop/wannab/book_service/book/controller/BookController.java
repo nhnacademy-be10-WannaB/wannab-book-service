@@ -16,6 +16,8 @@ import shop.wannab.book_service.book.dto.BookIdTitlePriceListDto;
 import shop.wannab.book_service.book.dto.OrderBookInfoListDto;
 import shop.wannab.book_service.book.dto.OrderItemListDto;
 import shop.wannab.book_service.book.controller.response.BookDetailResponse;
+import shop.wannab.book_service.book.service.BookLikeQueryService;
+import shop.wannab.book_service.book.service.BookLikeService;
 import shop.wannab.book_service.book.service.impl.BookLikeServiceImpl;
 import shop.wannab.book_service.book.service.impl.BookServiceImpl;
 import shop.wannab.book_service.global.response.ApiResponse;
@@ -27,7 +29,8 @@ import shop.wannab.book_service.global.response.ApiResponse;
 public class BookController {
 
     protected final BookServiceImpl bookServiceImpl;
-    private final BookLikeServiceImpl bookLikeService;
+    private final BookLikeQueryService bookLikeQueryService;
+    private final BookLikeService bookLikeService;
 
     @PostMapping("/validation/primary")
     public void validateOrderItems(@RequestBody OrderItemListDto orderItemListDto) {
@@ -76,7 +79,7 @@ public class BookController {
     @GetMapping("/{book-id}/likes")
     public ResponseEntity<ApiResponse<Boolean>> isBookLiked(@PathVariable("book-id") Long bookId,
                                                             @RequestHeader("X-USER-ID") Long userId) {
-        Boolean isLiked = bookLikeService.isBookLiked(bookId, userId);
+        Boolean isLiked = bookLikeQueryService.isBookLiked(bookId, userId);
         return ResponseEntity.ok(ApiResponse.success(isLiked));
     }
 

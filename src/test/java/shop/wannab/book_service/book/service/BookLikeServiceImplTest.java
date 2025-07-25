@@ -1,10 +1,17 @@
 package shop.wannab.book_service.book.service;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 import shop.wannab.book_service.book.entity.Book;
@@ -13,19 +20,12 @@ import shop.wannab.book_service.book.exception.BookApiException;
 import shop.wannab.book_service.book.repository.BookLikeRepository;
 import shop.wannab.book_service.book.repository.BookRepository;
 import shop.wannab.book_service.book.service.impl.BookLikeServiceImpl;
-import shop.wannab.book_service.book.service.impl.BookServiceImpl;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("ci")
-public class BookLikeServiceImplTest {
+class BookLikeServiceImplTest {
 
+    @Spy
     @InjectMocks
     private BookLikeServiceImpl bookLikeService;
 
@@ -35,6 +35,9 @@ public class BookLikeServiceImplTest {
     @Mock
     private BookLikeRepository bookLikeRepository;
 
+    @Mock
+    private BookLikeQueryService bookLikeQueryService;
+
     @Test
     @DisplayName("도서 좋아요 등록 - 유효한 도서 및 사용자")
     void createBookLike_validBookAndUser_savesBookLike() {
@@ -43,8 +46,7 @@ public class BookLikeServiceImplTest {
         Book book = new Book();
 
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
-        when(bookRepository.existsById(bookId)).thenReturn(true);
-        when(bookLikeRepository.existsByUserIdAndBook_BookId(userId, bookId)).thenReturn(false);
+        when(bookLikeQueryService.isBookLiked(bookId, userId)).thenReturn(false);
 
         bookLikeService.createBookLike(bookId, userId);
 
@@ -70,19 +72,18 @@ public class BookLikeServiceImplTest {
         Book book = new Book();
 
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
-        when(bookRepository.existsById(bookId)).thenReturn(true);
-        when(bookLikeRepository.existsByUserIdAndBook_BookId(userId, bookId)).thenReturn(true);
+        when(bookLikeQueryService.isBookLiked(bookId, userId)).thenReturn(true);
 
         assertThrows(BookApiException.class, () -> bookLikeService.createBookLike(bookId, userId));
     }
+
     @Test
     @DisplayName("도서 좋아요 취소 - 좋아요된 도서")
     void deleteBookLike_likedBook_deletesSuccessfully() {
         Long bookId = 1L;
         Long userId = 2L;
 
-        when(bookRepository.existsById(bookId)).thenReturn(true);
-        when(bookLikeRepository.existsByUserIdAndBook_BookId(userId, bookId)).thenReturn(true);
+        when(bookLikeQueryService.isBookLiked(bookId, userId)).thenReturn(true);
 
         bookLikeService.deleteBookLike(bookId, userId);
 
@@ -95,45 +96,8 @@ public class BookLikeServiceImplTest {
         Long bookId = 1L;
         Long userId = 2L;
 
-        when(bookRepository.existsById(bookId)).thenReturn(true);
-        when(bookLikeRepository.existsByUserIdAndBook_BookId(userId, bookId)).thenReturn(false);
+        when(bookLikeQueryService.isBookLiked(bookId, userId)).thenReturn(false);
 
         assertThrows(BookApiException.class, () -> bookLikeService.deleteBookLike(bookId, userId));
-    }
-
-    @Test
-    @DisplayName("도서 좋아요 여부 조회 - 좋아요됨")
-    void isBookLiked_liked_returnsTrue() {
-        Long bookId = 1L;
-        Long userId = 2L;
-
-        when(bookRepository.existsById(bookId)).thenReturn(true);
-        when(bookLikeRepository.existsByUserIdAndBook_BookId(userId, bookId)).thenReturn(true);
-
-        assertTrue(bookLikeService.isBookLiked(bookId, userId));
-    }
-
-
-    @Test
-    @DisplayName("도서 좋아요 여부 조회 - 좋아요되지 않음")
-    void isBookLiked_notLiked_returnsFalse() {
-        Long bookId = 1L;
-        Long userId = 2L;
-
-        when(bookRepository.existsById(bookId)).thenReturn(true);
-        when(bookLikeRepository.existsByUserIdAndBook_BookId(userId, bookId)).thenReturn(false);
-
-        assertFalse(bookLikeService.isBookLiked(bookId, userId));
-    }
-
-    @Test
-    @DisplayName("도서 좋아요 여부 조회 - 도서를 찾을 수 없음")
-    void isBookLiked_bookNotFound_throwsException() {
-        Long bookId = 1L;
-        Long userId = 2L;
-
-        when(bookRepository.existsById(bookId)).thenReturn(false);
-
-        assertThrows(BookApiException.class, () -> bookLikeService.isBookLiked(bookId, userId));
     }
 }

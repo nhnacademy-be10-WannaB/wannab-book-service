@@ -20,8 +20,8 @@ public class CategoryQueryRepositoryImpl implements CategoryQueryRepository{
 
     private final JPAQueryFactory queryFactory;
 
-    private final QCategory category = QCategory.category;
-    private final QBookCategory bookCategory = QBookCategory.bookCategory;
+    private static final QCategory category = QCategory.category;
+    private static final QBookCategory bookCategory = QBookCategory.bookCategory;
 
     @Override
     @Transactional(readOnly = true)
@@ -111,5 +111,15 @@ public class CategoryQueryRepositoryImpl implements CategoryQueryRepository{
                 .delete(category)
                 .where(category.id.eq(categoryId))
                 .execute();
+    }
+
+    @Override
+    public List<Category> findRootsWithChildren() {
+        return queryFactory
+                .selectDistinct(category)
+                .from(category)
+                .leftJoin(category.children).fetchJoin()
+                .where(category.parent.isNull())
+                .fetch();
     }
 }

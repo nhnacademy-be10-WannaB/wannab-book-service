@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.wannab.book_service.category.dto.CategoryHierarchyDto;
 import shop.wannab.book_service.category.dto.request.CategoryCreateRequest;
-import shop.wannab.book_service.category.dto.response.CategoryIdsResponse;
 import shop.wannab.book_service.category.dto.response.CategoryResponse;
 import shop.wannab.book_service.category.service.CategoryService;
 import shop.wannab.book_service.global.response.PageResponse;
@@ -100,13 +99,11 @@ public class CategoryController {
         return ResponseEntity.noContent().build();
     }
   
-    //TODO : ResponseDto로 수정
     @PostMapping("/names")
     public ResponseEntity<Map<Long, String>> getCategoryNames(@RequestBody List<Long> categoryIds){
         return ResponseEntity.ok(categoryService.getCategoriesNames(categoryIds));
     }
 
-    //TODO : ResponseDto로 수정
     @PostMapping("/ids-map")
     public ResponseEntity<Map<Long, Set<Long>>> getCategoryIds(@RequestBody List<Long> bookIds) {
         return ResponseEntity.ok(categoryService.findAllCategoryIdsWithHierarchy(bookIds));

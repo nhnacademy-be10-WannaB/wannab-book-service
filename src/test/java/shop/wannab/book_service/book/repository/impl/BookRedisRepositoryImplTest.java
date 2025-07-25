@@ -1,5 +1,10 @@
 package shop.wannab.book_service.book.repository.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static shop.wannab.book_service.global.constants.Constants.BOOK_STOCK_KEY;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,11 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static shop.wannab.book_service.global.constants.Constants.BOOK_STOCK_KEY;
 
 @ExtendWith(MockitoExtension.class)
 class BookRedisRepositoryImplTest {
