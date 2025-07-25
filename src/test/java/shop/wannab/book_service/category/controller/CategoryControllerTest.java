@@ -20,6 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import shop.wannab.book_service.category.dto.CategoryHierarchyDto;
 import shop.wannab.book_service.category.dto.request.CategoryCreateRequest;
 import shop.wannab.book_service.category.dto.response.CategoryResponse;
 import shop.wannab.book_service.category.service.CategoryService;
@@ -50,6 +53,46 @@ class CategoryControllerTest {
 
     @Autowired
     private ObjectMapper mapper;
+
+    @Test
+    @DisplayName("카테고리 조회 테스트 : 카테고리 계층 구조를 반환한다")
+    void getCategoryHierarchy() throws Exception {
+        // given
+        CategoryHierarchyDto child = new CategoryHierarchyDto();
+        child.setId(2L);
+        child.setName("자식");
+
+        CategoryHierarchyDto parent = new CategoryHierarchyDto();
+        parent.setId(1L);
+        parent.setName("부모");
+        parent.setChildren(List.of(child));
+
+        given(categoryService.getCategoryHierarchy()).willReturn(List.of(parent));
+
+        // when & then
+        mockMvc.perform(get("/api/categories/hierarchy"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("부모"))
+                .andExpect(jsonPath("$[0].children[0].name").value("자식"));
+    }
+
+    @Test
+    @DisplayName("카테고리 조회 테스트 : 부모 카테고리 리스트를 반환한다")
+    void getParentCategory() throws Exception {
+        // given
+        CategoryResponse c1 = new CategoryResponse(1L, "문학");
+        CategoryResponse c2 = new CategoryResponse(2L, "IT");
+
+        given(categoryService.getAllParentCategory()).willReturn(List.of(c1, c2));
+
+        // when & then
+        mockMvc.perform(get("/api/categories/parents"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].name").value("문학"))
+                .andExpect(jsonPath("$[1].name").value("IT"));
+    }
+
 
     @Test
     @DisplayName("카테고리 조회 테스트 : 상위 카테고리 페이징 조회")
@@ -191,5 +234,60 @@ class CategoryControllerTest {
                 ));
 
         verify(categoryService).deleteCategory(categoryId);
+    }
+
+    @Test
+    @DisplayName("카테고리 ID 목록으로 이름 매핑을 반환한다")
+    void getCategoryNames() throws Exception {
+        // given
+        List<Long> ids = List.of(1L, 2L);
+        Map<Long, String> mockResult = Map.of(1L, "문학", 2L, "IT");
+
+        given(categoryService.getCategoriesNames(ids)).willReturn(mockResult);
+
+        // when & then
+        mockMvc.perform(post("/api/categories/names")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("[1, 2]"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$['1']").value("문학"))
+                .andExpect(jsonPath("$['2']").value("IT"));
+    }
+
+    @Test
+    @DisplayName("도서 ID 목록으로 모든 상위 카테고리 ID 매핑을 반환한다")
+    void getCategoryIds() throws Exception {
+        // given
+        List<Long> bookIds = List.of(10L, 20L);
+        Map<Long, Set<Long>> mockResult = Map.of(
+                10L, Set.of(1L, 2L),
+                20L, Set.of(3L)
+        );
+
+        given(categoryService.findAllCategoryIdsWithHierarchy(bookIds)).willReturn(mockResult);
+
+        // when & then
+        mockMvc.perform(post("/api/categories/ids-map")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("[10, 20]"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$['10']").value(org.hamcrest.Matchers.containsInAnyOrder(1, 2)))
+                .andExpect(jsonPath("$['20']").value(org.hamcrest.Matchers.containsInAnyOrder(3)));
+    }
+
+    @Test
+    @DisplayName("도서 ID로 조상 카테고리 ID 목록을 반환한다")
+    void getAncestorCategoryIds() throws Exception {
+        // given
+        List<Long> ancestorIds = List.of(1L, 2L, 3L);
+        given(categoryService.getAncestorCategoryIdsForBook(42L)).willReturn(ancestorIds);
+
+        // when & then
+        mockMvc.perform(get("/api/categories/42/ancestor-category-ids"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(3))
+                .andExpect(jsonPath("$[0]").value(1))
+                .andExpect(jsonPath("$[1]").value(2))
+                .andExpect(jsonPath("$[2]").value(3));
     }
 }
