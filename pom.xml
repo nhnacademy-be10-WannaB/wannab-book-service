@@ -191,9 +191,11 @@
 						<goals>
 							<goal>report</goal>
 						</goals>
-						<excludes>
-							<exclude>shop/wannab/book_service/global/config/*</exclude>
-						</excludes>
+						<configuration>
+							<excludes>
+								<exclude>shop/wannab/book_service/global/config/**</exclude>
+							</excludes>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
