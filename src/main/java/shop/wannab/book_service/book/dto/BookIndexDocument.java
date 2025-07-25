@@ -58,8 +58,9 @@ public record BookIndexDocument(
                 req.getPublicationDate(),
                 req.getDescription(),
                 categories,
-                req.getBookTags(),
-                req.getBookImages().getFirst(),
+                Optional.ofNullable(req.getBookTags()).orElse(List.of()),
+                req.getBookImages() != null && !req.getBookImages().isEmpty()
+                        ? req.getBookImages().getFirst() : null,
                 req.isStatus(),
                 req.getOriginPrice(),
                 req.getSalesPrice()
