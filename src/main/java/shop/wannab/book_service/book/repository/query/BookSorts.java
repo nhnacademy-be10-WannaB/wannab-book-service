@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.data.domain.Pageable;
 import shop.wannab.book_service.book.entity.QBook;
 
+@SuppressWarnings("java:S1452")
 public final class BookSorts {
 
     private static final QBook book = QBook.book;
@@ -21,14 +22,14 @@ public final class BookSorts {
             "bookId", book.bookId
     );
 
-    public static List<OrderSpecifier<?>> from(Pageable pageable) {
+    public static List<OrderSpecifier<? extends Comparable<?>>> from(Pageable pageable) {
         if (pageable.getSort().isUnsorted()) {
             return List.of(book.bookId.asc());
         }
 
         return pageable.getSort().stream()
                 .map(order -> {
-                    ComparableExpressionBase<?> expr =
+                    ComparableExpressionBase<? extends Comparable<?>> expr =
                             COLUMN_MAP.getOrDefault(order.getProperty(), book.bookId);
                     return order.isAscending() ? expr.asc() : expr.desc();
                 })
