@@ -370,7 +370,9 @@ class CategoryServiceTest {
     @DisplayName("ensureHierarchy - 빈 리스트가 입력되면 예외가 발생한다")
     void ensureHierarchy_emptyList() {
         // expect
-        assertThatThrownBy(() -> categoryService.ensureHierarchy(List.of()))
+        List<String> empty = List.of();
+
+        assertThatThrownBy(() -> categoryService.ensureHierarchy(empty))
                 .isInstanceOf(CategoryApiException.class)
                 .hasMessageContaining(CategoryErrorCode.INVALID_CATEGORY_HIERARCHY.getMessage());
     }
