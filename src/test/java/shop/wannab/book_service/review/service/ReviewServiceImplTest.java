@@ -184,7 +184,7 @@ class ReviewServiceImplTest {
         assertThat(review.getReviewContent()).isEqualTo("updated content");
         assertThat(review.getReviewScore()).isEqualTo(4);
         assertThat(review.getReviewUpdatedAt()).isEqualTo(now);
-        assertThat(review.getReviewImages()).hasSize(0);
+        assertThat(review.getReviewImages()).isEmpty();
     }
 
     @Test

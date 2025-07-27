@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.data.domain.Pageable;
 import shop.wannab.book_service.book.entity.QBook;
 
+@SuppressWarnings("java:S1452")
 public final class BookSorts {
 
     private static final QBook book = QBook.book;

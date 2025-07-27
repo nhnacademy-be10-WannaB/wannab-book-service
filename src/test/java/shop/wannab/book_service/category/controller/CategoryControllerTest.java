@@ -41,7 +41,7 @@ import shop.wannab.book_service.category.service.CategoryService;
 
 @ActiveProfiles("ci")
 @AutoConfigureRestDocs
-@DisplayName("Category Controller 단위 테스트")
+@DisplayName("CategoryController 단위 테스트")
 @WebMvcTest(CategoryController.class)
 class CategoryControllerTest {
 

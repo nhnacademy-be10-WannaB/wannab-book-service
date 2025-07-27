@@ -14,7 +14,6 @@ import shop.wannab.book_service.book.entity.Book;
 import shop.wannab.book_service.category.service.CategoryService;
 import shop.wannab.book_service.publisher.entity.Publisher;
 import shop.wannab.book_service.publisher.repository.PublisherRepository;
-import shop.wannab.book_service.tag.repository.TagRepository;
 
 /**
  * 도서 저장시 논리적인 도메인인 Book Aggregate 를 생성하는 클래스
@@ -26,7 +25,6 @@ public class BookAggregateFactory {
     private final AuthorRepository authorRepository;
     private final PublisherRepository publisherRepository;
     private final CategoryService categoryService;
-    private final TagRepository tagRepository;
 
 
     /**
